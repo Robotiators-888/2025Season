@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.MathUtil;
@@ -32,7 +32,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.Swerve;
-import frc.robot.subsystems.Vision.*;
 import frc.robot.utils.*;
 //import org.littletonrobotics.junction.Logger;
 
@@ -63,7 +62,7 @@ public class SUB_Drivetrain extends SubsystemBase {
   private FieldRelativeSpeed m_lastFieldRelVel = new FieldRelativeSpeed();
   private FieldRelativeAccel m_fieldRelAccel = new FieldRelativeAccel();;
 
-  AHRS navx = new AHRS();
+  AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
   public void setGyroRotation(double angleDegrees) {
     navx.setAngleAdjustment(angleDegrees);
@@ -81,8 +80,8 @@ public class SUB_Drivetrain extends SubsystemBase {
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(Constants.Drivetrain.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(Constants.Drivetrain.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
-  public static SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
-  public static SUB_Limelight limelight = SUB_Limelight.getInstance();
+  // public static SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
+  // public static SUB_Limelight limelight = SUB_Limelight.getInstance();
 
   Pose2d pose = new Pose2d();
   // Odometry class for tracking robot pose
