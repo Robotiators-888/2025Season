@@ -15,8 +15,10 @@ public class FieldRelativeSpeed {
     }
 
     public FieldRelativeSpeed(ChassisSpeeds chassisSpeed, Rotation2d gyro) {
-        this(chassisSpeed.vxMetersPerSecond * gyro.getCos() - chassisSpeed.vyMetersPerSecond * gyro.getSin(),
-                chassisSpeed.vyMetersPerSecond * gyro.getCos() + chassisSpeed.vxMetersPerSecond * gyro.getSin(),
+        this(chassisSpeed.vxMetersPerSecond * gyro.getCos()
+                - chassisSpeed.vyMetersPerSecond * gyro.getSin(),
+                chassisSpeed.vyMetersPerSecond * gyro.getCos()
+                        + chassisSpeed.vxMetersPerSecond * gyro.getSin(),
                 chassisSpeed.omegaRadiansPerSecond);
     }
 
