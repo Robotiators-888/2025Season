@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.Field;
 
 /**
  * Utility functions for flipping from the blue to red alliance. By default, all translations and
@@ -41,11 +41,10 @@ public class AllianceFlipUtil {
     switch (flipType) {
       default:
       case CenterPointFlip:
-        return new Translation2d(FieldConstants.fieldLength - translation.getX(),
-            FieldConstants.fieldWidth - translation.getY());
+        return new Translation2d(Field.fieldLength - translation.getX(),
+            Field.fieldWidth - translation.getY());
       case MirrorFlip:
-        return new Translation2d(FieldConstants.fieldLength - translation.getX(),
-            translation.getY());
+        return new Translation2d(Field.fieldLength - translation.getX(), translation.getY());
     }
   }
 

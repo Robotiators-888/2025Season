@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -23,14 +22,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.Swerve;
 import frc.robot.utils.*;
 // import org.littletonrobotics.junction.Logger;
@@ -112,16 +109,7 @@ public class SUB_Drivetrain extends SubsystemBase {
     return INSTANCE;
   }
 
-  private SUB_Drivetrain() {
-
-    try {
-      at_field = new AprilTagFieldLayout(
-          Filesystem.getDeployDirectory().toPath().resolve("2025_reefscape_apriltags.json"));
-      SmartDashboard.putBoolean("FILE FOUND?", true);
-    } catch (IOException e) {
-      SmartDashboard.putBoolean("FILE FOUND?", false);
-    }
-  }
+  private SUB_Drivetrain() {}
 
   @Override
   public void periodic() {
@@ -447,10 +435,6 @@ public class SUB_Drivetrain extends SubsystemBase {
       var FORR = pointTo.minus(getPose().getTranslation());
       return new Rotation2d(FORR.getX(), FORR.getY()).minus(forward.get());
     }));
-  }
-
-  public static Translation2d getFORR(Translation2d pos) {
-    return AllianceFlipUtil.apply(FieldConstants.speakerAimPoint).minus(pos);
   }
 
   /**

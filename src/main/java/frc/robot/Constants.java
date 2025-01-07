@@ -7,8 +7,9 @@ package frc.robot;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -24,7 +25,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static class OperatorConstants {
+  public static class Operator {
     public static final int kDriver1ControllerPort = 0;
     public static final int kDriver2ControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
@@ -44,7 +45,7 @@ public final class Constants {
     public static final boolean kTurningEncoderInverted = true;
 
     // Calculations required for driving motor conversion factors and feed forward
-    public static final double kDrivingMotorFreeSpeedRps = MotorConstants.kVortexFreeSpeedRpm / 60;
+    public static final double kDrivingMotorFreeSpeedRps = Motor.kVortexFreeSpeedRpm / 60;
     public static final double kWheelDiameterMeters = Units.inchesToMeters(2.90);
     // Thrifty tread 2.95in
     // Orange Tread 2.70
@@ -148,38 +149,23 @@ public final class Constants {
   }
 
   // Motor Constants
-  public static final class MotorConstants {
+  public static final class Motor {
     public static final double kVortexFreeSpeedRpm = 6784;
     public static final double kNeoFreeSpeedRpm = 5676;
   }
 
-  public static final class FieldConstants {
+  public static final class Field {
     public static final double fieldLength = Units.inchesToMeters(648);
     public static final double fieldWidth = Units.inchesToMeters(324);
+  }
 
-    public static final Translation2d speakerAimPoint = new Translation2d(0.240581, 5.547755);
+  public static final class PhotonVision {
+    public static final String kCam1Name = "AprilTagCamera1";
+    public static final Rotation3d cameraRotation = new Rotation3d(0, -14, 0);
+    public static final Transform3d kRobotToCamera1 =
+        new Transform3d(Units.inchesToMeters(-15.5 + 2.25), Units.inchesToMeters(12.0 - 3.75),
+            Units.inchesToMeters(15.5), cameraRotation);
 
-    public static final Pose2d subwooferFront =
-        new Pose2d(new Translation2d(1.45, 5.55), Rotation2d.fromDegrees(+180));
-    public static final Pose2d subwooferAmp =
-        new Pose2d(new Translation2d(0.71, 6.72), Rotation2d.fromDegrees(-120));
-    public static final Pose2d subwooferSource =
-        new Pose2d(new Translation2d(0.71, 4.57), Rotation2d.fromDegrees(+120));
-
-    public static final Pose2d amp =
-        new Pose2d(new Translation2d(1.83, 7.61), Rotation2d.fromDegrees(-90));
-    public static final Pose2d podium =
-        new Pose2d(new Translation2d(2.76, 4.44), Rotation2d.fromDegrees(+157.47));
-
-    public static final Pose2d pathfindSpeaker =
-        new Pose2d(new Translation2d(3.45, 5.55), Rotation2d.fromDegrees(+180));
-    public static final Pose2d pathfindSource =
-        new Pose2d(new Translation2d(13.41, 1.54), Rotation2d.fromDegrees(+180));
-
-    public static final double podiumToSpeakerDist =
-        speakerAimPoint.getDistance(podium.getTranslation());
-    public static final double subwooferToSpeakerDist =
-        speakerAimPoint.getDistance(subwooferFront.getTranslation());
   }
 
 }
