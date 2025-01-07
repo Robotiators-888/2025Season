@@ -5,9 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.*;
+
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.math.MathUtil;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,13 +22,35 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+  public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+  private final CommandXboxController Driver1 =
       new CommandXboxController(OperatorConstants.kDriver1ControllerPort);
+
+  private final CommandXboxController Driver2 =
+      new CommandXboxController(OperatorConstants.kDriver2ControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
+        -MathUtil.applyDeadband(Driver1.getRawAxis(1), OperatorConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(Driver1.getRawAxis(0), OperatorConstants.kDriveDeadband),
+        -MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband), true,
+        true), drivetrain));
+
+    Driver1.povDown()
+        .whileTrue(new RunCommand(() -> drivetrain.drive(
+            -MathUtil.applyDeadband(
+                Math.copySign(Math.pow(Driver1.getRawAxis(1), 2), Driver1.getRawAxis(1)),
+                OperatorConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(
+                Math.copySign(Math.pow(Driver1.getRawAxis(0), 2), Driver1.getRawAxis(0)),
+                OperatorConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband), false,
+            true), drivetrain));
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -31,11 +58,11 @@ public class RobotContainer {
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * predicate, or via the named factories in
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
 

@@ -11,7 +11,8 @@ public class FieldRelativeAccel {
         this.alpha = alpha;
     }
 
-    public FieldRelativeAccel(FieldRelativeSpeed newSpeed, FieldRelativeSpeed oldSpeed, double time) {
+    public FieldRelativeAccel(FieldRelativeSpeed newSpeed, FieldRelativeSpeed oldSpeed,
+            double time) {
         this.ax = (newSpeed.vx - oldSpeed.vx) / time;
         this.ay = (newSpeed.vy - oldSpeed.vy) / time;
         this.alpha = (newSpeed.omega - oldSpeed.omega) / time;
