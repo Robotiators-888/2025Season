@@ -40,9 +40,9 @@ public class MAXSwerveModule {
     m_turningClosedLoopController = m_turningSparkMax.getClosedLoopController();
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
-    m_drivingSparkFlex.configure(Configs.MAXSwerveModule.drivingConfig,
+    m_drivingSparkFlex.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_turningSparkMax.configure(Configs.MAXSwerveModule.turningConfig,
+    m_turningSparkMax.configure(SwerveModuleConfigs.MAXSwerveModule.turningConfig,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
