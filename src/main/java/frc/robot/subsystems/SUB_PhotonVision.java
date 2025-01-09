@@ -60,18 +60,14 @@ public class SUB_PhotonVision extends SubsystemBase {
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
     List<PhotonPipelineResult> results = cam1.getAllUnreadResults(); // Gets queue of results
                                                                      // (earliest first??)
-    if (!results.isEmpty()) {
-      Optional<EstimatedRobotPose> finalPose = Optional.empty();
-      for (PhotonPipelineResult result : results) {
-
-        if (result.hasTargets()) {
-          bestTarget = result.getBestTarget();
-          finalPose = poseEstimator.update(result);
-        }
+    Optional<EstimatedRobotPose> finalPose = Optional.empty();
+    for (PhotonPipelineResult result : results) {
+      if (result.hasTargets()) {
+        bestTarget = result.getBestTarget();
+        finalPose = poseEstimator.update(result);
       }
-      return finalPose;
     }
-    return Optional.empty();
+    return finalPose;
   }
 
   public PhotonTrackedTarget getBestTarget() {

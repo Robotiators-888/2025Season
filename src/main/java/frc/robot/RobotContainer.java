@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.Field;
 import frc.robot.Constants.Operator;
+import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.subsystems.*;
 
 
@@ -78,8 +79,8 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
-
-
+    Driver1.a().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
+    Driver1.b().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
   }
 
 
