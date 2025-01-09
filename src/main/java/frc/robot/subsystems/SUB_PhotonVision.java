@@ -5,15 +5,13 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.EstimatedRobotPose;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,23 +48,27 @@ public class SUB_PhotonVision extends SubsystemBase {
     }
 
     poseEstimator = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-        PhotonVision.kRobotToCamera1);
+        cam1, PhotonVision.kRobotToCamera1);
     poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
 
   // Called periodically by robot container
+  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+  //   List<PhotonPipelineResult> results = cam1.getAllUnreadResults(); // Gets queue of results
+  //                                                                    // (earliest first??)
+  //   Optional<EstimatedRobotPose> finalPose = Optional.empty();
+  //   for (PhotonPipelineResult result : results) {
+  //     if (result.hasTargets()) {
+  //       bestTarget = result.getBestTarget();
+  //       finalPose = poseEstimator.update(result);
+  //     }
+  //   }
+  //   return finalPose;
+  // }
+
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    List<PhotonPipelineResult> results = cam1.getAllUnreadResults(); // Gets queue of results
-                                                                     // (earliest first??)
-    Optional<EstimatedRobotPose> finalPose = Optional.empty();
-    for (PhotonPipelineResult result : results) {
-      if (result.hasTargets()) {
-        bestTarget = result.getBestTarget();
-        finalPose = poseEstimator.update(result);
-      }
-    }
-    return finalPose;
+    return poseEstimator.update();
   }
 
   public PhotonTrackedTarget getBestTarget() {
@@ -91,6 +93,10 @@ public class SUB_PhotonVision extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    var result = cam1.getLatestResult();
+    
+    if (result.hasTargets()) {
+      bestTarget = result.getBestTarget();
+    }
   }
 }

@@ -160,7 +160,7 @@ public final class Constants {
   }
 
   public static final class PhotonVision {
-    public static final String kCam1Name = "AprilTagCamera1";
+    public static final String kCam1Name = "AprilTagCam";
     public static final Rotation3d cameraRotation = new Rotation3d(0, -14, 0);
     public static final Transform3d kRobotToCamera1 =
         new Transform3d(Units.inchesToMeters(-15.5 + 2.25), Units.inchesToMeters(12.0 - 3.75),
