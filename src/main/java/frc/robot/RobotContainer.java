@@ -96,7 +96,7 @@ public class RobotContainer {
 
 
   public void robotPeriodic() {
-
+    photonPoseUpdate();
   }
 
   public void autonomousPeriodic() {

@@ -4,9 +4,14 @@
 
 package frc.robot.commands;
 
+import java.util.List;
+import java.util.Arrays;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,11 +27,12 @@ public class CMD_ReefAlign extends Command {
   Integer targetId;
 
   boolean isLeftAlign;
+  List<Integer> targetTagSet;
 
   CommandXboxController driverController;
 
-  private final PIDController xController = new PIDController(0.025, 0, 0); // 3, 0, 0
-  private final PIDController yController = new PIDController(0.025, 0, 0);
+  private final PIDController xController = new PIDController(0.1, 0, 0); // 3, 0, 0
+  private final PIDController yController = new PIDController(0.1, 0, 0);
   private final PIDController robotAngleController = new PIDController(0.05, 0.01, 0);
 
   /** Creates a new CMD_AdjustPivotOnDist. */
@@ -43,14 +49,11 @@ public class CMD_ReefAlign extends Command {
   public void initialize() {
     var alliance = DriverStation.getAlliance();
 
-    int[] targetTagSet;
-
     if (alliance.isPresent()) {
       if (alliance.get() == DriverStation.Alliance.Red) {
-        targetTagSet = new int[] {6, 7, 8, 9, 10, 11};
-
+        targetTagSet =  Arrays.asList(new Integer[]{7, 8, 9, 10, 11, 6});
       } else {
-        targetTagSet = new int[] {17, 18, 19, 20, 21, 22};
+        targetTagSet =  Arrays.asList(new Integer[]{21, 20, 19, 18, 17, 22});
       }
     } else {
       SmartDashboard.putBoolean("Alliance Error", true);
@@ -59,13 +62,14 @@ public class CMD_ReefAlign extends Command {
     }
 
     double minDistance = Double.MAX_VALUE;
-    for (int tag : targetTagSet) {
+    for (int tag : new int[]{6}) {
       Pose2d pose = photonVision.at_field.getTagPose(tag).get().toPose2d();
       Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
       double distance = Math.sqrt(Math.pow(translate.getX(), 2) + Math.pow(translate.getY(), 2));
 
       if (distance <= minDistance) {
         tagPose = pose;
+        targetId = tag;
       }
     }
 
@@ -75,37 +79,51 @@ public class CMD_ReefAlign extends Command {
   @Override
   public void execute() {
     Pose2d currentPose = drivetrain.getPose();
-    Translation2d tagRelativeTranslation = currentPose.minus(tagPose).getTranslation(); // Gets the
-                                                                                        // "robot
-                                                                                        // pose"
-                                                                                        // relative
-                                                                                        // to the
-                                                                                        // tag
-    double xSpeed = xController.calculate(tagRelativeTranslation.getX(), 0.5);
-    double ySpeed = yController.calculate(tagRelativeTranslation.getY(), 0.5);
+
+    double angle = Units.degreesToRadians(60*targetTagSet.indexOf(targetId));
+
+    double offSet = 90;
+    if (!isLeftAlign) {
+      offSet *= -1;
+    }
+    offSet = Units.degreesToRadians(offSet);
+
+    
+
+    double xMagnitude = 0.5;
+    double yMagnitude = 0.5;
+
+    double x = xMagnitude*Math.cos(angle) + yMagnitude*Math.cos(angle+offSet);
+    double y = xMagnitude*Math.sin(angle) + yMagnitude*Math.sin(angle+offSet);
+
+
+  
+ 
+    SmartDashboard.putNumber("X CURRENT", drivetrain.getPose().getX());
+    SmartDashboard.putNumber("Y CURRENT", drivetrain.getPose().getY());
+
+    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, Rotation2d.fromDegrees(0)));
+
+    double xSpeed = xController.calculate(drivetrain.getPose().getX(), tagPose.getX() + x);
+    double ySpeed = yController.calculate(drivetrain.getPose().getY(), tagPose.getY() + y);
     double omegaSpeed = robotAngleController.calculate(currentPose.getRotation().getRadians(),
         tagPose.getRotation().getRadians());
 
-
-    if (isLeftAlign){
-    // + X is forward, + Y is to the left, + Theta is counterclockwise
-    // Try 0, -ySpeed, 0 first.
-      drivetrain.drive(xSpeed, -ySpeed, omegaSpeed, false, true);
-    } else {
-      drivetrain.drive(xSpeed, ySpeed, omegaSpeed, false, true);
-    }
+    SmartDashboard.putNumber("X INPUT", tagPose.getX() + x - drivetrain.getPose().getX());
+    SmartDashboard.putNumber("Y INPUT", tagPose.getY() + y - drivetrain.getPose().getY());
+    drivetrain.drive(xSpeed, ySpeed, 0, true, true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     SmartDashboard.putBoolean ("AlignCommandComplete!", xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint());
-    return xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint();
+    return xController.atSetpoint() && yController.atSetpoint();
   }
 }

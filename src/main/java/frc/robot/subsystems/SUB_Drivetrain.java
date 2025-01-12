@@ -21,6 +21,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +35,16 @@ import frc.robot.utils.*;
 // import org.littletonrobotics.junction.Logger;
 
 public class SUB_Drivetrain extends SubsystemBase {
+
+  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+  .getStructTopic("AdvantageScopeOdometry", Pose2d.struct).publish();
+
+  public StructPublisher<Pose2d> publisher1 = NetworkTableInstance.getDefault()
+  .getStructTopic("debugXPoint", Pose2d.struct).publish(); 
+
+  StructPublisher<Pose2d> publisher2 = NetworkTableInstance.getDefault()
+  .getStructTopic("debugYPoint", Pose2d.struct).publish(); 
+
   public final Field2d m_field = new Field2d();
   private static SUB_Drivetrain INSTANCE = null;
   /** Creates a new Drivetrain. */
@@ -129,10 +141,12 @@ public class SUB_Drivetrain extends SubsystemBase {
     m_fieldRelAccel = new FieldRelativeAccel(m_fieldRelVel, m_lastFieldRelVel, 0.02);
     m_lastFieldRelVel = m_fieldRelVel;
 
+    publisher.set(m_poseEstimator.getEstimatedPosition());
     SmartDashboard.putNumberArray("Drive/PoseEstimator",
         new double[] {m_poseEstimator.getEstimatedPosition().getX(),
             m_poseEstimator.getEstimatedPosition().getY(),
             m_poseEstimator.getEstimatedPosition().getRotation().getDegrees()});
+
     SmartDashboard.putData("Drive/Field", m_field);
     SmartDashboard.putNumberArray("Odometry",
         new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
