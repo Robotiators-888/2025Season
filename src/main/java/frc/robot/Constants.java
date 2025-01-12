@@ -101,14 +101,14 @@ public final class Constants {
   }
 
   public static final class Drivetrain {
-    public static final int kFRONT_LEFT_DRIVE_MOTOR_CANID = 22; // 22
-    public static final int kFRONT_LEFT_STEER_MOTOR_CANID = 23; // 23
-    public static final int kFRONT_RIGHT_DRIVE_MOTOR_CANID = 26; // 26
-    public static final int kFRONT_RIGHT_STEER_MOTOR_CANID = 27; // 27
-    public static final int kBACK_LEFT_DRIVE_MOTOR_CANID = 20; // 20
-    public static final int kBACK_LEFT_STEER_MOTOR_CANID = 21; // 21
-    public static final int kBACK_RIGHT_DRIVE_MOTOR_CANID = 24; // 24
-    public static final int kBACK_RIGHT_STEER_MOTOR_CANID = 25; // 25
+    public static final int kFRONT_LEFT_DRIVE_MOTOR_CANID = 24;
+    public static final int kFRONT_LEFT_STEER_MOTOR_CANID = 25;
+    public static final int kFRONT_RIGHT_DRIVE_MOTOR_CANID = 20;
+    public static final int kFRONT_RIGHT_STEER_MOTOR_CANID = 21;
+    public static final int kBACK_LEFT_DRIVE_MOTOR_CANID = 26;
+    public static final int kBACK_LEFT_STEER_MOTOR_CANID = 27;
+    public static final int kBACK_RIGHT_DRIVE_MOTOR_CANID = 22;
+    public static final int kBACK_RIGHT_STEER_MOTOR_CANID = 23;
 
     public static final Rotation2d shooterSide = new Rotation2d(0);
     public static final Rotation2d intakeSide = new Rotation2d(180);
@@ -161,9 +161,9 @@ public final class Constants {
 
   public static final class PhotonVision {
     public static final String kCam1Name = "AprilTagCam";
-    public static final Rotation3d cameraRotation = new Rotation3d(0, Units.degreesToRadians(17), Units.degreesToRadians(180));
+    public static final Rotation3d cameraRotation = new Rotation3d(0, -14, 0);
     public static final Transform3d kRobotToCamera1 =
-        new Transform3d(-Units.inchesToMeters(-15.5 + 2.25), -Units.inchesToMeters(12.0 - 3.75),
+        new Transform3d(Units.inchesToMeters(-15.5 + 2.25), Units.inchesToMeters(12.0 - 3.75),
             Units.inchesToMeters(15.5), cameraRotation);
 
   }
