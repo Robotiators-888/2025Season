@@ -15,11 +15,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
-public class CMD_ReefAlign extends Command {
+public class CMD_ReefAlign extends RunCommand {
   SUB_PhotonVision photonVision;
   SUB_Drivetrain drivetrain;
 
@@ -35,9 +36,10 @@ public class CMD_ReefAlign extends Command {
   private final PIDController yController = new PIDController(0.1, 0, 0);
   private final PIDController robotAngleController = new PIDController(0.05, 0.01, 0);
 
-  /** Creates a new CMD_AdjustPivotOnDist. */
+  /** Creates a new CMD_ReefAlign. */
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
     // Use addRequirements() here to declare subsystem dependencies.
+    super(() -> {}, drivetrain);
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
     this.isLeftAlign = isLeftAlign;
@@ -90,7 +92,7 @@ public class CMD_ReefAlign extends Command {
 
     
 
-    double xMagnitude = 0.5;
+    double xMagnitude = 1.5;
     double yMagnitude = 0.5;
 
     double x = xMagnitude*Math.cos(angle) + yMagnitude*Math.cos(angle+offSet);
@@ -107,8 +109,10 @@ public class CMD_ReefAlign extends Command {
     double xSpeed = xController.calculate(drivetrain.getPose().getX(), tagPose.getX() + x);
     double ySpeed = yController.calculate(drivetrain.getPose().getY(), tagPose.getY() + y);
     double omegaSpeed = robotAngleController.calculate(currentPose.getRotation().getRadians(),
-        tagPose.getRotation().getRadians());
-
+       tagPose.getRotation().getRadians());
+    if (isFinished()){
+      end(isFinished());
+    }
     SmartDashboard.putNumber("X INPUT", tagPose.getX() + x - drivetrain.getPose().getX());
     SmartDashboard.putNumber("Y INPUT", tagPose.getY() + y - drivetrain.getPose().getY());
     drivetrain.drive(xSpeed, ySpeed, 0, true, true);
