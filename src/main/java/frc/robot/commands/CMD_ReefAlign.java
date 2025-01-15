@@ -113,7 +113,7 @@ public class CMD_ReefAlign extends RunCommand {
     
     SmartDashboard.putNumber("THETA INPUT", MathUtil.angleModulus(currentPose.getRotation().getRadians()));
     SmartDashboard.putNumber("THETA TARGET",MathUtil.angleModulus(tagPose.getRotation().getRadians()));
-    drivetrain.drive(0, 0, -omegaSpeed, true, true);
+    drivetrain.drive(xSpeed, ySpeed, -omegaSpeed, true, true);
   }
 
   // Called once the command ends or is interrupted.
