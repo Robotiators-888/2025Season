@@ -7,14 +7,13 @@ package frc.robot.commands;
 import java.util.List;
 import java.util.Arrays;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.SUB_Drivetrain;
@@ -34,8 +33,8 @@ public class CMD_ReefAlign extends RunCommand {
 
   private final PIDController xController = new PIDController(0.1, 0, 0); // 3, 0, 0
   private final PIDController yController = new PIDController(0.1, 0, 0);
-  private final PIDController robotAngleController = new PIDController(0.1, 0.01, 0);
-
+  private final PIDController robotAngleController = new PIDController(0.57, 0, 0);
+  
   /** Creates a new CMD_ReefAlign. */
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -43,6 +42,7 @@ public class CMD_ReefAlign extends RunCommand {
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
     this.isLeftAlign = isLeftAlign;
+    robotAngleController.enableContinuousInput(-Math.PI, Math.PI);
     addRequirements(drivetrain);
   }
 
@@ -74,7 +74,7 @@ public class CMD_ReefAlign extends RunCommand {
         targetId = tag;
       }
     }
-
+    robotAngleController.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -104,18 +104,15 @@ public class CMD_ReefAlign extends RunCommand {
     SmartDashboard.putNumber("X CURRENT", drivetrain.getPose().getX());
     SmartDashboard.putNumber("Y CURRENT", drivetrain.getPose().getY());
 
-    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, Rotation2d.fromDegrees(0)));
+    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, tagPose.getRotation()));
 
     double xSpeed = xController.calculate(drivetrain.getPose().getX(), tagPose.getX() + x);
     double ySpeed = yController.calculate(drivetrain.getPose().getY(), tagPose.getY() + y);
-    double omegaSpeed = robotAngleController.calculate(currentPose.getRotation().getRadians(),
-       tagPose.getRotation().getRadians());
-    if (isFinished()){
-      end(isFinished());
-    }
-    SmartDashboard.putNumber("X INPUT", tagPose.getX() + x - drivetrain.getPose().getX());
-    SmartDashboard.putNumber("Y INPUT", tagPose.getY() + y - drivetrain.getPose().getY());
-    drivetrain.drive(0, 0, omegaSpeed, true, true);
+    double omegaSpeed = robotAngleController.calculate(MathUtil.angleModulus(currentPose.getRotation().getRadians()), MathUtil.angleModulus(tagPose.getRotation().getRadians()));
+    
+    SmartDashboard.putNumber("THETA INPUT", MathUtil.angleModulus(currentPose.getRotation().getRadians()));
+    SmartDashboard.putNumber("THETA TARGET",MathUtil.angleModulus(tagPose.getRotation().getRadians()));
+    drivetrain.drive(0, 0, -omegaSpeed, true, true);
   }
 
   // Called once the command ends or is interrupted.
@@ -128,6 +125,6 @@ public class CMD_ReefAlign extends RunCommand {
   @Override
   public boolean isFinished() {
     SmartDashboard.putBoolean ("AlignCommandComplete!", xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint());
-    return xController.atSetpoint() && yController.atSetpoint();
+    return xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint();
   }
 }
