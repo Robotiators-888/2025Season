@@ -33,7 +33,7 @@ public class CMD_ReefAlign extends RunCommand {
 
   private final PIDController xController = new PIDController(0.1, 0, 0); // 3, 0, 0
   private final PIDController yController = new PIDController(0.1, 0, 0);
-  private final PIDController robotAngleController = new PIDController(0.57, 0, 0);
+  private final PIDController robotAngleController = new PIDController(0.7, 0, 0);
   
   /** Creates a new CMD_ReefAlign. */
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
@@ -43,6 +43,7 @@ public class CMD_ReefAlign extends RunCommand {
     this.photonVision = photonVision;
     this.isLeftAlign = isLeftAlign;
     robotAngleController.enableContinuousInput(-Math.PI, Math.PI);
+    robotAngleController.setTolerance(Units.degreesToRadians(1));
     addRequirements(drivetrain);
   }
 
@@ -125,6 +126,6 @@ public class CMD_ReefAlign extends RunCommand {
   @Override
   public boolean isFinished() {
     SmartDashboard.putBoolean ("AlignCommandComplete!", xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint());
-    return xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint();
+    return xController.atSetpoint() && yController.atSetpoint();
   }
 }
