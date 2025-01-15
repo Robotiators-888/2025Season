@@ -34,7 +34,7 @@ public class CMD_ReefAlign extends RunCommand {
 
   private final PIDController xController = new PIDController(0.1, 0, 0); // 3, 0, 0
   private final PIDController yController = new PIDController(0.1, 0, 0);
-  private final PIDController robotAngleController = new PIDController(0.05, 0.01, 0);
+  private final PIDController robotAngleController = new PIDController(0.1, 0.01, 0);
 
   /** Creates a new CMD_ReefAlign. */
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
@@ -115,7 +115,7 @@ public class CMD_ReefAlign extends RunCommand {
     }
     SmartDashboard.putNumber("X INPUT", tagPose.getX() + x - drivetrain.getPose().getX());
     SmartDashboard.putNumber("Y INPUT", tagPose.getY() + y - drivetrain.getPose().getY());
-    drivetrain.drive(xSpeed, ySpeed, 0, true, true);
+    drivetrain.drive(0, 0, omegaSpeed, true, true);
   }
 
   // Called once the command ends or is interrupted.
