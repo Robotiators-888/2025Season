@@ -4,25 +4,32 @@
 
 package frc.robot;
 
-import frc.robot.Constants.Field;
-import frc.robot.Constants.Operator;
-import frc.robot.commands.CMD_ReefAlign;
-import frc.robot.subsystems.*;
-
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.photonvision.EstimatedRobotPose;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Field;
+import frc.robot.Constants.Operator;
+import frc.robot.commands.CMD_ReefAlign;
+import frc.robot.subsystems.SUB_Drivetrain;
+import frc.robot.subsystems.SUB_PhotonVision;
+import frc.robot.utils.AllianceFlipUtil;
+import frc.robot.utils.AutoChooser;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -51,7 +58,6 @@ public class RobotContainer {
             -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
             -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
-
     Driver1.povDown()
         .whileTrue(new RunCommand(
             () -> drivetrain.drive(
@@ -64,9 +70,10 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), false,
                 true),
             drivetrain));
-
+    
     // Configure the trigger bindings
     configureBindings();
+    
   }
 
   /**
@@ -90,8 +97,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    return AutoChooser.autoChooser.getSelected();
   }
 
 
