@@ -31,8 +31,8 @@ public class CMD_ReefAlign extends RunCommand {
 
   CommandXboxController driverController;
 
-  private final PIDController xController = new PIDController(0.1, 0, 0);
-  private final PIDController yController = new PIDController(0.1, 0, 0);
+  private final PIDController xController = new PIDController(0.1, 0.001, 0.01);
+  private final PIDController yController = new PIDController(0.1, 0.001, 0.01);
   private final PIDController robotAngleController = new PIDController(0.7, 0, 0);
   
   /** Creates a new CMD_ReefAlign. */
