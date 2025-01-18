@@ -1,6 +1,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -47,7 +48,13 @@ config.closedLoop
     .pid(1.0, 0.0, 0.0);
 
     SetpointRPM = 1000;
+  }
+  public double getFlywheelRPM() {
+    return shooterRight.getEncoder().getVelocity();
+  }
 
+  public void shootFlywheelOnRPM(double rpm) {
+    PIDController.setReference(rpm, ControlType.kVelocity);
   }
 
   public void setMotorSpeed(double speed) {
