@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+//import frc.robot.Constants.MotorConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -147,6 +148,19 @@ public final class Constants {
     public static final double kGyroRotation = 0;
   }
 
+  public static final class VortexMotorConstants {
+    public static final double kFreeSpeedRpm = 6784;
+  }
+
+  public static final class Intake {
+    public static final int kINTAKE_MOTOR_CANID = 34;
+
+    public static final double kIndexSpeed = 0.2;
+    public static final double kOutakeSpeed = -0.4;
+    public static final double kOutakeRPM = VortexMotorConstants.kFreeSpeedRpm;
+    public static final double kIntakingSpeed = 0.3;
+  }
+
   // Motor Constants
   public static final class MotorConstants {
     public static final double kVortexFreeSpeedRpm = 6784;
@@ -181,5 +195,7 @@ public final class Constants {
     public static final double subwooferToSpeakerDist =
         speakerAimPoint.getDistance(subwooferFront.getTranslation());
   }
+
+
 
 }

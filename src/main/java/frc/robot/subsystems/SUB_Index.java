@@ -6,7 +6,10 @@ package frc.robot.subsystems;
 
 
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,6 +21,7 @@ public class SUB_Index extends SubsystemBase {
   private static SUB_Index INSTANCE = null;
   SparkMax indexLeft;
   SparkMax indexRight;
+  SparkMaxConfig config = new SparkMaxConfig();
   DigitalInput dio9 = new DigitalInput(9);
   Timer currentTimer = new Timer();
 
@@ -50,23 +54,15 @@ public class SUB_Index extends SubsystemBase {
     this.indexLeft = new SparkMax(32, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless); 
     this.indexRight = new SparkMax(33, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
-    indexLeft.restoreFactoryDefaults();
-    indexRight.restoreFactoryDefaults();
-    //indexLeft.setInverted(true);
-    //indexRight.setInverted(false);
+    config.smartCurrentLimit(40);
+    config.voltageCompensation(12);
+    config.idleMode(IdleMode.kBrake);
+    indexLeft.configure(config,
+        ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    config.follow(indexLeft);
+    indexRight.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
+        ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    indexLeft.setSmartCurrentLimit(40);
-    indexRight.setSmartCurrentLimit(40);
-    indexLeft.enableVoltageCompensation(12);
-    indexRight.enableVoltageCompensation(12);
-    indexRight.follow(indexLeft, true);
-    indexLeft.setIdleMode(IdleMode.kBrake);
-    indexRight.setIdleMode(IdleMode.kBrake);
-    Timer.delay(.1);
-
-    indexLeft.burnFlash();
-    indexRight.burnFlash();
-    // Timer.delay(0.2);
   }
 
   @Override

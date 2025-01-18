@@ -1,10 +1,13 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -12,14 +15,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class SUB_Shooter extends SubsystemBase {
   public static SUB_Shooter INSTANCE = null;
 
-  public InterpolatingDoubleTreeMap distToTimeMap = new InterpolatingDoubleTreeMap();
-  private SparkPIDController PIDController; 
+  public InterpolatingDoubleTreeMap distToTimeMap = new InterpolatingDoubleTreeMap(); 
   public static int MANUAL_RPM = 1000;
   public static int AUTO_RPM = 1000;
-
+  @SuppressWarnings("unused")
+  private SparkClosedLoopController PIDController;
   public static int SetpointRPM;
-  SparkMax shooterLeft;
-  SparkMax shooterRight;
+  SparkMax shooterLeft = new SparkMax(30, MotorType.kBrushless);
+  SparkMax shooterRight = new SparkMax(31, MotorType.kBrushless);
 
   public static SUB_Shooter getInstance() {
     if (INSTANCE == null) {
@@ -28,23 +31,20 @@ public class SUB_Shooter extends SubsystemBase {
 
     return INSTANCE;
   }
-
   private SUB_Shooter() {
-    shooterLeft = new SparkMax(30, MotorType.kBrushless);
-    shooterRight = new SparkMax(31, MotorType.kBrushless);
-    PIDController = shooterLeft.getPIDController();
-    shooterLeft.restoreFactoryDefaults();
-    shooterRight.restoreFactoryDefaults();
-    //shooterRight.setInverted(false);
-    shooterRight.follow(shooterLeft, false);
-    PIDController.setOutputRange(-1, 1);
-    shooterLeft.getEncoder().setVelocityConversionFactor(1);
-    shooterLeft.enableVoltageCompensation(12);
-    setPIDF(PIDController, 0, 0, 0, 1.0 / 5800.0 * (3000.0 / 2600.0));
-    Timer.delay(.1);
 
-    shooterLeft.burnFlash();
-    shooterRight.burnFlash();
+    PIDController = shooterLeft.getClosedLoopController();
+    PIDController = shooterRight.getClosedLoopController();
+  
+    config
+    .inverted(true)
+    .idleMode(IdleMode.kBrake);
+config.encoder
+    .positionConversionFactor(1000)
+    .velocityConversionFactor(1000);
+config.closedLoop
+    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    .pid(1.0, 0.0, 0.0);
 
     SetpointRPM = 1000;
 
@@ -58,29 +58,34 @@ public class SUB_Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter/Shooter RPM", shooterLeft.getEncoder().getVelocity());
   }
 
-  public void setPIDF(SparkPIDController pid, double P, double I, double D, double F) {
-    pid.setP(P);
-    pid.setI(I);
-    pid.setD(D);
-    pid.setFF(F);
-  }
+SparkMaxConfig config = new SparkMaxConfig();
+    
 
-  public double getFlywheelRPM() {
-    SmartDashboard.putNumber("FF", PIDController.getFF());
-    ;
-    return shooterRight.getEncoder().getVelocity();
-  }
+// max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-  public void shootFlywheelOnRPM(double rpm) {
-    PIDController.setReference(rpm, ControlType.kVelocity);
-  }
+//   public void setPIDF(SparkClosedLoopController pid, double P, double I, double D, double F) {
+//     pid.setP(P);
+//     pid.setI(I);
+//     pid.setD(D);
+//     pid.setFF(F);
+//   }
 
-  public void setRPM(int rpm) {
-    SetpointRPM = rpm;
-  }
+//   public double getFlywheelRPM() {
+//     SmartDashboard.putNumber("FF", PIDController.getFF());
+//     ;
+//     return shooterRight.getEncoder().getVelocity();
+//   }
 
-  public void setAutoRPM(int rpm) {
-    AUTO_RPM = rpm;
-  }
+//   public void shootFlywheelOnRPM(double rpm) {
+//     PIDController.setReference(rpm, ControlType.kVelocity);
+//   }
+
+//   public void setRPM(int rpm) {
+//     SetpointRPM = rpm;
+//   }
+
+//   public void setAutoRPM(int rpm) {
+//     AUTO_RPM = rpm;
+  //}
 
 }

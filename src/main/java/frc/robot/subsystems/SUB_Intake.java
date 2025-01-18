@@ -2,12 +2,15 @@
 package frc.robot.subsystems;
 
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 
 public class SUB_Intake extends SubsystemBase {
@@ -16,28 +19,16 @@ public class SUB_Intake extends SubsystemBase {
   SparkMax intakeMotor;
   Boolean intakeBool;
   boolean hasNote;
+  SparkMaxConfig config = new SparkMaxConfig();
 
   /** Creates a new SUB_Intake. */
   private SUB_Intake() {
 
-    intakeMotor = new SparkMax(Intake.kINTAKE_MOTOR_CANID, MotorType.kBrushless);
-    intakeMotor.restoreFactoryDefaults();
-    intakeMotor.setIdleMode(IdleMode.kCoast);
-    //intakeMotor.setInverted(true);
-    Timer.delay(.1);
-
-    intakeMotor.burnFlash();
-    intakeBool = false;
-
-    // intakeMotor.setSmartCurrentLimit(60);
-    intakeMotor.setSmartCurrentLimit(60);
-    // intakeMotor.getPIDController().setP(0.0);
-    // intakeMotor.getPIDController().setI(0.0);
-    // intakeMotor.getPIDController().setD(0.0);
-    // intakeMotor.getPIDController().setFF(1.0/5800.0);
-    // Timer.delay(0.2);
-
-    intakeMotor.burnFlash();
+    intakeMotor = new SparkMax(Constants.Intake.kINTAKE_MOTOR_CANID, MotorType.kBrushless);
+    intakeMotor.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
+        ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        config.voltageCompensation(60);
+        config.idleMode(IdleMode.kCoast); 
   }
 
   public static SUB_Intake getInstance() {
