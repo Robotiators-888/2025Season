@@ -36,7 +36,6 @@ public class SUB_Elevator extends SubsystemBase {
     config.inverted(false);
     config.disableFollowerMode();
     primary.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
   }
 
   public static void RunElevatorManual(double manual) {
