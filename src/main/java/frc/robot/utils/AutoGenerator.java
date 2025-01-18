@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 public class AutoGenerator extends SubsystemBase {
     public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
+    private static AutoGenerator INSTANCE = null;
     public AutoGenerator() {
         RobotConfig config;
         try {
@@ -38,10 +39,17 @@ public class AutoGenerator extends SubsystemBase {
               }
               return false;
             },
-            this // Reference to this subsystem to set requirements
+            drivetrain // Reference to this subsystem to set requirements
         );
 
         registerAllCommands();
     }
     public void registerAllCommands() {}
+    public static AutoGenerator getInstance() {
+        if (INSTANCE == null) {
+          INSTANCE = new AutoGenerator();
+        }
+    
+        return INSTANCE;
+      }
 }

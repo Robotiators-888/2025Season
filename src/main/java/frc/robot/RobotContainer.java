@@ -9,8 +9,6 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,8 +26,8 @@ import frc.robot.Constants.Operator;
 import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
-import frc.robot.utils.AllianceFlipUtil;
-import frc.robot.utils.AutoChooser;
+import frc.robot.utils.AutoGenerator;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,6 +39,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
   public static SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
+  public static AutoGenerator autoGenerator = AutoGenerator.getInstance();
+  private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController Driver1 =
@@ -73,6 +73,9 @@ public class RobotContainer {
     
     // Configure the trigger bindings
     configureBindings();
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     
   }
 
@@ -97,7 +100,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return AutoChooser.autoChooser.getSelected();
+    return autoChooser.getSelected();
   }
 
 
