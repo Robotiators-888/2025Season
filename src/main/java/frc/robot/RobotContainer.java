@@ -121,8 +121,7 @@ public class RobotContainer {
                                 new InstantCommand(() -> shooter.setMotorSpeed(0))));
      // Intake button
      Driver2.a().whileTrue(
-      new ParallelCommandGroup(
-             // new InstantCommand(() -> pivot.goToAngle(75)),   // need to add pivot subsystem
+      new ParallelCommandGroup( 
               new InstantCommand(() -> index.starttimer()),
               new RunCommand(() -> index.setMotorSpeed(Constants.Intake.kIndexSpeed), index),
               new RunCommand(() -> intake.setMotorSpeed(Constants.Intake.kIntakingSpeed))).until(
@@ -166,15 +165,6 @@ public class RobotContainer {
    Driver2.leftTrigger()
    .whileTrue(new RunCommand(() -> intake.setMotorSpeed(-Constants.Intake.kOutakeSpeed), intake))
    .onFalse(new InstantCommand(() -> intake.setMotorSpeed(0.0)));
-
-   // Drive Pivot Down Manual
-   //Driver2.povRight().whileTrue(new RunCommand(() -> pivot.runManual(-0.2), pivot));
-
-   // Drive Pivot Up Manual
-   //Driver2.povLeft().whileTrue(new RunCommand(() -> pivot.runManual(0.2), pivot)); 
-
-
-
 
 
   }

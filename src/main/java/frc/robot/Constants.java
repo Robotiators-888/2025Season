@@ -7,12 +7,14 @@ package frc.robot;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-//import frc.robot.Constants.MotorConstants;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -160,6 +162,42 @@ public final class Constants {
     public static final double kOutakeRPM = VortexMotorConstants.kFreeSpeedRpm;
     public static final double kIntakingSpeed = 0.25;
   }
+
+public static final class Pivot {
+    public static final int kPIVOT_ROTATE_MOTOR_CANID = 35;
+    public static final double lbsArm = 45.0;
+    public static final double kPivotManualDeadband = .05;
+    public static final double kArmManualScale = .1;
+    public static final int kCurrentLimit = 40;
+    // Setpoints:
+    public static double khome = 0;
+
+    public static final double kPivotOffset = 241.6031957;
+
+    public static final double kAngularEncoderOffsetInDeg = 0;
+    public static final double kMaxArmAngle = 106;
+    public static final double kMinArmAngle = 49.8;
+    //
+    public static final double PID_kP = 0.11425;
+    public static final int PID_kI = 0;
+    public static final double PID_kD = 0.021;
+    public static final double FF_kA = 0;
+    public static final double FF_kG = 0; // amount of volts to Overcome gravity on the arm
+    public static final double FF_kS = 0.1;
+    public static final double FF_kV = 0.0204;
+
+    public static final TrapezoidProfile.Constraints kArmMotionConstraint = new TrapezoidProfile.Constraints(30, 30);
+    public static final SimpleMotorFeedforward kArmFeedforward = new SimpleMotorFeedforward(FF_kS, FF_kV);
+    public static final double kmaxVelocity = 6.47 * Math.PI;
+    public static final double kmaxAcceleration = 4.27;
+
+    public static final double kHighAngleSP = 105.0;
+    public static final double kSpeakerAngleSP = 86.0;
+    public static final double kSideSP = 80;
+    public static final double kLowMidAngleSP = 75.0;
+    public static final double kLowAngleSP = 55;
+    public static final double kSourceAngle = 88.0;
+ }
 
   // Motor Constants
   public static final class MotorConstants {
