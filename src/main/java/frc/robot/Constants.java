@@ -181,5 +181,17 @@ public final class Constants {
     public static final double subwooferToSpeakerDist =
         speakerAimPoint.getDistance(subwooferFront.getTranslation());
   }
+  public static final class Elevator{
+    public static final double kStartingSetpoint = 0;
+    public static final double kHomingSetpoint = -10;
+    public static final double kHomingEncoderLocation = 0;
+    public static final double kResetHomingThreshold = 1000;
+    public static final double kEncoderNearZero = 10;
+    public static final double kHomingEmergencyCurrent = 20; 
+    public static final boolean kStartingHoming = false;
+    public static final double kP = 1;
+    public static final double kI = 0;
+    public static final double kD = 0;
+  }
 
 }
