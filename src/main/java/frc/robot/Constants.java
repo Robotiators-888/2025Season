@@ -156,9 +156,9 @@ public final class Constants {
     public static final int kINTAKE_MOTOR_CANID = 34;
 
     public static final double kIndexSpeed = 0.2;
-    public static final double kOutakeSpeed = -0.4;
+    public static final double kOutakeSpeed = -0.3;
     public static final double kOutakeRPM = VortexMotorConstants.kFreeSpeedRpm;
-    public static final double kIntakingSpeed = 0.3;
+    public static final double kIntakingSpeed = 0.25;
   }
 
   // Motor Constants

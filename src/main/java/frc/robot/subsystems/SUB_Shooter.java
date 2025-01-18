@@ -59,33 +59,5 @@ config.closedLoop
   }
 
 SparkMaxConfig config = new SparkMaxConfig();
-    
-
-// max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-//   public void setPIDF(SparkClosedLoopController pid, double P, double I, double D, double F) {
-//     pid.setP(P);
-//     pid.setI(I);
-//     pid.setD(D);
-//     pid.setFF(F);
-//   }
-
-//   public double getFlywheelRPM() {
-//     SmartDashboard.putNumber("FF", PIDController.getFF());
-//     ;
-//     return shooterRight.getEncoder().getVelocity();
-//   }
-
-//   public void shootFlywheelOnRPM(double rpm) {
-//     PIDController.setReference(rpm, ControlType.kVelocity);
-//   }
-
-//   public void setRPM(int rpm) {
-//     SetpointRPM = rpm;
-//   }
-
-//   public void setAutoRPM(int rpm) {
-//     AUTO_RPM = rpm;
-  //}
-
+ 
 }
