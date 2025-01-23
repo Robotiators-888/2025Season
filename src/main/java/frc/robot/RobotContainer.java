@@ -49,9 +49,10 @@ public class RobotContainer {
         () -> drivetrain.drive(
             -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
             -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-            -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
+            MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
 
+        
     Driver1.povDown()
         .whileTrue(new RunCommand(
             () -> drivetrain.drive(
