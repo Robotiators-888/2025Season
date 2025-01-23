@@ -31,8 +31,8 @@ public class CMD_ReefAlign extends RunCommand {
 
   CommandXboxController driverController;
 
-  private final PIDController xController = new PIDController(0.1, 0, 0);
-  private final PIDController yController = new PIDController(0.1, 0, 0);
+  private final PIDController xController = new PIDController(0.3, 0.001, 0.01);
+  private final PIDController yController = new PIDController(0.3, 0.001, 0.01);
   private final PIDController robotAngleController = new PIDController(0.7, 0, 0);
   
   /** Creates a new CMD_ReefAlign. */
@@ -113,7 +113,7 @@ public class CMD_ReefAlign extends RunCommand {
     
     SmartDashboard.putNumber("THETA INPUT", MathUtil.angleModulus(currentPose.getRotation().getRadians()));
     SmartDashboard.putNumber("THETA TARGET",MathUtil.angleModulus(tagPose.getRotation().getRadians()));
-    drivetrain.drive(xSpeed, ySpeed, -omegaSpeed, true, true);
+    drivetrain.drive(-xSpeed, -ySpeed, -omegaSpeed, true, true);
   }
 
   // Called once the command ends or is interrupted.
