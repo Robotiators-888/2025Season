@@ -27,7 +27,7 @@ public class AllianceFlipUtil {
     CenterPointFlip, MirrorFlip,
   }
 
-  public static final FieldFlipType defaultFlipType = FieldFlipType.MirrorFlip;
+  public static final FieldFlipType defaultFlipType = FieldFlipType.CenterPointFlip;
 
   /** Flips a translation to the correct side of the field based on the current alliance color. */
   public static Translation2d apply(Translation2d translation) {

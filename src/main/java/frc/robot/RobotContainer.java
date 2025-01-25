@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -31,6 +32,7 @@ import frc.robot.Constants.Operator;
 import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
+import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.AutoGenerator;
 
 
@@ -100,6 +102,7 @@ public class RobotContainer {
   }
 
 
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -107,19 +110,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     try{
-        // Load the path you want to follow using its name in the GUI
-        // Load the path we want to pathfind to and follow
-        PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
-
-        // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
-        PathConstraints constraints = new PathConstraints(
-          0.5,0.5,Math.PI/4,Math.PI/4);
-
-        // Since AutoBuilder is configured, we can use it to build pathfinding commands
-        Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
-                path,
-                constraints);
-        return pathfindingCommand;
+      PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
+      return auto;
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
@@ -128,12 +120,14 @@ public class RobotContainer {
 
 
   public void robotPeriodic() {
-    photonPoseUpdate();
+    //photonPoseUpdate();
   }
 
   public void autonomousPeriodic() {
 
   }
+
+  
 
   public void teleopPeriodic() {
     SmartDashboard.putNumber("Raw X Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband));
