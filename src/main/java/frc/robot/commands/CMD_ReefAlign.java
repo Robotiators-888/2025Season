@@ -31,9 +31,12 @@ public class CMD_ReefAlign extends RunCommand {
 
   CommandXboxController driverController;
 
-  private final PIDController xController = new PIDController(0.3, 0.001, 0.01);
-  private final PIDController yController = new PIDController(0.3, 0.001, 0.01);
-  private final PIDController robotAngleController = new PIDController(0.7, 0, 0);
+  private final PIDController xController = new PIDController(0.1, 0, 0);
+  private final PIDController yController = new PIDController(0.1, 0, 0);
+  private final PIDController robotAngleController = new PIDController(0.5, 0, 0.1);
+  
+  double xMagnitude = Units.inchesToMeters(15+48); //meters
+  double yMagnitude = Units.inchesToMeters(24);
   
   /** Creates a new CMD_ReefAlign. */
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
@@ -50,6 +53,9 @@ public class CMD_ReefAlign extends RunCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    xController.setTolerance(0);
+    yController.setTolerance(0);
+    robotAngleController.setTolerance(0);
     var alliance = DriverStation.getAlliance();
 
     if (alliance.isPresent()) {
@@ -76,6 +82,26 @@ public class CMD_ReefAlign extends RunCommand {
       }
     }
     robotAngleController.reset();
+    xController.reset();
+    yController.reset();
+  
+
+    // double angle = Units.degreesToRadians(60*targetTagSet.indexOf(targetId));
+
+    // double offSet = 90;
+    // if (!isLeftAlign) {
+    //   offSet *= -1;
+    // }
+    // offSet = Units.degreesToRadians(offSet);
+
+
+    // double x = xMagnitude*Math.cos(angle) + yMagnitude*Math.cos(angle+offSet);
+    // double y = xMagnitude*Math.sin(angle) + yMagnitude*Math.sin(angle+offSet);
+    // double xSpeed = xController.calculate(drivetrain.getPose().getX(), tagPose.getX() + x);
+    // double ySpeed = yController.calculate(drivetrain.getPose().getY(), tagPose.getY() + y);
+    
+    // drivetrain.drive(xSpeed, ySpeed,0, true, true);
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -92,9 +118,6 @@ public class CMD_ReefAlign extends RunCommand {
     offSet = Units.degreesToRadians(offSet);
 
     
-
-    double xMagnitude = 1.5;
-    double yMagnitude = 0.5;
 
     double x = xMagnitude*Math.cos(angle) + yMagnitude*Math.cos(angle+offSet);
     double y = xMagnitude*Math.sin(angle) + yMagnitude*Math.sin(angle+offSet);
@@ -113,7 +136,7 @@ public class CMD_ReefAlign extends RunCommand {
     
     SmartDashboard.putNumber("THETA INPUT", MathUtil.angleModulus(currentPose.getRotation().getRadians()));
     SmartDashboard.putNumber("THETA TARGET",MathUtil.angleModulus(tagPose.getRotation().getRadians()));
-    drivetrain.drive(-xSpeed, -ySpeed, -omegaSpeed, true, true);
+    drivetrain.drive(xSpeed, ySpeed, -omegaSpeed, true, false);
   }
 
   // Called once the command ends or is interrupted.

@@ -48,7 +48,7 @@ public class SUB_PhotonVision extends SubsystemBase {
     }
 
     poseEstimator = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-        cam1, PhotonVision.kRobotToCamera1);
+        PhotonVision.kRobotToCamera1);
     poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
@@ -68,7 +68,11 @@ public class SUB_PhotonVision extends SubsystemBase {
   // }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    return poseEstimator.update();
+    var result = cam1.getLatestResult();
+    if (result.hasTargets()) {
+        return poseEstimator.update(result);
+    }
+    return Optional.empty();
   }
 
   public PhotonTrackedTarget getBestTarget() {

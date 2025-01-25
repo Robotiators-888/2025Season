@@ -51,7 +51,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
     drivetrain.setDefaultCommand(new RunCommand(
         () -> drivetrain.drive(
             -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
@@ -115,7 +114,8 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-
+    SmartDashboard.putNumber("Raw X Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband));
+    SmartDashboard.putNumber("Raw Y Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband));
   }
 
   public static void photonPoseUpdate() {

@@ -277,6 +277,13 @@ public class SUB_Drivetrain extends SubsystemBase {
     backRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
+  public void setAngle(double angle) {
+    frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+    frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+    backLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+    backRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+  }
+
   /**
    * Sets the swerve ModuleStates.
    *
