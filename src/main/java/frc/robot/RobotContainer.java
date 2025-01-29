@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
@@ -113,11 +116,14 @@ public class RobotContainer {
     Pathfinding.setPathfinder(new LocalADStar());
 
     try{
-      // PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
-
+      // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+      // Pose2d endState = new Pose2d(2.710,6.848,Rotation2d.fromDegrees(123.063));
+      // Pose2d startState = path.getStartingHolonomicPose().get();
+      // drivetrain.publisher2.set(endState);
+      // drivetrain.publisher1.set(startState);
       // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
       // PathConstraints constraints = new PathConstraints(
-      //         3.0, 4.0,
+      //         0.5, 4.0,
       //         Units.degreesToRadians(540), Units.degreesToRadians(720));
 
       // // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -139,15 +145,11 @@ public class RobotContainer {
       //   );
 
 
-      // PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
-      // return auto;
+      PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
+      return auto;
 
-      PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
-      Pose2d endState = AllianceFlipUtil.apply(new Pose2d(2.710,6.848,Rotation2d.fromDegrees(123.063)));
-      Pose2d startState = AllianceFlipUtil.apply(new Pose2d(3.213,6.093,Rotation2d.fromDegrees(127.720)));
-      drivetrain.publisher2.set(endState);
-      drivetrain.publisher1.set(startState);
-      return AutoBuilder.followPath(path);
+      // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+      // return AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
@@ -166,6 +168,7 @@ public class RobotContainer {
   
 
   public void teleopPeriodic() {
+    
     SmartDashboard.putNumber("Raw X Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband));
     SmartDashboard.putNumber("Raw Y Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband));
   }
