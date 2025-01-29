@@ -42,7 +42,7 @@ public class SUB_Drivetrain extends SubsystemBase {
   public StructPublisher<Pose2d> publisher1 = NetworkTableInstance.getDefault()
   .getStructTopic("debugXPoint", Pose2d.struct).publish(); 
 
-  StructPublisher<Pose2d> publisher2 = NetworkTableInstance.getDefault()
+  public StructPublisher<Pose2d> publisher2 = NetworkTableInstance.getDefault()
   .getStructTopic("debugYPoint", Pose2d.struct).publish(); 
 
   public final Field2d m_field = new Field2d();

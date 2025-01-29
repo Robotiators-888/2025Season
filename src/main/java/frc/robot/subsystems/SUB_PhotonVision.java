@@ -5,11 +5,13 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.EstimatedRobotPose;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -54,26 +56,26 @@ public class SUB_PhotonVision extends SubsystemBase {
 
 
   // Called periodically by robot container
-  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-  //   List<PhotonPipelineResult> results = cam1.getAllUnreadResults(); // Gets queue of results
-  //                                                                    // (earliest first??)
-  //   Optional<EstimatedRobotPose> finalPose = Optional.empty();
-  //   for (PhotonPipelineResult result : results) {
-  //     if (result.hasTargets()) {
-  //       bestTarget = result.getBestTarget();
-  //       finalPose = poseEstimator.update(result);
-  //     }
-  //   }
-  //   return finalPose;
-  // }
-
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    var result = cam1.getLatestResult();
-    if (result.hasTargets()) {
-        return poseEstimator.update(result);
+    List<PhotonPipelineResult> results = cam1.getAllUnreadResults(); // Gets queue of results
+                                                                     // (earliest first??)
+    Optional<EstimatedRobotPose> finalPose = Optional.empty();
+    for (PhotonPipelineResult result : results) {
+      if (result.hasTargets()) {
+        bestTarget = result.getBestTarget();
+        finalPose = poseEstimator.update(result);
+      }
     }
-    return Optional.empty();
+    return finalPose;
   }
+
+  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+  //   var result = cam1.getLatestResult();
+  //   if (result.hasTargets()) {
+  //       return poseEstimator.update(result);
+  //   }
+  //   return Optional.empty();
+  // }
 
   public PhotonTrackedTarget getBestTarget() {
     return bestTarget;

@@ -9,14 +9,15 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -109,9 +110,44 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    Pathfinding.setPathfinder(new LocalADStar());
+
     try{
-      PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
-      return auto;
+      // PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
+
+      // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
+      // PathConstraints constraints = new PathConstraints(
+      //         3.0, 4.0,
+      //         Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+      // // Since AutoBuilder is configured, we can use it to build pathfinding commands
+      // Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
+      //         path,
+      //         constraints);
+      // return new SequentialCommandGroup(
+      //   pathfindingCommand
+      //   );
+
+
+      // Pose2d targetPose = new Pose2d(14.36, 2, Rotation2d.fromDegrees(203));
+      // PathConstraints constraints = new PathConstraints(
+      //         3.0, 4.0,
+      //         Units.degreesToRadians(540), Units.degreesToRadians(720));
+      // drivetrain.publisher2.set(targetPose);
+      // return new SequentialCommandGroup(
+      //   AutoBuilder.pathfindToPose(targetPose, constraints)
+      //   );
+
+
+      // PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
+      // return auto;
+
+      PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+      Pose2d endState = AllianceFlipUtil.apply(new Pose2d(2.710,6.848,Rotation2d.fromDegrees(123.063)));
+      Pose2d startState = AllianceFlipUtil.apply(new Pose2d(3.213,6.093,Rotation2d.fromDegrees(127.720)));
+      drivetrain.publisher2.set(endState);
+      drivetrain.publisher1.set(startState);
+      return AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
@@ -120,7 +156,7 @@ public class RobotContainer {
 
 
   public void robotPeriodic() {
-    //photonPoseUpdate();
+    photonPoseUpdate(); //Autos don't work wq
   }
 
   public void autonomousPeriodic() {
