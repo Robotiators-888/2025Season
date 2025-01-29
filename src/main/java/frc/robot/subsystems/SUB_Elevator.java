@@ -21,8 +21,8 @@ import frc.robot.Constants.Elevator;
 public class SUB_Elevator extends SubsystemBase {
   private static SUB_Elevator INSTANCE = null;
   private static boolean HasHomed = Elevator.kStartingHoming;
-  private static SparkMax primary = new SparkMax(0, MotorType.kBrushless);
-  private static SparkMax secondary = new SparkMax(0, MotorType.kBrushless);
+  private static SparkMax primary = new SparkMax(35, MotorType.kBrushless);
+  private static SparkMax secondary = new SparkMax(36, MotorType.kBrushless);
   private static SparkMaxConfig config = new SparkMaxConfig();
   private static RelativeEncoder primaryencoder = primary.getEncoder();
   private static PIDController elevatorPID =
@@ -36,13 +36,14 @@ public class SUB_Elevator extends SubsystemBase {
     config.inverted(false);
     config.disableFollowerMode();
     primary.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    elevatorPID.setTolerance(Elevator.kPIDTolerance);
   }
 
-  public static void RunElevatorManual(double manual) {
+  public void RunElevatorManual(double manual) {
     primary.set(manual);
   }
 
-  public static void RunElevator() {
+  public void RunElevator() {
     double movementspeed = elevatorPID.calculate(primaryencoder.getPosition());
     primary.set(movementspeed);
 
@@ -53,13 +54,13 @@ public class SUB_Elevator extends SubsystemBase {
     }
   }
 
-  public static void ChangeSetpoint(double setpoint) {
+  public void ChangeSetpoint(double setpoint) {
     elevatorPID.setSetpoint(setpoint);
     SmartDashboard.putNumber("Elevator Target Setpoint", setpoint);
   }
 
 
-  public static void HomeElevator() {
+  public void HomeElevator() {
     if (LowerLimitSwitch.isPressed()) {
       RunElevatorManual(0);
       primaryencoder.setPosition(Elevator.kHomingEncoderLocation);
@@ -74,7 +75,7 @@ public class SUB_Elevator extends SubsystemBase {
       RunElevatorManual(0);
       return;
     } else {
-      RunElevator();
+      RunElevatorManual(Elevator.kHomingSpeed);
     }
   }
 

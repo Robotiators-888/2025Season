@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import frc.robot.Constants.Elevator;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.*;
 
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,6 +25,7 @@ import edu.wpi.first.math.MathUtil;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
+  public static SUB_Elevator elevator = SUB_Elevator.getInstance();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController Driver1 =
@@ -39,6 +42,8 @@ public class RobotContainer {
         -MathUtil.applyDeadband(Driver1.getRawAxis(0), OperatorConstants.kDriveDeadband),
         -MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband), true,
         true), drivetrain));
+
+    elevator.setDefaultCommand(new RunCommand(()-> elevator.RunElevator(),elevator));
 
     Driver1.povDown()
         .whileTrue(new RunCommand(() -> drivetrain.drive(
@@ -65,7 +70,11 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
-
+  
+  Driver2.a().onTrue(new InstantCommand(()->elevator.ChangeSetpoint(Elevator.kL1Setpoint)));
+  Driver2.b().onTrue(new InstantCommand(()->elevator.ChangeSetpoint(Elevator.kL2Setpoint)));
+  Driver2.x().onTrue(new InstantCommand(()->elevator.ChangeSetpoint(Elevator.kL3Setpoint)));
+  Driver2.y().onTrue(new InstantCommand(()->elevator.ChangeSetpoint(Elevator.kL4Setpoint)));
 
   }
 
