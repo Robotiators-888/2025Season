@@ -31,8 +31,8 @@ public class CMD_ReefAlign extends RunCommand {
 
   CommandXboxController driverController;
 
-  private final PIDController xController = new PIDController(0.1, 0, 0);
-  private final PIDController yController = new PIDController(0.1, 0, 0);
+  private final PIDController xController = new PIDController(0.2, 0, .02);
+  private final PIDController yController = new PIDController(0.2, 0, .02);
   private final PIDController robotAngleController = new PIDController(0.5, 0, 0.1);
   
   double xMagnitude = Units.inchesToMeters(15+48); //meters
