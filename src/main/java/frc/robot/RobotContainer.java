@@ -4,14 +4,17 @@
 
 package frc.robot;
 
+import java.security.KeyStore.TrustedCertificateEntry;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
@@ -28,7 +31,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
@@ -116,40 +118,36 @@ public class RobotContainer {
     Pathfinding.setPathfinder(new LocalADStar());
 
     try{
-      // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
-      // Pose2d endState = new Pose2d(2.710,6.848,Rotation2d.fromDegrees(123.063));
-      // Pose2d startState = path.getStartingHolonomicPose().get();
-      // drivetrain.publisher2.set(endState);
-      // drivetrain.publisher1.set(startState);
-      // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
-      // PathConstraints constraints = new PathConstraints(
-      //         0.5, 4.0,
-      //         Units.degreesToRadians(540), Units.degreesToRadians(720));
+      // Create a list of waypoints from poses. Each pose represents one waypoint.
+      // The rotation component of the pose should be the direction of travel. Do not use holonomic rotation.
+      PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+      Pose2d startState = path.getStartingHolonomicPose().get();
+      List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+              drivetrain.getPose(),
+              AllianceFlipUtil.apply(startState)
+      );
+      drivetrain.publisher1.set(drivetrain.getPose());
+      drivetrain.publisher2.set(AllianceFlipUtil.apply(startState));
+      PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+      // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
 
-      // // Since AutoBuilder is configured, we can use it to build pathfinding commands
-      // Command pathfindingCommand = AutoBuilder.pathfindThenFollowPath(
-      //         path,
-      //         constraints);
-      // return new SequentialCommandGroup(
-      //   pathfindingCommand
-      //   );
+      // Create the path using the waypoints created above
+      PathPlannerPath paths = new PathPlannerPath(
+              waypoints,
+              constraints,
+              null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+              new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+      );
 
-
-      // Pose2d targetPose = new Pose2d(14.36, 2, Rotation2d.fromDegrees(203));
-      // PathConstraints constraints = new PathConstraints(
-      //         3.0, 4.0,
-      //         Units.degreesToRadians(540), Units.degreesToRadians(720));
-      // drivetrain.publisher2.set(targetPose);
-      // return new SequentialCommandGroup(
-      //   AutoBuilder.pathfindToPose(targetPose, constraints)
-      //   );
+      // Prevent the path from being flipped if the coordinates are already correct
+      paths.preventFlipping = true;
 
 
-      PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
-      return auto;
+      // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
+      // return auto;
 
       // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
-      // return AutoBuilder.followPath(path);
+      return AutoBuilder.followPath(paths);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
@@ -158,7 +156,7 @@ public class RobotContainer {
 
 
   public void robotPeriodic() {
-    photonPoseUpdate(); //Autos don't work wq
+    photonPoseUpdate();
   }
 
   public void autonomousPeriodic() {

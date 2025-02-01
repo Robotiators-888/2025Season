@@ -84,24 +84,6 @@ public class CMD_ReefAlign extends RunCommand {
     robotAngleController.reset();
     xController.reset();
     yController.reset();
-  
-
-    // double angle = Units.degreesToRadians(60*targetTagSet.indexOf(targetId));
-
-    // double offSet = 90;
-    // if (!isLeftAlign) {
-    //   offSet *= -1;
-    // }
-    // offSet = Units.degreesToRadians(offSet);
-
-
-    // double x = xMagnitude*Math.cos(angle) + yMagnitude*Math.cos(angle+offSet);
-    // double y = xMagnitude*Math.sin(angle) + yMagnitude*Math.sin(angle+offSet);
-    // double xSpeed = xController.calculate(drivetrain.getPose().getX(), tagPose.getX() + x);
-    // double ySpeed = yController.calculate(drivetrain.getPose().getY(), tagPose.getY() + y);
-    
-    // drivetrain.drive(xSpeed, ySpeed,0, true, true);
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
