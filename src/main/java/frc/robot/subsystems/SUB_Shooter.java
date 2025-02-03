@@ -19,7 +19,6 @@ public class SUB_Shooter extends SubsystemBase {
   public InterpolatingDoubleTreeMap distToTimeMap = new InterpolatingDoubleTreeMap(); 
   public static int MANUAL_RPM = 1000;
   public static int AUTO_RPM = 1000;
-  @SuppressWarnings("unused")
   private SparkClosedLoopController PIDController;
   public static int SetpointRPM;
   SparkMax shooterLeft = new SparkMax(30, MotorType.kBrushless);

@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+//import com.ctre.phoenix.Util;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,11 +35,14 @@ public class MAXSwerveModule {
 
     // Factory reset, so we get the SPARKS MAX to a known state before configuring
     // them. This is useful in case a SPARK MAX is swapped out.
+    SparkMaxConfig config = new SparkMaxConfig();
 
     m_drivingEncoder = m_drivingSparkFlex.getEncoder();
     m_turningEncoder = m_turningSparkMax.getAbsoluteEncoder();
     m_drivingClosedLoopController = m_drivingSparkFlex.getClosedLoopController();
     m_turningClosedLoopController = m_turningSparkMax.getClosedLoopController();
+
+    config.signals.primaryEncoderPositionPeriodMs(5);
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     m_drivingSparkFlex.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
@@ -45,11 +50,9 @@ public class MAXSwerveModule {
     m_turningSparkMax.configure(SwerveModuleConfigs.MAXSwerveModule.turningConfig,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
     m_drivingEncoder.setPosition(0);
-
 
   }
 
@@ -63,6 +66,7 @@ public class MAXSwerveModule {
     // relative to the chassis.
     return new SwerveModuleState(m_drivingEncoder.getVelocity(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
+  
   }
 
   /**
