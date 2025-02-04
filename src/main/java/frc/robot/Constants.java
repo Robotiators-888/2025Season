@@ -163,7 +163,7 @@ public final class Constants {
     public static final String kCam1Name = "AprilTagCam";
     public static final Rotation3d cameraRotation = new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(180));
     public static final Transform3d kRobotToCamera1 =
-        new Transform3d(Units.inchesToMeters(-15.5 + 2.25), Units.inchesToMeters(12.0 - 3.75),
+        new Transform3d(Units.inchesToMeters(-15.5 + 2.25), Units.inchesToMeters(12.0 - 3.75)-0.6+0.07,
             Units.inchesToMeters(15.5), cameraRotation);
 
   }

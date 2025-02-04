@@ -33,7 +33,7 @@ public class CMD_ReefAlign extends RunCommand {
 
   private final PIDController xController = new PIDController(0.2, 0, .02);
   private final PIDController yController = new PIDController(0.2, 0, .02);
-  private final PIDController robotAngleController = new PIDController(0.5, 0, 0.1);
+  private final PIDController robotAngleController = new PIDController(0.7,0, 0.1);
   
   double xMagnitude = Units.inchesToMeters(15+48); //meters
   double yMagnitude = Units.inchesToMeters(24);
@@ -71,7 +71,7 @@ public class CMD_ReefAlign extends RunCommand {
     }
 
     double minDistance = Double.MAX_VALUE;
-    for (int tag : new int[]{6}) {
+    for (int tag : new int[]{7}) {
       Pose2d pose = photonVision.at_field.getTagPose(tag).get().toPose2d();
       Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
       double distance = Math.sqrt(Math.pow(translate.getX(), 2) + Math.pow(translate.getY(), 2));
@@ -118,7 +118,7 @@ public class CMD_ReefAlign extends RunCommand {
     
     SmartDashboard.putNumber("THETA INPUT", MathUtil.angleModulus(currentPose.getRotation().getRadians()));
     SmartDashboard.putNumber("THETA TARGET",MathUtil.angleModulus(tagPose.getRotation().getRadians()));
-    drivetrain.drive(xSpeed, ySpeed, -omegaSpeed, true, false);
+    drivetrain.drive(xSpeed, ySpeed,-omegaSpeed, true, true);
   }
 
   // Called once the command ends or is interrupted.
