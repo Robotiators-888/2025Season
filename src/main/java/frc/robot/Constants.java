@@ -155,8 +155,8 @@ public final class Constants {
   }
 
   public static final class Field {
-    public static final double fieldLength = Units.inchesToMeters(648);
-    public static final double fieldWidth = Units.inchesToMeters(324);
+    public static final double fieldLength = 1755.0/100.0;
+    public static final double fieldWidth = 805.0/100.0;
   }
 
   public static final class PhotonVision {
