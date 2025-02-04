@@ -25,10 +25,11 @@ public class SUB_Intake extends SubsystemBase {
   private SUB_Intake() {
 
     intakeMotor = new SparkMax(Constants.Intake.kINTAKE_MOTOR_CANID, MotorType.kBrushless);
+    config.voltageCompensation(60);
+    config.idleMode(IdleMode.kCoast);
     intakeMotor.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        config.voltageCompensation(60);
-        config.idleMode(IdleMode.kCoast); 
+ 
   }
 
   public static SUB_Intake getInstance() {

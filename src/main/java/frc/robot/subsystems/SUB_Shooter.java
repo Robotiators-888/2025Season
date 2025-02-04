@@ -14,11 +14,10 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class SUB_Shooter extends SubsystemBase {
   public static SUB_Shooter INSTANCE = null;
 
-  public InterpolatingDoubleTreeMap distToTimeMap = new InterpolatingDoubleTreeMap(); 
+  public InterpolatingDoubleTreeMap distToTimeMap = new InterpolatingDoubleTreeMap();
   public static int MANUAL_RPM = 1000;
   public static int AUTO_RPM = 1000;
   private SparkClosedLoopController PIDController;
@@ -26,16 +25,18 @@ public class SUB_Shooter extends SubsystemBase {
   SparkMax ShooterLeft = new SparkMax(30, MotorType.kBrushless);
   SparkMax ShooterRight = new SparkMax(31, MotorType.kBrushless);
 
- public void setShooterLR(SparkMax shooterLeft, SparkMax shooterRight) {
-     ShooterLeft = new SparkMax(30, MotorType.kBrushless);
-     ShooterRight = new SparkMax(31, MotorType.kBrushless);
+  public static final SparkMaxConfig shooterConfig = new SparkMaxConfig();
 
-    ShooterLeft.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
-    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    ShooterRight.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
-    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  public void setShooterLR(SparkMax shooterLeft, SparkMax shooterRight) {
+    ShooterLeft = new SparkMax(30, MotorType.kBrushless);
+    ShooterRight = new SparkMax(31, MotorType.kBrushless);
 
- }
+    config.voltageCompensation(60);
+    config.idleMode(IdleMode.kCoast);
+    ShooterLeft.configure(shooterConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    ShooterRight.configure(shooterConfig,ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+ 
+  }
 
   public static SUB_Shooter getInstance() {
     if (INSTANCE == null) {
@@ -44,23 +45,25 @@ public class SUB_Shooter extends SubsystemBase {
 
     return INSTANCE;
   }
+
   private SUB_Shooter() {
 
     PIDController = ShooterLeft.getClosedLoopController();
     PIDController = ShooterRight.getClosedLoopController();
-  
+
     config
-    .inverted(true)
-    .idleMode(IdleMode.kBrake);
-config.encoder
-    .positionConversionFactor(1000)
-    .velocityConversionFactor(1000);
-config.closedLoop
-    .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-    .pid(1.0, 0.0, 0.0);
+        .inverted(true)
+        .idleMode(IdleMode.kBrake);
+    config.encoder
+        .positionConversionFactor(1000)
+        .velocityConversionFactor(1000);
+    config.closedLoop
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+        .pid(1.0, 0.0, 0.0);
 
     SetpointRPM = 1000;
   }
+
   public double getFlywheelRPM() {
     return ShooterRight.getEncoder().getVelocity();
   }
@@ -77,6 +80,6 @@ config.closedLoop
     SmartDashboard.putNumber("Shooter/Shooter RPM", ShooterLeft.getEncoder().getVelocity());
   }
 
-SparkMaxConfig config = new SparkMaxConfig();
- 
+  SparkMaxConfig config = new SparkMaxConfig();
+
 }

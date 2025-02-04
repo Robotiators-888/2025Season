@@ -49,7 +49,6 @@ public class MAXSwerveModule {
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turningSparkMax.configure(SwerveModuleConfigs.MAXSwerveModule.turningConfig,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        //make config for shooter index and intake that inacts this /\
 
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());

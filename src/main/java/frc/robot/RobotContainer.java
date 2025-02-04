@@ -48,6 +48,8 @@ public class RobotContainer {
         -MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband), true,
         true), drivetrain));
 
+        shooter.setDefaultCommand(new RunCommand(() -> shooter.shootFlywheelOnRPM(0), shooter));
+
     Driver1.povDown()
         .whileTrue(new RunCommand(() -> drivetrain.drive(
             -MathUtil.applyDeadband(
