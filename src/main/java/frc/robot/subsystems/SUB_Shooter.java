@@ -2,6 +2,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -21,8 +23,19 @@ public class SUB_Shooter extends SubsystemBase {
   public static int AUTO_RPM = 1000;
   private SparkClosedLoopController PIDController;
   public static int SetpointRPM;
-  SparkMax shooterLeft = new SparkMax(30, MotorType.kBrushless);
-  SparkMax shooterRight = new SparkMax(31, MotorType.kBrushless);
+  SparkMax ShooterLeft = new SparkMax(30, MotorType.kBrushless);
+  SparkMax ShooterRight = new SparkMax(31, MotorType.kBrushless);
+
+ public void setShooterLR(SparkMax shooterLeft, SparkMax shooterRight) {
+     ShooterLeft = new SparkMax(30, MotorType.kBrushless);
+     ShooterRight = new SparkMax(31, MotorType.kBrushless);
+
+    ShooterLeft.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
+    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    ShooterRight.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
+    ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+ }
 
   public static SUB_Shooter getInstance() {
     if (INSTANCE == null) {
@@ -33,8 +46,8 @@ public class SUB_Shooter extends SubsystemBase {
   }
   private SUB_Shooter() {
 
-    PIDController = shooterLeft.getClosedLoopController();
-    PIDController = shooterRight.getClosedLoopController();
+    PIDController = ShooterLeft.getClosedLoopController();
+    PIDController = ShooterRight.getClosedLoopController();
   
     config
     .inverted(true)
@@ -49,7 +62,7 @@ config.closedLoop
     SetpointRPM = 1000;
   }
   public double getFlywheelRPM() {
-    return shooterRight.getEncoder().getVelocity();
+    return ShooterRight.getEncoder().getVelocity();
   }
 
   public void shootFlywheelOnRPM(double rpm) {
@@ -57,11 +70,11 @@ config.closedLoop
   }
 
   public void setMotorSpeed(double speed) {
-    shooterLeft.set(speed);
+    ShooterLeft.set(speed);
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Shooter/Shooter RPM", shooterLeft.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Shooter/Shooter RPM", ShooterLeft.getEncoder().getVelocity());
   }
 
 SparkMaxConfig config = new SparkMaxConfig();
