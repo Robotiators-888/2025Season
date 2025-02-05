@@ -57,10 +57,11 @@ public class SUB_Index extends SubsystemBase {
     config.smartCurrentLimit(40);
     config.voltageCompensation(12);
     config.idleMode(IdleMode.kBrake);
+    config.inverted(true);
     indexLeft.configure(config,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     config.follow(indexLeft);
-    indexRight.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
+    indexRight.configure(config,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }

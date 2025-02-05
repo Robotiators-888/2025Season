@@ -203,6 +203,7 @@ public static final class Pivot {
   public static final class MotorConstants {
     public static final double kVortexFreeSpeedRpm = 6784;
     public static final double kNeoFreeSpeedRpm = 5676;
+    //TODO:Possibly change
   }
 
   public static final class FieldConstants {

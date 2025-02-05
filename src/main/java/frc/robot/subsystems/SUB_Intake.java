@@ -27,7 +27,8 @@ public class SUB_Intake extends SubsystemBase {
     intakeMotor = new SparkMax(Constants.Intake.kINTAKE_MOTOR_CANID, MotorType.kBrushless);
     config.voltageCompensation(60);
     config.idleMode(IdleMode.kCoast);
-    intakeMotor.configure(SwerveModuleConfigs.MAXSwerveModule.drivingConfig,
+    config.inverted(true);
+    intakeMotor.configure(config,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  
   }

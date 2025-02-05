@@ -144,6 +144,7 @@ public class RobotContainer {
                       new InstantCommand(() -> index.setMotorSpeed(0)),
                       new InstantCommand(() -> intake.setMotorSpeed(0)),
                       new InstantCommand(() -> shooter.shootFlywheelOnRPM(1500))).andThen(
+                        //TODO:why so high
                               new SequentialCommandGroup(
                                       new WaitCommand(.5),
                                       new ParallelCommandGroup(

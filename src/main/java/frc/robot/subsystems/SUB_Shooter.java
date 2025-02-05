@@ -25,11 +25,10 @@ public class SUB_Shooter extends SubsystemBase {
   SparkMax ShooterLeft = new SparkMax(30, MotorType.kBrushless);
   SparkMax ShooterRight = new SparkMax(31, MotorType.kBrushless);
 
-  public static final SparkMaxConfig shooterConfig = new SparkMaxConfig();
-
   public void setShooterLR(SparkMax shooterLeft, SparkMax shooterRight) {
     ShooterLeft = new SparkMax(30, MotorType.kBrushless);
     ShooterRight = new SparkMax(31, MotorType.kBrushless);
+    SparkMaxConfig shooterConfig = new SparkMaxConfig();
 
     config.voltageCompensation(60);
     config.idleMode(IdleMode.kCoast);
