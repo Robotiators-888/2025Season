@@ -9,9 +9,12 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -140,8 +143,14 @@ public class RobotContainer {
       // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
       // return auto;
 
-    PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
     
+    RobotConfig robotConfig = RobotConfig.fromGUISettings();
+    PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
+
+    drivetrain.resetPose(
+      AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
+    );
     return AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());

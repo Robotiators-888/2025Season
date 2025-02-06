@@ -162,6 +162,8 @@ public class SUB_Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("FRONT RIGHT MODULE POSITION",
         frontRight.getPosition().distanceMeters);
 
+    SmartDashboard.putNumber("NavX angle", getAngle());
+
   }
 
   /**
