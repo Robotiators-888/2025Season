@@ -9,13 +9,7 @@ import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.pathfinding.LocalADStar;
-import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,7 +20,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -47,9 +40,9 @@ import frc.robot.utils.AutoGenerator;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
-  public static SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
-  public static AutoGenerator autoGenerator = AutoGenerator.getInstance();
+  private static final SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
+  private static final SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
+  private static final AutoGenerator autoGenerator = AutoGenerator.getInstance();
   private final SendableChooser<Command> autoChooser;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -112,50 +105,51 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    Pathfinding.setPathfinder(new LocalADStar());
+    return autoChooser.getSelected();
+    // Pathfinding.setPathfinder(new LocalADStar());
 
-    try{
-      // // Create a list of waypoints from poses. Each pose represents one waypoint.
-      // // The rotation component of the pose should be the direction of travel. Do not use holonomic rotation.
-      // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
-      // Pose2d startState = path.getStartingHolonomicPose().get();
-      // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-      //         drivetrain.getPose(),
-      //         AllianceFlipUtil.apply(startState)
-      // );
-      // drivetrain.publisher1.set(drivetrain.getPose());
-      // drivetrain.publisher2.set(AllianceFlipUtil.apply(startState));
-      // PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
-      // // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+    // try{
+    //   // // Create a list of waypoints from poses. Each pose represents one waypoint.
+    //   // // The rotation component of the pose should be the direction of travel. Do not use holonomic rotation.
+    //   // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+    //   // Pose2d startState = path.getStartingHolonomicPose().get();
+    //   // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+    //   //         drivetrain.getPose(),
+    //   //         AllianceFlipUtil.apply(startState)
+    //   // );
+    //   // drivetrain.publisher1.set(drivetrain.getPose());
+    //   // drivetrain.publisher2.set(AllianceFlipUtil.apply(startState));
+    //   // PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
+    //   // // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
 
-      // // Create the path using the waypoints created above
-      // PathPlannerPath paths = new PathPlannerPath(
-      //         waypoints,
-      //         constraints,
-      //         null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-      //         new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-      // );
+    //   // // Create the path using the waypoints created above
+    //   // PathPlannerPath paths = new PathPlannerPath(
+    //   //         waypoints,
+    //   //         constraints,
+    //   //         null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+    //   //         new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+    //   // );
       
-      // // Prevent the path from being flipped if the coordinates are already correct
-      // paths.preventFlipping = true;
+    //   // // Prevent the path from being flipped if the coordinates are already correct
+    //   // paths.preventFlipping = true;
 
 
-      // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
-      // return auto;
+    //   // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
+    //   // return auto;
 
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
+    // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
     
-    RobotConfig robotConfig = RobotConfig.fromGUISettings();
-    PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
+    // RobotConfig robotConfig = RobotConfig.fromGUISettings();
+    // PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
 
-    drivetrain.resetPose(
-      AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
-    );
-    return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
-    }
+    // drivetrain.resetPose(
+    //   AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
+    // );
+    // return AutoBuilder.followPath(path);
+    // } catch (Exception e) {
+    //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    //     return Commands.none();
+    // }
   }
 
 
@@ -187,35 +181,27 @@ public class RobotContainer {
       Pose3d photonPose = photonPoseOptional.get().estimatedPose;
       if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength && photonPose.getY() >= 0
           && photonPose.getY() <= Field.fieldWidth) {
+        Pose2d closestTag = photonVision.at_field
+            .getTagPose(photonVision.getBestTarget().getFiducialId()).orElse(new Pose3d()).toPose2d();
+        Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
+
+        double distance = translate.getNorm();
+        double xStddev = distance / 1.0;
+        double yStddev = xStddev * 4;
+        double rotStddev = Units.degreesToRadians(70.0);
+
+        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
+
+        SmartDashboard.putNumberArray("PHOTON/Pose", new Double[] {photonPose.toPose2d().getX(),
+            photonPose.toPose2d().getY(), photonPose.toPose2d().getRotation().getDegrees()});
+        SmartDashboard.putNumberArray("PHOTON/Pose3d",
+            new Double[] {photonPose.getX(), photonPose.getY(), photonPose.getZ(),
+                photonPose.getRotation().getQuaternion().getW(),
+                photonPose.getRotation().getQuaternion().getX(),
+                photonPose.getRotation().getQuaternion().getY(),
+                photonPose.getRotation().getQuaternion().getZ()});
+        drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
       }
-
-      if (photonVision.getBestTarget() == null) {
-        return;
-      }
-
-      Pose2d closestTag = photonVision.at_field
-          .getTagPose(photonVision.getBestTarget().getFiducialId()).get().toPose2d();
-      Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
-
-      double distance = Math.sqrt(Math.pow(translate.getX(), 2) + Math.pow(translate.getY(), 2));
-      double xStddev = distance / 1.0;
-      double yStddev = xStddev * 4;
-      double rotStddev = Units.degreesToRadians(70.0);
-
-
-      drivetrain.m_poseEstimator
-          .setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
-
-      SmartDashboard.putNumberArray("PHOTON/Pose", new Double[] {photonPose.toPose2d().getX(),
-          photonPose.toPose2d().getY(), photonPose.toPose2d().getRotation().getDegrees()});
-      SmartDashboard.putNumberArray("PHOTON/Pose3d",
-          new Double[] {photonPose.getX(), photonPose.getY(), photonPose.getZ(),
-              photonPose.getRotation().getQuaternion().getW(),
-              photonPose.getRotation().getQuaternion().getX(),
-              photonPose.getRotation().getQuaternion().getY(),
-              photonPose.getRotation().getQuaternion().getZ()});
-      drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-          photonPoseOptional.get().timestampSeconds);
     }
   }
 }

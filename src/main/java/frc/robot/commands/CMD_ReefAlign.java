@@ -6,41 +6,38 @@ package frc.robot.commands;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Optional;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
 public class CMD_ReefAlign extends RunCommand {
-  SUB_PhotonVision photonVision;
-  SUB_Drivetrain drivetrain;
+  private final SUB_PhotonVision photonVision;
+  private final SUB_Drivetrain drivetrain;
 
-  Pose2d tagPose;
-  Integer targetId;
+  private Pose2d tagPose;
+  private Integer targetId;
 
-  boolean isLeftAlign;
-  List<Integer> targetTagSet;
+  private final boolean isLeftAlign;
+  private List<Integer> targetTagSet;
 
-  CommandXboxController driverController;
+  private final PIDController xController = new PIDController(0.2, 0, 0.02);
+  private final PIDController yController = new PIDController(0.2, 0, 0.02);
+  private final PIDController robotAngleController = new PIDController(0.7, 0, 0.1);
 
-  private final PIDController xController = new PIDController(0.2, 0, .02);
-  private final PIDController yController = new PIDController(0.2, 0, .02);
-  private final PIDController robotAngleController = new PIDController(0.7,0, 0.1);
-  
-  double xMagnitude = Units.inchesToMeters(15+48); //meters
-  double yMagnitude = Units.inchesToMeters(24);
-  
-  /** Creates a new CMD_ReefAlign. */
+  private final double xMagnitude = Units.inchesToMeters(63); // 15 + 48 inches to meters
+  private final double yMagnitude = Units.inchesToMeters(24);
+
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
-    // Use addRequirements() here to declare subsystem dependencies.
     super(() -> {}, drivetrain);
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
@@ -50,20 +47,17 @@ public class CMD_ReefAlign extends RunCommand {
     addRequirements(drivetrain);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     xController.setTolerance(0);
     yController.setTolerance(0);
     robotAngleController.setTolerance(0);
-    var alliance = DriverStation.getAlliance();
 
+    Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
-      if (alliance.get() == DriverStation.Alliance.Red) {
-        targetTagSet =  Arrays.asList(new Integer[]{7, 8, 9, 10, 11, 6});
-      } else {
-        targetTagSet =  Arrays.asList(new Integer[]{21, 20, 19, 18, 17, 22});
-      }
+      targetTagSet = alliance.get() == DriverStation.Alliance.Red
+          ? Arrays.asList(7, 8, 9, 10, 11, 6)
+          : Arrays.asList(21, 20, 19, 18, 17, 22);
     } else {
       SmartDashboard.putBoolean("Alliance Error", true);
       end(true);
@@ -71,14 +65,15 @@ public class CMD_ReefAlign extends RunCommand {
     }
 
     double minDistance = Double.MAX_VALUE;
-    for (int tag : new int[]{7}) {
-      Pose2d pose = photonVision.at_field.getTagPose(tag).get().toPose2d();
+    for (int tag : targetTagSet) {
+      Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
       Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
-      double distance = Math.sqrt(Math.pow(translate.getX(), 2) + Math.pow(translate.getY(), 2));
+      double distance = translate.getNorm();
 
-      if (distance <= minDistance) {
+      if (distance < minDistance) {
         tagPose = pose;
         targetId = tag;
+        minDistance = distance;
       }
     }
     robotAngleController.reset();
@@ -86,51 +81,33 @@ public class CMD_ReefAlign extends RunCommand {
     yController.reset();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     Pose2d currentPose = drivetrain.getPose();
+    double angle = Units.degreesToRadians(60 * targetTagSet.indexOf(targetId));
+    double offset = Units.degreesToRadians(isLeftAlign ? 90 : -90);
 
-    double angle = Units.degreesToRadians(60*targetTagSet.indexOf(targetId));
-
-    double offSet = 90;
-    if (!isLeftAlign) {
-      offSet *= -1;
-    }
-    offSet = Units.degreesToRadians(offSet);
-
-    
-
-    double x = xMagnitude*Math.cos(angle) + yMagnitude*Math.cos(angle+offSet);
-    double y = xMagnitude*Math.sin(angle) + yMagnitude*Math.sin(angle+offSet);
-
-
-  
- 
-    SmartDashboard.putNumber("X CURRENT", drivetrain.getPose().getX());
-    SmartDashboard.putNumber("Y CURRENT", drivetrain.getPose().getY());
+    double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
+    double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
 
     drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, tagPose.getRotation()));
 
-    double xSpeed = xController.calculate(drivetrain.getPose().getX(), tagPose.getX() + x);
-    double ySpeed = yController.calculate(drivetrain.getPose().getY(), tagPose.getY() + y);
+    double xSpeed = xController.calculate(currentPose.getX(), tagPose.getX() + x);
+    double ySpeed = yController.calculate(currentPose.getY(), tagPose.getY() + y);
     double omegaSpeed = robotAngleController.calculate(MathUtil.angleModulus(currentPose.getRotation().getRadians()), MathUtil.angleModulus(tagPose.getRotation().getRadians()));
-    
-    SmartDashboard.putNumber("THETA INPUT", MathUtil.angleModulus(currentPose.getRotation().getRadians()));
-    SmartDashboard.putNumber("THETA TARGET",MathUtil.angleModulus(tagPose.getRotation().getRadians()));
-    drivetrain.drive(ySpeed, -xSpeed,-omegaSpeed, true, true);
+
+    drivetrain.drive(ySpeed, -xSpeed, -omegaSpeed, true, true);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    // No specific actions on end
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    SmartDashboard.putBoolean ("AlignCommandComplete!", xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint());
-    return xController.atSetpoint() && yController.atSetpoint();
+    boolean atSetpoint = xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint();
+    SmartDashboard.putBoolean("AlignCommandComplete!", atSetpoint);
+    return atSetpoint;
   }
 }

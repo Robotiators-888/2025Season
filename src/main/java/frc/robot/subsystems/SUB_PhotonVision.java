@@ -21,15 +21,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PhotonVision;
 
 public class SUB_PhotonVision extends SubsystemBase {
-  public static SUB_PhotonVision INSTANCE = null;
+  private static SUB_PhotonVision INSTANCE = null;
 
-  private PhotonCamera cam1 = new PhotonCamera(PhotonVision.kCam1Name);
-
-
+  private final PhotonCamera cam1 = new PhotonCamera(PhotonVision.kCam1Name);
   private PhotonTrackedTarget bestTarget;
-  public PhotonPoseEstimator poseEstimator;
-  public boolean hasResults = false;
-
+  private final PhotonPoseEstimator poseEstimator;
   public AprilTagFieldLayout at_field;
 
   public static SUB_PhotonVision getInstance() {
@@ -39,7 +35,6 @@ public class SUB_PhotonVision extends SubsystemBase {
     return INSTANCE;
   }
 
-  /** Creates a new SUB_PhotonVision. */
   private SUB_PhotonVision() {
     try {
       at_field = new AprilTagFieldLayout(
@@ -54,11 +49,8 @@ public class SUB_PhotonVision extends SubsystemBase {
     poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
-
-  // Called periodically by robot container
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    List<PhotonPipelineResult> results = cam1.getAllUnreadResults(); // Gets queue of results
-                                                                     // (earliest first??)
+    List<PhotonPipelineResult> results = cam1.getAllUnreadResults();
     Optional<EstimatedRobotPose> finalPose = Optional.empty();
     for (PhotonPipelineResult result : results) {
       if (result.hasTargets()) {
@@ -68,14 +60,6 @@ public class SUB_PhotonVision extends SubsystemBase {
     }
     return finalPose;
   }
-
-  // public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-  //   var result = cam1.getLatestResult();
-  //   if (result.hasTargets()) {
-  //       return poseEstimator.update(result);
-  //   }
-  //   return Optional.empty();
-  // }
 
   public PhotonTrackedTarget getBestTarget() {
     return bestTarget;
@@ -100,7 +84,6 @@ public class SUB_PhotonVision extends SubsystemBase {
   @Override
   public void periodic() {
     var result = cam1.getLatestResult();
-    
     if (result.hasTargets()) {
       bestTarget = result.getBestTarget();
     }

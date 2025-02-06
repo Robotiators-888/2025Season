@@ -258,10 +258,13 @@ public class SUB_Drivetrain extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
 
+    // Adjust the heading to be within the range of -180 to 180 degrees
+    double adjustedHeading = MathUtil.angleModulus(getAngle());
+
     var swerveModuleStates =
         Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(getAngle()))
+                Rotation2d.fromDegrees(adjustedHeading))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
         Constants.Drivetrain.kMaxSpeedMetersPerSecond);
@@ -391,46 +394,43 @@ public class SUB_Drivetrain extends SubsystemBase {
   public Command pidControlledHeading(Supplier<Optional<Rotation2d>> headingSupplier) {
     var subsystem = this;
     return new Command() {
-      private final PIDController headingPID =
-          new PIDController(Swerve.kDrivingP, Swerve.kDrivingI, Swerve.kDrivingD);
-      {
-        addRequirements(subsystem);
-        setName("PID Controlled Heading");
-        headingPID.enableContinuousInput(-Math.PI, Math.PI); // since gyro angle is not limited to
-                                                             // [-pi, pi]
-        headingPID.setTolerance(Swerve.headingTolerance);
-      }
-      private Rotation2d desiredHeading;
-      private boolean headingSet;
+        private final PIDController headingPID = new PIDController(Swerve.kDrivingP, Swerve.kDrivingI, Swerve.kDrivingD);
+        {
+            addRequirements(subsystem);
+            setName("PID Controlled Heading");
+            headingPID.enableContinuousInput(-Math.PI, Math.PI); // Enable continuous input
+            headingPID.setTolerance(Swerve.headingTolerance);
+        }
+        private Rotation2d desiredHeading;
+        private boolean headingSet;
 
-      @Override
-      public void initialize() {
-        desiredHeading = getPose().getRotation();
-      }
+        @Override
+        public void initialize() {
+            desiredHeading = getPose().getRotation();
+        }
 
-      @Override
-      public void execute() {
-        var heading = headingSupplier.get();
-        headingSet = heading.isPresent();
-        heading.ifPresent((r) -> desiredHeading = r);
-        double turnInput =
-            headingPID.calculate(getPose().getRotation().getRadians(), desiredHeading.getRadians());
-        turnInput = headingPID.atSetpoint() ? 0 : turnInput;
-        turnInput = MathUtil.clamp(turnInput, -0.5, +0.5);
-        driveVelocity(turnInput * Swerve.kMaxRotationalSpeed);
-      }
+        @Override
+        public void execute() {
+            var heading = headingSupplier.get();
+            headingSet = heading.isPresent();
+            heading.ifPresent((r) -> desiredHeading = r);
+            double turnInput = headingPID.calculate(getPose().getRotation().getRadians(), desiredHeading.getRadians());
+            turnInput = headingPID.atSetpoint() ? 0 : turnInput;
+            turnInput = MathUtil.clamp(turnInput, -0.5, +0.5);
+            driveVelocity(turnInput * Swerve.kMaxRotationalSpeed);
+        }
 
-      @Override
-      public void end(boolean interrupted) {
-        stop();
-      }
+        @Override
+        public void end(boolean interrupted) {
+            stop();
+        }
 
-      @Override
-      public boolean isFinished() {
-        return !headingSet && headingPID.atSetpoint();
-      }
+        @Override
+        public boolean isFinished() {
+            return !headingSet && headingPID.atSetpoint();
+        }
     };
-  }
+}
 
   public Command fieldRelative(Supplier<ChassisSpeeds> speeds) {
     var subsystem = this;
