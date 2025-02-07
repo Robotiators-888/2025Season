@@ -196,6 +196,7 @@ public final class Constants {
         public static final boolean kStartingHoming = false;
         public static final double kHomingSpeed = 0.3;
         public static final double kPIDTolerance = 20;
+        public static final double kTimeStep = 0.02;
 
         public static final double kStartingSetpoint = 0;
         public static final double kL1Setpoint = 100;
@@ -203,9 +204,12 @@ public final class Constants {
         public static final double kL3Setpoint = 300;
         public static final double kL4Setpoint = 400;
 
-        public static final double kP = 1;
+        public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
+        
+        public static final double kG = 1.13;
+        public static final double kS = 0;
+        public static final double kV = 4.00; 
     }
-
 }
