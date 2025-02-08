@@ -90,7 +90,6 @@ public class SUB_Drivetrain extends SubsystemBase {
     return -navx.getAngle();
   }
 
-  // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
   private double m_currentTranslationMag = 0.0;
@@ -256,15 +255,13 @@ public class SUB_Drivetrain extends SubsystemBase {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
-    double rotDelivered = -m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
+    double rotDelivered = m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
 
     // Adjust the heading to be within the range of -180 to 180 degrees
-    double adjustedHeading = MathUtil.angleModulus(getAngle());
-
     var swerveModuleStates =
         Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(adjustedHeading))
+                Rotation2d.fromDegrees(getPose().getRotation().getDegrees()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
         Constants.Drivetrain.kMaxSpeedMetersPerSecond);
@@ -371,7 +368,13 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
-    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+
+    ChassisSpeeds adjustedSpeeds = new ChassisSpeeds(
+      robotRelativeSpeeds.vxMetersPerSecond,
+      robotRelativeSpeeds.vyMetersPerSecond,
+      -robotRelativeSpeeds.omegaRadiansPerSecond //Unstable
+    );
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(adjustedSpeeds, 0.02);
 
     SwerveModuleState[] targetStates =
         Drivetrain.kDriveKinematics.toSwerveModuleStates(targetSpeeds);

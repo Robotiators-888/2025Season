@@ -63,11 +63,11 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new RunCommand(
+    drivetrain.setDefaultCommand(new RunCommand( //Unstable
         () -> drivetrain.drive(
-            -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-            -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-            -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
+            MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+            MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+            MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
 
         
@@ -118,18 +118,18 @@ public class RobotContainer {
     Pathfinding.setPathfinder(new LocalADStar());
 
     try{
-    // Load the path we want to pathfind to and follow
-    PathPlannerPath path = PathPlannerPath.fromPathFile("X Not Nchab Path");
+    // // Load the path we want to pathfind to and follow
+    PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+    drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
+    // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
+    // PathConstraints constraints = new PathConstraints(
+    //         0.5, 0.5,
+    //         Units.degreesToRadians(180), Units.degreesToRadians(180));
 
-    // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
-    PathConstraints constraints = new PathConstraints(
-            0.5, 0.5,
-            Units.degreesToRadians(180), Units.degreesToRadians(180));
-
-    // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return AutoBuilder.pathfindThenFollowPath(
-            path,
-            constraints);
+    // // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    // return AutoBuilder.pathfindThenFollowPath(
+    //  path,
+    // constraints);
 
 
     //   // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
@@ -143,7 +143,7 @@ public class RobotContainer {
     // drivetrain.resetPose(
     //   AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
     // );
-    //return AutoBuilder.followPath(path);
+    return AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
