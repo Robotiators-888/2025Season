@@ -4,22 +4,31 @@
 
 package frc.robot;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -58,7 +67,7 @@ public class RobotContainer {
         () -> drivetrain.drive(
             -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
             -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-            MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
+            -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
 
         
@@ -105,33 +114,22 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
-    // Pathfinding.setPathfinder(new LocalADStar());
+    // return autoChooser.getSelected();
+    Pathfinding.setPathfinder(new LocalADStar());
 
-    // try{
-    //   // // Create a list of waypoints from poses. Each pose represents one waypoint.
-    //   // // The rotation component of the pose should be the direction of travel. Do not use holonomic rotation.
-    //   // PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
-    //   // Pose2d startState = path.getStartingHolonomicPose().get();
-    //   // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-    //   //         drivetrain.getPose(),
-    //   //         AllianceFlipUtil.apply(startState)
-    //   // );
-    //   // drivetrain.publisher1.set(drivetrain.getPose());
-    //   // drivetrain.publisher2.set(AllianceFlipUtil.apply(startState));
-    //   // PathConstraints constraints = new PathConstraints(3.0, 3.0, 2 * Math.PI, 4 * Math.PI); // The constraints for this path.
-    //   // // PathConstraints constraints = PathConstraints.unlimitedConstraints(12.0); // You can also use unlimited constraints, only limited by motor torque and nominal battery voltage
+    try{
+    // Load the path we want to pathfind to and follow
+    PathPlannerPath path = PathPlannerPath.fromPathFile("X Not Nchab Path");
 
-    //   // // Create the path using the waypoints created above
-    //   // PathPlannerPath paths = new PathPlannerPath(
-    //   //         waypoints,
-    //   //         constraints,
-    //   //         null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-    //   //         new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-    //   // );
-      
-    //   // // Prevent the path from being flipped if the coordinates are already correct
-    //   // paths.preventFlipping = true;
+    // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
+    PathConstraints constraints = new PathConstraints(
+            0.5, 0.5,
+            Units.degreesToRadians(180), Units.degreesToRadians(180));
+
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindThenFollowPath(
+            path,
+            constraints);
 
 
     //   // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
@@ -145,11 +143,11 @@ public class RobotContainer {
     // drivetrain.resetPose(
     //   AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
     // );
-    // return AutoBuilder.followPath(path);
-    // } catch (Exception e) {
-    //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-    //     return Commands.none();
-    // }
+    //return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+        return Commands.none();
+    }
   }
 
 

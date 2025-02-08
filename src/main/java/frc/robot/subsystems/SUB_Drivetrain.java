@@ -256,7 +256,7 @@ public class SUB_Drivetrain extends SubsystemBase {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
-    double rotDelivered = m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
+    double rotDelivered = -m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
 
     // Adjust the heading to be within the range of -180 to 180 degrees
     double adjustedHeading = MathUtil.angleModulus(getAngle());

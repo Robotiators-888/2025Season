@@ -96,7 +96,7 @@ public class CMD_ReefAlign extends RunCommand {
     double ySpeed = yController.calculate(currentPose.getY(), tagPose.getY() + y);
     double omegaSpeed = robotAngleController.calculate(MathUtil.angleModulus(currentPose.getRotation().getRadians()), MathUtil.angleModulus(tagPose.getRotation().getRadians()));
 
-    drivetrain.drive(ySpeed, -xSpeed, -omegaSpeed, true, true);
+    drivetrain.drive(xSpeed, ySpeed, omegaSpeed, true, false);
   }
 
   @Override
