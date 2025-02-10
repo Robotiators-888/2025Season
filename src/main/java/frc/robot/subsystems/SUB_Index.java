@@ -61,6 +61,7 @@ public class SUB_Index extends SubsystemBase {
     indexLeft.configure(config,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     config.follow(indexLeft);
+    config.inverted(false);
     indexRight.configure(config,
         ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
