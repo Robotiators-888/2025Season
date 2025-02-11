@@ -119,17 +119,17 @@ public class RobotContainer {
 
     try{
     // // Load the path we want to pathfind to and follow
-    PathPlannerPath path = PathPlannerPath.fromPathFile("Straight Path");
+    PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
     drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
     // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
-    // PathConstraints constraints = new PathConstraints(
-    //         0.5, 0.5,
-    //         Units.degreesToRadians(180), Units.degreesToRadians(180));
+    PathConstraints constraints = new PathConstraints(
+            0.5, 0.5,
+            Units.degreesToRadians(180), Units.degreesToRadians(180));
 
     // // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    // return AutoBuilder.pathfindThenFollowPath(
-    //  path,
-    // constraints);
+    return AutoBuilder.pathfindThenFollowPath(
+     path,
+    constraints);
 
 
     //   // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
@@ -143,7 +143,7 @@ public class RobotContainer {
     // drivetrain.resetPose(
     //   AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
     // );
-    return AutoBuilder.followPath(path);
+    // return AutoBuilder.followPath(path);
     } catch (Exception e) {
         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
         return Commands.none();
