@@ -212,4 +212,15 @@ public final class Constants {
         public static final double kS = 0;
         public static final double kV = 4.00; 
     }
+
+    public static class Roller{
+        public static final int kRollerCanID = 30;
+        public static final double kIntakeCurrentThreshold = 25;
+
+        public static final double kIntakeSpeed = .2;
+        public static final double kIntakeFinishSpeed = .1;
+        public static final double kIntakeFinishTime = .1;
+
+        public static final double kEjectSpeed = -0.1;
+    }
 }
