@@ -4,16 +4,13 @@
 
 package frc.robot;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
@@ -21,7 +18,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -65,9 +61,9 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new RunCommand( //Unstable
         () -> drivetrain.drive(
-            MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-            MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-            MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
+            0.1*MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+            0.1*MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+            0.1*MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
 
         
@@ -126,13 +122,13 @@ public class RobotContainer {
             0.5, 0.5,
             Units.degreesToRadians(180), Units.degreesToRadians(180));
 
-    // // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
     return AutoBuilder.pathfindThenFollowPath(
      path,
     constraints);
+    //return AutoBuilder.followPath(path);
 
-
-    //   // PathPlannerAuto auto = new PathuPlannerAuto("Straight Auto");
+    //   // PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
     //   // return auto;
 
     // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
@@ -152,11 +148,11 @@ public class RobotContainer {
 
 
   public void robotPeriodic() {
-    photonPoseUpdate();
+    
   }
 
   public void autonomousPeriodic() {
-
+    
   }
 
   
@@ -184,9 +180,9 @@ public class RobotContainer {
         Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
 
         double distance = translate.getNorm();
-        double xStddev = distance / 1.0;
+        double xStddev = distance * 1.5;
         double yStddev = xStddev * 4;
-        double rotStddev = Units.degreesToRadians(70.0);
+        double rotStddev = Units.degreesToRadians(120.0);
 
         drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
 
