@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
@@ -21,6 +25,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,9 +66,9 @@ public class RobotContainer {
   public RobotContainer() {
     drivetrain.setDefaultCommand(new RunCommand( //Unstable
         () -> drivetrain.drive(
-            0.1*MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-            0.1*MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-            0.1*MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
+            MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+            MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+            MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
 
         
@@ -79,7 +84,24 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), false,
                 true),
             drivetrain));
-    
+      
+
+    File pathFolder = new File(Filesystem.getDeployDirectory().getName()+"pathplanner/paths/");
+    File[] listOfFiles = pathFolder.listFiles();
+    List<String> pathNames = new ArrayList<>();
+
+    if (listOfFiles != null) {
+      for (File file : listOfFiles) {
+        if (file.isFile() && file.getName().endsWith(".path")) {
+          pathNames.add(file.getName());
+        }
+      }
+    }
+
+    for (String pathName : pathNames) {
+      String modifiedPathName = pathName.substring(0, pathName.length() - 5);
+      NamedCommands.registerCommand(modifiedPathName, getPathCommand(modifiedPathName));
+    }    
     // Configure the trigger bindings
     configureBindings();
 
@@ -101,6 +123,24 @@ public class RobotContainer {
     Driver1.leftBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
     Driver1.rightBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
   }
+
+
+  public Command getPathCommand(String pathName) {
+    Pathfinding.setPathfinder(new LocalADStar());
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+      PathConstraints constraints = new PathConstraints(
+            0.5, 0.5,
+            Units.degreesToRadians(180), Units.degreesToRadians(180)); //unstable
+    return AutoBuilder.pathfindThenFollowPath(
+     path,
+    constraints);
+    } catch (Exception e) {
+      DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      return Commands.none();
+    }
+  }
+
 
 
 
