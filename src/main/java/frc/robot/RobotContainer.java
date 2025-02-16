@@ -47,7 +47,7 @@ public class RobotContainer {
         -MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband), true,
         true), drivetrain));
 
-    elevator.setDefaultCommand(new RunCommand(() -> elevator.RunElevator(), elevator));
+    elevator.setDefaultCommand(new RunCommand(() -> elevator.RunElevatorManual(0.0), elevator));
     roller.setDefaultCommand(new RunCommand(() -> roller.setOutput(0), roller));
 
     Driver1.povDown()
@@ -91,6 +91,8 @@ public class RobotContainer {
               new InstantCommand(() -> roller.hasCoral(true))
               ).withTimeout(Roller.kIntakeFinishTime)));
     Driver2.rightBumper().whileTrue(new RunCommand(()->roller.setOutput(Roller.kEjectSpeed), roller).finallyDo(()->roller.hasCoral(false)));
+    Driver1.leftTrigger().whileTrue(new RunCommand(() -> elevator.RunElevatorManual(0.2), elevator));
+    Driver1.rightTrigger().whileTrue(new RunCommand(() -> elevator.RunElevatorManual(-0.2), elevator));
   }
 
 
