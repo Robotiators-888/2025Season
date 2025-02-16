@@ -4,26 +4,19 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.PivotConstants;
 
 
 public class SUB_Pivot extends SubsystemBase {
@@ -33,27 +26,29 @@ public class SUB_Pivot extends SubsystemBase {
   private SparkMaxConfig config = new SparkMaxConfig();
 
   private TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(0., 0.));
-  private ArmFeedforward armFF = new ArmFeedforward(0, 0.69, 0.34);
-  private SparkAbsoluteEncoder rotateEncoder = primary.getAbsoluteEncoder();
+  private SparkAbsoluteEncoder rotateEncoder;
 
   private TrapezoidProfile.State goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
   private TrapezoidProfile.State currentState = new TrapezoidProfile.State();
 
   private ProfiledPIDController voltagePID =
-      new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0., 0.));
+      new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(0., 0.)); // TODO: Change constants
 
 
 
-  public SUB_Pivot() {
+  public SUB_Pivot(SparkAbsoluteEncoder rotateEncoder) {
     config.follow(primary);
     config.inverted(true);
     secondary.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     config.inverted(false);
     config.disableFollowerMode();
 
-    config.absoluteEncoder.positionConversionFactor(2 * Math.PI);
-    config.absoluteEncoder.velocityConversionFactor(2 * Math.PI / 60);
+
+    this.rotateEncoder = rotateEncoder;
+
+    // config.absoluteEncoder.positionConversionFactor(2 * Math.PI); TODO: PUT THIS IN THE RIGHT SUBSYSTEM
+    // config.absoluteEncoder.velocityConversionFactor(2 * Math.PI / 60); TODO: PUT THIS IN THE RIGHT SUBSYSTEM
 
     primary.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -62,12 +57,15 @@ public class SUB_Pivot extends SubsystemBase {
     primary.set(manual);
   }
 
-  public void RunArm() {
+  public void RunArm(boolean hasCoral) {
     currentState =
         new TrapezoidProfile.State(rotateEncoder.getPosition(), rotateEncoder.getVelocity());
     setpoint = profile.calculate(0.02, currentState, goal);
 
-    double ff = armFF.calculate(setpoint.position, setpoint.velocity);
+    double ff = PivotConstants.noCoralArmFeedforward.calculate(setpoint.position, setpoint.velocity);
+    if (hasCoral){
+      ff = PivotConstants.coralArmFeedforward.calculate(setpoint.position, setpoint.velocity);
+    }
 
     primary.setVoltage(voltagePID.calculate(rotateEncoder.getPosition(), setpoint.position) + ff);
   }
@@ -77,9 +75,9 @@ public class SUB_Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Arm Target Setpoint", setpoint);
   }
 
-  public static SUB_Pivot getInstance() {
+  public static SUB_Pivot getInstance(SparkAbsoluteEncoder rotateEncoder) {
     if (INSTANCE == null) {
-      INSTANCE = new SUB_Pivot();
+      INSTANCE = new SUB_Pivot(rotateEncoder);
     }
     return INSTANCE;
   }

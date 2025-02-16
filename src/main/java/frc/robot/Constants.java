@@ -7,6 +7,8 @@ package frc.robot;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -182,4 +184,9 @@ public final class Constants {
         speakerAimPoint.getDistance(subwooferFront.getTranslation());
   }
 
+
+  public static final class PivotConstants {
+    public static final ArmFeedforward noCoralArmFeedforward = new ArmFeedforward(0, 0.69, 0.34);
+    public static final ArmFeedforward coralArmFeedforward = new ArmFeedforward(0, 0.69, 0.34); // Set it the same for now
+  }
 }
