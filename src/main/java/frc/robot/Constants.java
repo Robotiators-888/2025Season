@@ -193,6 +193,12 @@ public final class Constants {
   public static final class PivotConstants {
     public static final ArmFeedforward noCoralArmFeedforward = new ArmFeedforward(0, 0.69, 0.34);
     public static final ArmFeedforward coralArmFeedforward = new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now, change later
+
+    public static final double kIntakeSetpoint = 0.0;
+    public static final double kElevatingSetpoint = 0.0;
+    public static final double kCoralSetpoint = 0.0;
+    public static final double kAlgaeSetpoint = 0.0;
+    public static final double toleranceRadians = 0.0;
   }
 
   public static final class Elevator {
@@ -230,5 +236,5 @@ public final class Constants {
         public static final double kIntakeFinishTime = .1;
 
         public static final double kEjectSpeed = -0.1;
-    }
+    }       
 }

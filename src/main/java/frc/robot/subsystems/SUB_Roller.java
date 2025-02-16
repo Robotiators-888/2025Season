@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import java.util.function.BooleanSupplier;
 import com.revrobotics.RelativeEncoder;
@@ -11,7 +12,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.networktables.BooleanArrayEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Roller;
@@ -19,35 +19,41 @@ import frc.robot.Constants.Roller;
 
 public class SUB_Roller extends SubsystemBase {
   private static SUB_Roller INSTANCE = null;
-  private static SparkMax roller = new SparkMax(Roller.kRollerCanID, MotorType.kBrushless);
-  private static SparkMaxConfig config = new SparkMaxConfig();
-  private static RelativeEncoder encoder = roller.getEncoder();
-  private static Boolean HasCoral = false;
-
-
+  private SparkMax roller = new SparkMax(Roller.kRollerCanID, MotorType.kBrushless);
+  private SparkMaxConfig config = new SparkMaxConfig();
+  private RelativeEncoder encoder = roller.getEncoder();
+  private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
+  private Boolean hasCoral = false;
 
   private SUB_Roller() {
     config.voltageCompensation(12);
     config.inverted(false);
     config.smartCurrentLimit(40);
+    config.absoluteEncoder.positionConversionFactor(2 * Math.PI);
+    config.absoluteEncoder.velocityConversionFactor(2 * Math.PI / 60); 
 
     roller.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
   }
 
-  public BooleanSupplier outputCurrentThreshold() {
+  public BooleanSupplier rollerOutputCurrentThreshold() {
     return () -> roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold;
   }
 
-  public void setOutput(double percent) {
+  public void setRollerOutput(double percent) {
     roller.set(percent);
   }
 
   public boolean hasCoral(){
-    return HasCoral;
+    return hasCoral;
   }
 
-  public void hasCoral(boolean hasCoral){
-    hasCoral = !hasCoral;
+  public void setHasCoral(boolean hasCoral){
+    this.hasCoral = hasCoral;
+  }
+
+  public SparkAbsoluteEncoder getAbsoluteEncoder(){
+    return absoluteEncoder;
   }
 
   public static SUB_Roller getInstance() {

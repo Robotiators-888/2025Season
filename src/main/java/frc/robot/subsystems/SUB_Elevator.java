@@ -15,6 +15,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -44,6 +45,7 @@ public class SUB_Elevator extends SubsystemBase {
   private SUB_Elevator() {
     config.follow(primary);
     config.inverted(true);
+    config.idleMode(IdleMode.kBrake);
     secondary.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     config.inverted(false);
     config.disableFollowerMode();
@@ -55,11 +57,11 @@ public class SUB_Elevator extends SubsystemBase {
     primaryPID.setReference(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
 
-  public void RunElevatorManual(double manual) {
+  public void runElevatorManual(double manual) {
     primary.set(manual);
   }
 
-  public void RunElevator() {
+  public void runElevator() {
     currentState =
         new TrapezoidProfile.State(primaryencoder.getPosition(), primaryencoder.getVelocity());
     setpoint = profile.calculate(Elevator.kTimeStep, currentState, goal);
@@ -76,7 +78,7 @@ public class SUB_Elevator extends SubsystemBase {
 
   public void HomeElevator() {
     if (lowerLimitSwitch.isPressed()) {
-      RunElevatorManual(0);
+      runElevatorManual(0);
       primaryencoder.setPosition(Elevator.kHomingEncoderLocation);
       hasHomed = true;
       SmartDashboard.putBoolean("Homed", hasHomed);
@@ -86,10 +88,10 @@ public class SUB_Elevator extends SubsystemBase {
         && primary.getOutputCurrent() > Elevator.kHomingEmergencyCurrent) {
       primaryencoder.setPosition(Elevator.kHomingEncoderLocation);
       SmartDashboard.putBoolean("EMERGENCY HOMED!!!", true);
-      RunElevatorManual(0);
+      runElevatorManual(0);
       return;
     } else {
-      RunElevatorManual(Elevator.kHomingSpeed);
+      runElevatorManual(Elevator.kHomingSpeed);
     }
   }
 
