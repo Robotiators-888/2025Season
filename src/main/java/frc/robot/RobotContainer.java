@@ -84,9 +84,8 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), false,
                 true),
             drivetrain));
-      
 
-    File pathFolder = new File(Filesystem.getDeployDirectory().getName()+"pathplanner/paths/");
+    File pathFolder = new File(Filesystem.getDeployDirectory()+"/pathplanner/paths/");
     File[] listOfFiles = pathFolder.listFiles();
     List<String> pathNames = new ArrayList<>();
 
@@ -100,8 +99,8 @@ public class RobotContainer {
 
     for (String pathName : pathNames) {
       String modifiedPathName = pathName.substring(0, pathName.length() - 5);
-      NamedCommands.registerCommand(modifiedPathName, getPathCommand(modifiedPathName));
-    }    
+      NamedCommands.registerCommand(modifiedPathName+" Pathfind", getPathCommand(modifiedPathName));
+    }
     // Configure the trigger bindings
     configureBindings();
 
