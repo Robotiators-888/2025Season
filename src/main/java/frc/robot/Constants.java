@@ -209,6 +209,7 @@ public final class Constants {
         public static final double kHomingEmergencyCurrent = 20;
         public static final boolean kStartingHoming = false;
         public static final double kHomingSpeed = 0.3;
+        public static final double kTolerance = .05;
         public static final double kPIDTolerance = 20;
         public static final double kTimeStep = 0.02;
 
@@ -217,6 +218,7 @@ public final class Constants {
         public static final double kL2Setpoint = 200;
         public static final double kL3Setpoint = 300;
         public static final double kL4Setpoint = 400;
+
 
         public static final double kP = 0;
         public static final double kI = 0;
@@ -229,12 +231,14 @@ public final class Constants {
 
     public static class Roller{
         public static final int kRollerCanID = 30;
-        public static final double kIntakeCurrentThreshold = 25;
+        public static final double kIntakeCurrentThreshold = 25; // Amps
+        
+        public static final double kIntakeSpeed = .4; // Percent
+        public static final double kIntakeFinishSpeed = .1; // Percent
+        public static final double kIntakeStartingTime = .05; //Seconds
+        public static final double kIntakeFinishTime = .1; //Seconds
 
-        public static final double kIntakeSpeed = .2;
-        public static final double kIntakeFinishSpeed = .1;
-        public static final double kIntakeFinishTime = .1;
-
-        public static final double kEjectSpeed = -0.1;
-    }       
+        public static final double kEjectSpeed = 0.4; // Percent
+        public static final double kFreeSpinThreshold = 120; //RPM
+    }     
 }

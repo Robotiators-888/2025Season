@@ -27,20 +27,20 @@ import frc.robot.Constants.Elevator;
 
 public class SUB_Elevator extends SubsystemBase {
   private static SUB_Elevator INSTANCE = null;
-  private static boolean hasHomed = Elevator.kStartingHoming;
-  private static SparkMax primary = new SparkMax(35, MotorType.kBrushless);
-  private static SparkMax secondary = new SparkMax(36, MotorType.kBrushless);
-  private static SparkMaxConfig config = new SparkMaxConfig();
-  private static RelativeEncoder primaryencoder = primary.getEncoder();
-  private static SparkLimitSwitch lowerLimitSwitch = primary.getForwardLimitSwitch();
-  private static SparkClosedLoopController primaryPID = primary.getClosedLoopController();
-  private static ElevatorFeedforward feedforward =
+  private boolean hasHomed = Elevator.kStartingHoming;
+  private SparkMax primary = new SparkMax(35, MotorType.kBrushless);
+  private SparkMax secondary = new SparkMax(36, MotorType.kBrushless);
+  private SparkMaxConfig config = new SparkMaxConfig();
+  private RelativeEncoder primaryencoder = primary.getEncoder();
+  private SparkLimitSwitch lowerLimitSwitch = primary.getForwardLimitSwitch();
+  private SparkClosedLoopController primaryPID = primary.getClosedLoopController();
+  private ElevatorFeedforward feedforward =
       new ElevatorFeedforward(0, Elevator.kG, Elevator.kV);
   private final TrapezoidProfile profile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(1.75, 0.75));
-  private TrapezoidProfile.State goal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-  private TrapezoidProfile.State currentState = new TrapezoidProfile.State();
+  public TrapezoidProfile.State goal = new TrapezoidProfile.State();
+  public TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+  public TrapezoidProfile.State currentState = new TrapezoidProfile.State();
 
   private SUB_Elevator() {
     config.follow(primary);
@@ -68,6 +68,14 @@ public class SUB_Elevator extends SubsystemBase {
     double ff = feedforward.calculate(setpoint.velocity);
     primaryPID.setReference(0.0, ControlType.kPosition, ClosedLoopSlot.kSlot0, ff,
         ArbFFUnits.kVoltage);
+  }
+
+  public boolean atSetpoint(double setpoint) {
+    return Math.abs(primaryencoder.getPosition()-setpoint) < Elevator.kTolerance;
+  }
+
+  public double getCurrentPosition() {
+    return primaryencoder.getPosition();
   }
 
   public void ChangeSetpoint(double setpoint) {

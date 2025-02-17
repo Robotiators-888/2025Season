@@ -78,8 +78,16 @@ public class SUB_Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Arm Target Setpoint", setpoint);
   }
 
+  public void changeSetpoint(Supplier<Double> setpoint) {
+    goal = new TrapezoidProfile.State(setpoint.get(), 0);
+  }
+
   public boolean atSetpoint(double setpointRadians) {
     return Math.abs(absoluteEncoder.getPosition()-setpointRadians) < PivotConstants.toleranceRadians;
+  }
+
+  public boolean atSetpoint(Supplier<Double> setpointRadians) {
+    return Math.abs(absoluteEncoder.getPosition()-setpointRadians.get()) < PivotConstants.toleranceRadians;
   }
 
   public static SUB_Pivot getInstance(SparkAbsoluteEncoder absoluteEncoder) {

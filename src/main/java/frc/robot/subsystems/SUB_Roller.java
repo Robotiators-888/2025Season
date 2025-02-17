@@ -36,8 +36,12 @@ public class SUB_Roller extends SubsystemBase {
 
   }
 
-  public BooleanSupplier rollerOutputCurrentThreshold() {
+  public BooleanSupplier atCurrentThreshold() {
     return () -> roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold;
+  }
+
+  public BooleanSupplier isFreeSpinning(){
+    return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
   }
 
   public void setRollerOutput(double percent) {
@@ -48,7 +52,7 @@ public class SUB_Roller extends SubsystemBase {
     return hasCoral;
   }
 
-  public void setHasCoral(boolean hasCoral){
+  public void hasCoral(boolean hasCoral){
     this.hasCoral = hasCoral;
   }
 
