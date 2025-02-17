@@ -19,6 +19,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,13 +37,13 @@ public class SUB_Elevator extends SubsystemBase {
   private SparkLimitSwitch lowerLimitSwitch = primary.getForwardLimitSwitch();
   private SparkClosedLoopController primaryPID = primary.getClosedLoopController();
   private final TrapezoidProfile profile =
-      new TrapezoidProfile(new TrapezoidProfile.Constraints(0.3, 0.5));
+      new TrapezoidProfile(new TrapezoidProfile.Constraints(1.0, 0.5));
   public TrapezoidProfile.State goal = new TrapezoidProfile.State();
   public TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
   public TrapezoidProfile.State currentState = new TrapezoidProfile.State();
   public double outputvoltage = 0;
-  public ElevatorFeedforward elevatorff = new ElevatorFeedforward(0, Elevator.kG, Elevator.kV);
 
+  public InterpolatingDoubleTreeMap encoderToKg = new InterpolatingDoubleTreeMap();
 
 
   private SUB_Elevator() {
@@ -58,10 +59,15 @@ public class SUB_Elevator extends SubsystemBase {
     config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder).pid(Elevator.kP, Elevator.kI,
         Elevator.kD);
     primary.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    primaryPID.setReference(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
     currentState =
         new TrapezoidProfile.State(primaryencoder.getPosition(), primaryencoder.getVelocity());
+
+    encoderToKg.put(Double.MIN_VALUE, 0.3);
+    encoderToKg.put(0., 0.3);
+    encoderToKg.put(0.183, 0.4);
+    encoderToKg.put(0.2517, 0.5);
+    encoderToKg.put(Double.MAX_VALUE, 0.5);
   }
 
   public void runElevatorManual(double manual) {
@@ -84,10 +90,15 @@ public class SUB_Elevator extends SubsystemBase {
   public void runElevator() {
 
     setpoint = profile.calculate(Elevator.kTimeStep, currentState, goal);
-    double feedforward = elevatorff.calculate(setpoint.velocity);
+    double kg = encoderToKg.get(primaryencoder.getPosition());
+    double feedforward =
+        new ElevatorFeedforward(Double.min(kg, 0.2), kg, Elevator.kV).calculate(setpoint.velocity);
 
 
-    primaryPID.setReference(setpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0,
+    primaryPID.setReference(setpoint.position, 
+    
+    
+    ControlType.kPosition, ClosedLoopSlot.kSlot0,
         feedforward, ArbFFUnits.kVoltage);
     SmartDashboard.putNumber("Setpoint Pos", setpoint.position);
     SmartDashboard.putNumber("OutputVoltage", primary.getAppliedOutput() * primary.getBusVoltage());

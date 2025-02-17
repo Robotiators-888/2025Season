@@ -24,12 +24,9 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -40,9 +37,11 @@ public class RobotContainer {
   public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController Driver1 = new CommandXboxController(OperatorConstants.kDriver1ControllerPort);
+  private final CommandXboxController Driver1 =
+      new CommandXboxController(OperatorConstants.kDriver1ControllerPort);
 
-  private final CommandXboxController Driver2 = new CommandXboxController(OperatorConstants.kDriver2ControllerPort);
+  private final CommandXboxController Driver2 =
+      new CommandXboxController(OperatorConstants.kDriver2ControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -57,16 +56,20 @@ public class RobotContainer {
 
 
     // Only run the elevator to the setpoint once the pivot is in the right spot
-    elevator.setDefaultCommand(
-      new ConditionalCommand(
-        new RunCommand(() -> elevator.runElevator(), elevator),
-        new WaitCommand(0),
-        () -> pivot.atSetpoint(() -> RobotState.getCorrectPivotSetpoint())));
 
-    pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral()), pivot)); // TODO: Make sure
-                                                                                                   // elevator is not at
-                                                                                                   // a point where it
-                                                                                                   // will collide...
+    pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral()), pivot)); // TODO:
+                                                                                                   // Make
+                                                                                                   // sure
+                                                                                                   // elevator
+                                                                                                   // is
+                                                                                                   // not
+                                                                                                   // at
+                                                                                                   // a
+                                                                                                   // point
+                                                                                                   // where
+                                                                                                   // it
+                                                                                                   // will
+                                                                                                   // collide...
 
     elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(), elevator));
     roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.), roller));
@@ -88,33 +91,26 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
    * predicate, or via the named factories in
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
-   * for
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
    * {@link CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
-   * controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
 
-    // When the elevator is moving, constantly update the pivot setpoint
-    new Trigger(()->!elevator.atSetpoint(elevator.goal.position)).whileTrue(new RunCommand(()->pivot.changeSetpoint(()->RobotState.getCorrectPivotSetpoint()), pivot));
-    
-    new ParallelCommandGroup(new InstantCommand(()->elevator.ChangeSetpoint(Elevator.kL1Setpoint)));
-    Driver2.a().onTrue(new InstantCommand(() ->
-    elevator.ChangeSetpoint(Elevator.kL1Setpoint)));
-    Driver2.b().onTrue(new InstantCommand(() ->
-    elevator.ChangeSetpoint(Elevator.kL2Setpoint)));
-    Driver2.x().onTrue(new InstantCommand(() ->
-    elevator.ChangeSetpoint(0.0)));
-    Driver2.y().onTrue(new InstantCommand(() ->
-    elevator.ChangeSetpoint(Elevator.kL4Setpoint)));
+    // When the elevator is moving, constantly update the pivot setpointnew
+    // Trigger(()->!elevator.atSetpoint(elevator.goal.position)).whileTrue(new
+    // RunCommand(()->pivot.changeSetpoint(()->RobotState.getCorrectPivotSetpoint()), pivot));
+
+    new ParallelCommandGroup(
+        new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)));
+    Driver2.a().onTrue(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)));
+    Driver2.b().onTrue(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint)));
+    Driver2.x().onTrue(new InstantCommand(() -> elevator.ChangeSetpoint(0.0)));
+    Driver2.y().onTrue(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)));
     // Driver2.leftBumper()
     // .toggleOnTrue(new RunCommand(() ->
     // roller.setRollerOutput(Roller.kIntakeSpeed), roller)
@@ -128,31 +124,36 @@ public class RobotContainer {
     // new InstantCommand(() -> roller.setHasCoral(true))
     // ).withTimeout(Roller.kIntakeFinishTime)));
     Driver2.leftBumper()
-        .whileTrue(
-            new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed), roller)
-                .withTimeout(Roller.kIntakeStartingTime)
-                .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed), roller))
-                .until(roller.atCurrentThreshold())
-                .andThen(new ParallelCommandGroup(
-                    new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeFinishSpeed)),
-                    new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 1)),
-                    new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 1)),
-                    new InstantCommand(() -> roller.hasCoral(true)))
+        .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed), roller)
+            .withTimeout(Roller.kIntakeStartingTime)
+            .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed), roller))
+            .until(roller.atCurrentThreshold())
+            .andThen(new ParallelCommandGroup(
+                new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeFinishSpeed)),
+                new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 1)),
+                new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 1)),
+                new InstantCommand(() -> roller.hasCoral(true)))
                     .withTimeout(Roller.kIntakeFinishTime)
                     .andThen(new ParallelCommandGroup(
-                        new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 0)),
-                        new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 0))))));
-    Driver2.rightBumper().whileTrue(
-        new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
-            .until(roller.isFreeSpinning()).andThen(new InstantCommand(() -> roller.hasCoral(false))));
-          
-    Driver1.rightBumper().whileTrue(new RunCommand(()->elevator.runElevatorManualVoltage(elevator.outputvoltage),elevator));
-    Driver1.x().onTrue(new InstantCommand(()->elevator.updateVoltage(-0.1)).andThen(new InstantCommand(()->SmartDashboard.putNumber("Volts", elevator.outputvoltage))));
-    Driver1.y().onTrue(new InstantCommand(()->elevator.updateVoltage(0.1)).andThen(new InstantCommand(()->SmartDashboard.putNumber("Volts", elevator.outputvoltage))));     
-    Driver1.rightTrigger().onTrue(new InstantCommand(()->elevator.zeroEncoder()));
-          }
+                        new InstantCommand(
+                            () -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 0)),
+                        new InstantCommand(
+                            () -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 0))))));
+    Driver2.rightBumper()
+        .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+            .until(roller.isFreeSpinning())
+            .andThen(new InstantCommand(() -> roller.hasCoral(false))));
 
-  
+    Driver1.rightBumper().whileTrue(
+        new RunCommand(() -> elevator.runElevatorManualVoltage(elevator.outputvoltage), elevator));
+    Driver1.x().onTrue(new InstantCommand(() -> elevator.updateVoltage(-0.1)).andThen(
+        new InstantCommand(() -> SmartDashboard.putNumber("Volts", elevator.outputvoltage))));
+    Driver1.y().onTrue(new InstantCommand(() -> elevator.updateVoltage(0.1)).andThen(
+        new InstantCommand(() -> SmartDashboard.putNumber("Volts", elevator.outputvoltage))));
+    Driver1.rightTrigger().onTrue(new InstantCommand(() -> elevator.zeroEncoder()));
+  }
+
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

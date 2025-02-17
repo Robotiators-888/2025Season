@@ -239,7 +239,7 @@ public final class Constants {
 
                 public static final double kG = 0.6;
                 public static final double kS = 0.3;
-                public static final double kV = 4.00;
+                public static final double kV = 5.00;
         }
 
         public static class Roller {
