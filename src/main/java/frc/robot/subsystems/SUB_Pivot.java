@@ -8,19 +8,13 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PivotConstants;
@@ -28,8 +22,7 @@ import frc.robot.Constants.PivotConstants;
 public class SUB_Pivot extends SubsystemBase {
   private static SUB_Pivot INSTANCE = null;
 
-  private SparkMax armPrimary = new SparkMax(35, MotorType.kBrushless);
-  private SparkMax armSecondary = new SparkMax(36, MotorType.kBrushless);
+  private SparkMax armPrimary = new SparkMax(31, MotorType.kBrushless);
   private SparkAbsoluteEncoder absoluteEncoder;
   private SparkMaxConfig armMotorConfig = new SparkMaxConfig();
 
@@ -44,10 +37,6 @@ public class SUB_Pivot extends SubsystemBase {
 
 
   public SUB_Pivot(SparkAbsoluteEncoder absoluteEncoder) {
-    armMotorConfig.idleMode(IdleMode.kBrake);
-    armMotorConfig.follow(armPrimary);
-    armMotorConfig.inverted(true);
-    armSecondary.configure(armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     armMotorConfig.inverted(false);
     armMotorConfig.disableFollowerMode();
     armPrimary.configure(armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

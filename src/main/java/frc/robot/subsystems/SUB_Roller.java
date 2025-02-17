@@ -28,7 +28,7 @@ public class SUB_Roller extends SubsystemBase {
   private SUB_Roller() {
     config.voltageCompensation(12);
     config.inverted(false);
-    config.smartCurrentLimit(40);
+    config.smartCurrentLimit(Roller.kRollerCurrentLimit);
     config.absoluteEncoder.positionConversionFactor(2 * Math.PI);
     config.absoluteEncoder.velocityConversionFactor(2 * Math.PI / 60); 
 

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -67,7 +68,7 @@ public class RobotContainer {
                                                                                                    // a point where it
                                                                                                    // will collide...
 
-    elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevatorManual(0.), elevator));
+    elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(), elevator));
     roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.), roller));
     pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivotManual(0.), pivot));
 
@@ -111,13 +112,9 @@ public class RobotContainer {
     Driver2.b().onTrue(new InstantCommand(() ->
     elevator.ChangeSetpoint(Elevator.kL2Setpoint)));
     Driver2.x().onTrue(new InstantCommand(() ->
-    elevator.ChangeSetpoint(Elevator.kL3Setpoint)));
+    elevator.ChangeSetpoint(0.0)));
     Driver2.y().onTrue(new InstantCommand(() ->
     elevator.ChangeSetpoint(Elevator.kL4Setpoint)));
-
-    Driver2.a().whileTrue(new RunCommand(() -> pivot.runPivotManual(0.2), pivot));
-    Driver2.b().whileTrue(new RunCommand(() -> pivot.runPivotManual(-0.2), pivot));
-
     // Driver2.leftBumper()
     // .toggleOnTrue(new RunCommand(() ->
     // roller.setRollerOutput(Roller.kIntakeSpeed), roller)
@@ -131,7 +128,7 @@ public class RobotContainer {
     // new InstantCommand(() -> roller.setHasCoral(true))
     // ).withTimeout(Roller.kIntakeFinishTime)));
     Driver2.leftBumper()
-        .toggleOnTrue(
+        .whileTrue(
             new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed), roller)
                 .withTimeout(Roller.kIntakeStartingTime)
                 .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed), roller))
@@ -148,8 +145,14 @@ public class RobotContainer {
     Driver2.rightBumper().whileTrue(
         new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
             .until(roller.isFreeSpinning()).andThen(new InstantCommand(() -> roller.hasCoral(false))));
-  }
+          
+    Driver1.rightBumper().whileTrue(new RunCommand(()->elevator.runElevatorManualVoltage(elevator.outputvoltage),elevator));
+    Driver1.x().onTrue(new InstantCommand(()->elevator.updateVoltage(-0.1)).andThen(new InstantCommand(()->SmartDashboard.putNumber("Volts", elevator.outputvoltage))));
+    Driver1.y().onTrue(new InstantCommand(()->elevator.updateVoltage(0.1)).andThen(new InstantCommand(()->SmartDashboard.putNumber("Volts", elevator.outputvoltage))));     
+    Driver1.rightTrigger().onTrue(new InstantCommand(()->elevator.zeroEncoder()));
+          }
 
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
