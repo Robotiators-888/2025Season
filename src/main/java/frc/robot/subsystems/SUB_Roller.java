@@ -11,7 +11,6 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.networktables.BooleanArrayEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Roller;
@@ -34,7 +33,7 @@ public class SUB_Roller extends SubsystemBase {
     roller.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public BooleanSupplier outputCurrentThreshold() {
+  public BooleanSupplier atCurrentThreshold() {
     return () -> roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold;
   }
 

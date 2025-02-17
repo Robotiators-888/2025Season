@@ -9,7 +9,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.subsystems.*;
 
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -20,9 +19,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -32,13 +34,13 @@ public class RobotContainer {
   public static SUB_Roller roller = SUB_Roller.getInstance();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController Driver1 =
-      new CommandXboxController(OperatorConstants.kDriver1ControllerPort);
+  private final CommandXboxController Driver1 = new CommandXboxController(OperatorConstants.kDriver1ControllerPort);
 
-  private final CommandXboxController Driver2 =
-      new CommandXboxController(OperatorConstants.kDriver2ControllerPort);
+  private final CommandXboxController Driver2 = new CommandXboxController(OperatorConstants.kDriver2ControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
 
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
@@ -47,7 +49,7 @@ public class RobotContainer {
         -MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband), true,
         true), drivetrain));
 
-    elevator.setDefaultCommand(new RunCommand(() -> elevator.RunElevatorManual(0.0), elevator));
+    elevator.setDefaultCommand(new RunCommand(() -> elevator.RunElevator(), elevator));
     roller.setDefaultCommand(new RunCommand(() -> roller.setOutput(0), roller));
 
     Driver1.povDown()
@@ -66,13 +68,18 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
    * predicate, or via the named factories in
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
+   * for
    * {@link CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+   * controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
    */
   private void configureBindings() {
 
@@ -82,20 +89,22 @@ public class RobotContainer {
     Driver2.y().onTrue(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)));
 
     Driver2.leftBumper()
-        .toggleOnTrue(new RunCommand(() -> roller.setOutput(Roller.kIntakeSpeed), roller)
-            .until(roller.outputCurrentThreshold())
-            .andThen(new ParallelCommandGroup(
-              new RunCommand(() -> roller.setOutput(Roller.kIntakeFinishSpeed)),
-              new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble,1)),
-              new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble,1)),
-              new InstantCommand(() -> roller.hasCoral(true))
-              ).withTimeout(Roller.kIntakeFinishTime)));
-    Driver2.rightBumper().whileTrue(new RunCommand(()->roller.setOutput(Roller.kEjectSpeed), roller).finallyDo(()->roller.hasCoral(false)));
-    Driver1.leftTrigger().whileTrue(new RunCommand(() -> elevator.RunElevatorManual(0.2), elevator));
-    Driver1.rightTrigger().whileTrue(new RunCommand(() -> elevator.RunElevatorManual(-0.2), elevator));
+        .toggleOnTrue(
+            new RunCommand(() -> roller.setOutput(Roller.kIntakeSpeed), roller).withTimeout(Roller.kIntakeStartingTime)
+                .andThen(new RunCommand(() -> roller.setOutput(Roller.kIntakeSpeed), roller))
+                .until(roller.atCurrentThreshold())
+                .andThen(new ParallelCommandGroup(
+                    new RunCommand(() -> roller.setOutput(Roller.kIntakeFinishSpeed)),
+                    new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 1)),
+                    new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 1)),
+                    new InstantCommand(() -> roller.hasCoral(true)))
+                    .withTimeout(Roller.kIntakeFinishTime)
+                    .andThen(new ParallelCommandGroup(
+                        new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 0)),
+                        new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 0))))));
+    Driver2.rightBumper().whileTrue(
+        new RunCommand(() -> roller.setOutput(Roller.kEjectSpeed), roller).finallyDo(() -> roller.hasCoral(false)));
   }
-
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
