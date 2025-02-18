@@ -80,7 +80,7 @@ public class SUB_Elevator extends SubsystemBase {
 
   public void updateVoltage(double voltage) {
     outputvoltage = outputvoltage + voltage;
-    outputvoltage = MathUtil.clamp(outputvoltage, 0, 6);
+    outputvoltage = MathUtil.clamp(outputvoltage, -0.5, 6);
   }
 
   public void zeroEncoder() {
@@ -88,26 +88,47 @@ public class SUB_Elevator extends SubsystemBase {
   }
 
   public void runElevator() {
-
-    setpoint = profile.calculate(Elevator.kTimeStep, currentState, goal);
-    double kg = encoderToKg.get(primaryencoder.getPosition());
-    double feedforward =
-        new ElevatorFeedforward(Double.min(kg, 0.2), kg, Elevator.kV).calculate(setpoint.velocity);
-
-
-    primaryPID.setReference(setpoint.position, 
+    if(goal.position - .09 < 0){
+      runElevatorManualVoltage(0);
+      return;
+    }
     
-    
-    ControlType.kPosition, ClosedLoopSlot.kSlot0,
-        feedforward, ArbFFUnits.kVoltage);
-    SmartDashboard.putNumber("Setpoint Pos", setpoint.position);
-    SmartDashboard.putNumber("OutputVoltage", primary.getAppliedOutput() * primary.getBusVoltage());
-    SmartDashboard.putNumber("Feedforward", feedforward);
-    SmartDashboard.putNumber("Goal Pos", goal.position);
-    SmartDashboard.putNumber("Setpoint Velo", setpoint.velocity);
+    if(Math.abs(goal.position - primaryencoder.getPosition())<.01){
+      runElevatorManualVoltage(.6);
+      return;
+    }
 
-    currentState =
-        new TrapezoidProfile.State(primaryencoder.getPosition(), primaryencoder.getVelocity());
+    if(goal.position > primaryencoder.getPosition()){
+      if (goal.position - primaryencoder.getPosition() > .15){
+        runElevatorManualVoltage(7.5);
+      }
+      runElevatorManualVoltage(1.5);
+      return;
+    }
+
+    if(goal.position < primaryencoder.getPosition()){
+      if (primaryencoder.getPosition() - goal.position < .15){
+        runElevatorManualVoltage(-1.2);
+      }
+      runElevatorManualVoltage(.1);
+      return;
+    }
+    runElevatorManual(0);
+
+    // setpoint = profile.calculate(Elevator.kTimeStep, currentState, goal);
+    // double feedforward =
+    //     new ElevatorFeedforward(Elevator.kS, Elevator.kG, Elevator.kV).calculate(setpoint.velocity);
+
+
+    // primaryPID.setReference(setpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, feedforward, ArbFFUnits.kVoltage);
+    // SmartDashboard.putNumber("Setpoint Pos", setpoint.position);
+    // SmartDashboard.putNumber("OutputVoltage", primary.getAppliedOutput() * primary.getBusVoltage());
+    // SmartDashboard.putNumber("Feedforward", feedforward);
+    // SmartDashboard.putNumber("Goal Pos", goal.position);
+    // SmartDashboard.putNumber("Setpoint Velo", setpoint.velocity);
+
+    // currentState =
+    //     new TrapezoidProfile.State(primaryencoder.getPosition(), primaryencoder.getVelocity());
   }
 
   public boolean atSetpoint(double setpoint) {

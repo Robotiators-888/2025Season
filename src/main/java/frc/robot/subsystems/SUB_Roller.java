@@ -29,18 +29,18 @@ public class SUB_Roller extends SubsystemBase {
     config.voltageCompensation(12);
     config.inverted(false);
     config.smartCurrentLimit(Roller.kRollerCurrentLimit);
-    config.absoluteEncoder.positionConversionFactor(2 * Math.PI);
-    config.absoluteEncoder.velocityConversionFactor(2 * Math.PI / 60); 
+    config.absoluteEncoder.positionConversionFactor(360);
+    config.absoluteEncoder.velocityConversionFactor(360 / 60);
 
     roller.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
   }
 
-  public BooleanSupplier atCurrentThreshold() {
-    return () -> roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold;
+  public boolean atCurrentThreshold() {
+    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold;
   }
 
-  public BooleanSupplier isFreeSpinning(){
+  public BooleanSupplier isFreeSpinning() {
     return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
   }
 
@@ -48,15 +48,15 @@ public class SUB_Roller extends SubsystemBase {
     roller.set(percent);
   }
 
-  public boolean hasCoral(){
+  public boolean hasCoral() {
     return hasCoral;
   }
 
-  public void hasCoral(boolean hasCoral){
+  public void hasCoral(boolean hasCoral) {
     this.hasCoral = hasCoral;
   }
 
-  public SparkAbsoluteEncoder getAbsoluteEncoder(){
+  public SparkAbsoluteEncoder getAbsoluteEncoder() {
     return absoluteEncoder;
   }
 

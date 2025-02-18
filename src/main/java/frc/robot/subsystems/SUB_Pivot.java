@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +31,7 @@ public class SUB_Pivot extends SubsystemBase {
   private TrapezoidProfile.State goal = new TrapezoidProfile.State();
   private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
   private TrapezoidProfile.State currentState = new TrapezoidProfile.State();
+  public double outputvoltage = 0;
 
   private ProfiledPIDController voltagePID =
       new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(2*Math.PI, 2*Math.PI)); // TODO: Change constants
@@ -37,7 +39,7 @@ public class SUB_Pivot extends SubsystemBase {
 
 
   public SUB_Pivot(SparkAbsoluteEncoder absoluteEncoder) {
-    armMotorConfig.inverted(false);
+    armMotorConfig.inverted(true);
     armMotorConfig.disableFollowerMode();
     armPrimary.configure(armMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -47,6 +49,15 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void runPivotManual(double manual) {
     armPrimary.set(manual);
+  }
+
+  public void runPivotManualVoltage(double volts) {
+    armPrimary.setVoltage(volts);
+  }
+
+  public void updateVoltage(double voltage) {
+    outputvoltage = outputvoltage + voltage;
+    outputvoltage = MathUtil.clamp(outputvoltage, -3, 6);
   }
 
   public void runPivot(Supplier<Boolean> hasCoral) {
@@ -86,5 +97,7 @@ public class SUB_Pivot extends SubsystemBase {
     return INSTANCE;
   }
 
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("ABSEncoder", absoluteEncoder.getPosition());
+  }
 }
