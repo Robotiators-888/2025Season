@@ -4,9 +4,11 @@
 
 package frc.robot;
 
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
+
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -123,12 +125,12 @@ public final class Constants {
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(24);
-    // 31inches by 24inches
+    public static final double kTrackWidth = Units.inchesToMeters(27);
+    // 30.5inches by 27inches
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(31);
+    public static final double kWheelBase = Units.inchesToMeters(30.5);
 
-    public static final double kTrackRadius = Units.inchesToMeters(19.6 * Math.sqrt(2) / 2);
+    public static final double kTrackRadius = Units.inchesToMeters(35.7945526582); //(23.5^2 + 27^2)^0.5
     public static final double kMaxModuleSpeed = Units.feetToMeters(15);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics =
@@ -159,12 +161,12 @@ public final class Constants {
     public static final double fieldWidth = 805.0/100.0;
   }
 
-  public static final class PhotonVision {
-    public static final String kCam1Name = "AprilTagCam";
-    public static final Rotation3d cameraRotation = new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(180));
-    public static final Transform3d kRobotToCamera1 =
-        new Transform3d(Units.inchesToMeters(-15.5 + 2.25), Units.inchesToMeters(12.0 - 3.75)-0.6+0.07,
-            Units.inchesToMeters(15.5), cameraRotation);
+  public static final class PhotonVision {//Unstable
+     public static final String kCam1Name = "AprilTagCam";
+//     public static final Rotation3d cameraRotation = new Rotation3d(0, Units.degreesToRadians(14), Units.degreesToRadians(180));
+//     public static final Transform3d kRobotToCamera1 =
+//         new Transform3d(Units.inchesToMeters(-15.5 + 2.25), Units.inchesToMeters(12.0 - 3.75)-0.6+0.07,
+//             Units.inchesToMeters(15.5), cameraRotation);
 
   }
 
