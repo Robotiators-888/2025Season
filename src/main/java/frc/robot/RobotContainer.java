@@ -13,6 +13,7 @@ import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
@@ -68,7 +69,7 @@ public class RobotContainer {
         () -> drivetrain.drive(
             MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
             MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-            MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
+            -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
 
         
@@ -149,26 +150,26 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // return autoChooser.getSelected();
-    Pathfinding.setPathfinder(new LocalADStar());
+//     return autoChooser.getSelected();
+//     Pathfinding.setPathfinder(new LocalADStar());
 
-    try{
+//     try{
     // // Load the path we want to pathfind to and follow
-    PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
-    drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
-    // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
-    PathConstraints constraints = new PathConstraints(
-            0.5, 0.5,
-            Units.degreesToRadians(180), Units.degreesToRadians(180));
+//     PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
+//     drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
+//     // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
+//     PathConstraints constraints = new PathConstraints(
+//             0.5, 0.5,
+//             Units.degreesToRadians(180), Units.degreesToRadians(180));
 
-    // Since AutoBuilder is configured, we can use it to build pathfinding commands
-    return AutoBuilder.pathfindThenFollowPath(
-     path,
-    constraints);
+//     // Since AutoBuilder is configured, we can use it to build pathfinding commands
+//     return AutoBuilder.pathfindThenFollowPath(
+//      path,
+//     constraints);
     //return AutoBuilder.followPath(path);
 
-    //   // PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
-    //   // return auto;
+      PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
+      return auto;
 
     // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
     
@@ -179,10 +180,10 @@ public class RobotContainer {
     //   AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
     // );
     // return AutoBuilder.followPath(path);
-    } catch (Exception e) {
-        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-        return Commands.none();
-    }
+//     } catch (Exception e) {
+//         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+//         return Commands.none();
+//     }
   }
 
 
@@ -208,33 +209,33 @@ public class RobotContainer {
   }
 
   public static void photonPoseUpdate() {
-    Optional<EstimatedRobotPose> photonPoseOptional = photonVision.getEstimatedGlobalPose();
+//     Optional<EstimatedRobotPose> photonPoseOptional = photonVision.getEstimatedGlobalPose();
 
-    if (photonPoseOptional.isPresent()) {
-      Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-      if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength && photonPose.getY() >= 0
-          && photonPose.getY() <= Field.fieldWidth) {
-        Pose2d closestTag = photonVision.at_field
-            .getTagPose(photonVision.getBestTarget().getFiducialId()).orElse(new Pose3d()).toPose2d();
-        Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
+//     if (photonPoseOptional.isPresent()) {
+//       Pose3d photonPose = photonPoseOptional.get().estimatedPose;
+//       if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength && photonPose.getY() >= 0
+//           && photonPose.getY() <= Field.fieldWidth) {
+//         Pose2d closestTag = photonVision.at_field
+//             .getTagPose(photonVision.getBestTarget().getFiducialId()).orElse(new Pose3d()).toPose2d();
+//         Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
 
-        double distance = translate.getNorm();
-        double xStddev = distance * 1.5;
-        double yStddev = xStddev * 4;
-        double rotStddev = Units.degreesToRadians(120.0);
+//         double distance = translate.getNorm();
+//         double xStddev = distance * 1.5;
+//         double yStddev = xStddev * 4;
+//         double rotStddev = Units.degreesToRadians(120.0);
 
-        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
+//         drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
 
-        SmartDashboard.putNumberArray("PHOTON/Pose", new Double[] {photonPose.toPose2d().getX(),
-            photonPose.toPose2d().getY(), photonPose.toPose2d().getRotation().getDegrees()});
-        SmartDashboard.putNumberArray("PHOTON/Pose3d",
-            new Double[] {photonPose.getX(), photonPose.getY(), photonPose.getZ(),
-                photonPose.getRotation().getQuaternion().getW(),
-                photonPose.getRotation().getQuaternion().getX(),
-                photonPose.getRotation().getQuaternion().getY(),
-                photonPose.getRotation().getQuaternion().getZ()});
-        drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
-      }
-    }
+//         SmartDashboard.putNumberArray("PHOTON/Pose", new Double[] {photonPose.toPose2d().getX(),
+//             photonPose.toPose2d().getY(), photonPose.toPose2d().getRotation().getDegrees()});
+//         SmartDashboard.putNumberArray("PHOTON/Pose3d",
+//             new Double[] {photonPose.getX(), photonPose.getY(), photonPose.getZ(),
+//                 photonPose.getRotation().getQuaternion().getW(),
+//                 photonPose.getRotation().getQuaternion().getX(),
+//                 photonPose.getRotation().getQuaternion().getY(),
+//                 photonPose.getRotation().getQuaternion().getZ()});
+//         drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
+//       }
+//     }
   }
 }

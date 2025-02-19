@@ -372,7 +372,7 @@ public class SUB_Drivetrain extends SubsystemBase {
     ChassisSpeeds adjustedSpeeds = new ChassisSpeeds(
       robotRelativeSpeeds.vxMetersPerSecond,
       robotRelativeSpeeds.vyMetersPerSecond,
-      -robotRelativeSpeeds.omegaRadiansPerSecond //Unstable
+      robotRelativeSpeeds.omegaRadiansPerSecond //Unstable
     );
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(adjustedSpeeds, 0.02);
 
