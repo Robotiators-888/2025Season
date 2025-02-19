@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -14,6 +15,7 @@ import frc.robot.Constants.Climber;
 public class SUB_Climber extends SubsystemBase {
     private static SUB_Climber INSTANCE = null;
     private SparkMax climber = new SparkMax(Climber.kClimberCanID, MotorType.kBrushless);
+    private SparkLimitSwitch lowerLimitSwitch = climber.getForwardLimitSwitch();
     private SparkMaxConfig climberConfig = new SparkMaxConfig();
 
     public SUB_Climber() {

@@ -49,11 +49,11 @@ public class RobotContainer {
         public RobotContainer() {
 
                 drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
-                                -MathUtil.applyDeadband(Driver1.getRawAxis(1),
+                                -0.1*MathUtil.applyDeadband(Driver1.getRawAxis(1),
                                                 OperatorConstants.kDriveDeadband),
-                                -MathUtil.applyDeadband(Driver1.getRawAxis(0),
+                                -0.1*MathUtil.applyDeadband(Driver1.getRawAxis(0),
                                                 OperatorConstants.kDriveDeadband),
-                                -MathUtil.applyDeadband(Driver1.getRawAxis(4),
+                                -0.1*MathUtil.applyDeadband(Driver1.getRawAxis(4),
                                                 OperatorConstants.kDriveDeadband),
                                 true, true), drivetrain));
 
@@ -148,7 +148,7 @@ public class RobotContainer {
                                                                                                                                                 0)))))
                                                 .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller)))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.), roller));
-
+        
                 Driver2.rightBumper()
                                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
                                                 .until(roller.isFreeSpinning())
@@ -162,6 +162,10 @@ public class RobotContainer {
                 Driver1.rightBumper().whileTrue(new RunCommand(
                                 () -> pivot.runPivot(() -> false, ()->false),
                                 pivot));
+
+                // Driver1.rightBumper().whileTrue(new RunCommand(
+                //         () -> pivot.runPivotHoldingVoltage(() -> false),
+                //                 pivot));
 
                 // Driver1.x().onTrue(new InstantCommand(() -> pivot.updateVoltage(-0.025))
                 //                 .andThen(new InstantCommand(() -> SmartDashboard.putNumber("Volts",
