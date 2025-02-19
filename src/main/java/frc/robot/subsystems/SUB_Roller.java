@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Roller;
@@ -24,6 +25,7 @@ public class SUB_Roller extends SubsystemBase {
   private RelativeEncoder encoder = roller.getEncoder();
   private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
   private Boolean hasCoral = false;
+  private Timer timer;
 
   private SUB_Roller() {
     config.voltageCompensation(12);
@@ -36,12 +38,24 @@ public class SUB_Roller extends SubsystemBase {
 
   }
 
-  public boolean atCurrentThreshold() {
-    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold;
+  public boolean atCurrentThresholdandTimerElapsed() {
+    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold && timer.get() > Roller.kIntakeStartingTime;
   }
 
   public BooleanSupplier isFreeSpinning() {
     return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
+  }
+
+  public void timerInteract(boolean start){
+    if(start){
+      timer.reset();
+      timer.start();
+    }
+    else{
+      timer.stop();
+      timer.reset();
+    }
+    
   }
 
   public void setRollerOutput(double percent) {

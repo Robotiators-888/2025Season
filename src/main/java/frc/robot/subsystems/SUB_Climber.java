@@ -17,6 +17,9 @@ public class SUB_Climber extends SubsystemBase {
     private SparkMaxConfig climberConfig = new SparkMaxConfig();
 
     public SUB_Climber() {
+        climberConfig.inverted(false);
+        climberConfig.voltageCompensation(12);
+        climberConfig.smartCurrentLimit(60);
         climber.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

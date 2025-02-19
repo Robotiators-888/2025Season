@@ -103,8 +103,8 @@ public class SUB_Elevator extends SubsystemBase {
     }
 
     if(goal.position < primaryencoder.getPosition()){
-      if (primaryencoder.getPosition() - goal.position < .15){
-        runElevatorManualVoltage(-1.2);
+      if (Math.abs(primaryencoder.getPosition() - goal.position) > .15){
+        runElevatorManualVoltage(-.4);
       }
       runElevatorManualVoltage(.1);
       return;
