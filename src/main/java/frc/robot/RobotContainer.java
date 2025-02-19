@@ -4,23 +4,18 @@
 
 package frc.robot;
 
+import frc.robot.Constants.Climber;
 import frc.robot.Constants.Elevator;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.subsystems.*;
-import frc.robot.utils.RobotState;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -35,7 +30,7 @@ public class RobotContainer {
     public static SUB_Elevator elevator = SUB_Elevator.getInstance();
     public static SUB_Roller roller = SUB_Roller.getInstance();
     public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
-
+    public static SUB_Climber climber = SUB_Climber.getInstance();
     // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController Driver1 =
             new CommandXboxController(OperatorConstants.kDriver1ControllerPort);
@@ -156,6 +151,8 @@ public class RobotContainer {
         Driver1.y().onTrue(new InstantCommand(() -> pivot.updateVoltage(0.025)).andThen(
                 new InstantCommand(() -> SmartDashboard.putNumber("Volts", pivot.outputvoltage))));
         Driver1.rightTrigger().onTrue(new InstantCommand(() -> elevator.zeroEncoder()));
+        Driver2.b().onTrue(new InstantCommand(() -> climber.move(-Climber.kClimberPercentOutput)));
+        Driver2.a().onTrue(new InstantCommand(() -> climber.move(Climber.kClimberPercentOutput)));
 
     }
 
