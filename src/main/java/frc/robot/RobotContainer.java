@@ -48,14 +48,11 @@ public class RobotContainer {
          */
         public RobotContainer() {
 
-                drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
-                                -MathUtil.applyDeadband(Driver1.getRawAxis(1),
-                                                OperatorConstants.kDriveDeadband),
-                                -MathUtil.applyDeadband(Driver1.getRawAxis(0),
-                                                OperatorConstants.kDriveDeadband),
-                                -MathUtil.applyDeadband(Driver1.getRawAxis(4),
-                                                OperatorConstants.kDriveDeadband),
-                                true, true), drivetrain));
+            drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
+                -Math.pow(MathUtil.applyDeadband(Driver1.getRawAxis(1), OperatorConstants.kDriveDeadband),2),
+                -Math.pow(MathUtil.applyDeadband(Driver1.getRawAxis(0), OperatorConstants.kDriveDeadband),2),
+                -Math.pow(MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband),2), true,
+                true), drivetrain));
 
                 // pivot.setDefaultCommand(new RunCommand(
                 // () -> pivot.runPivot(() -> false, () -> false), pivot));
