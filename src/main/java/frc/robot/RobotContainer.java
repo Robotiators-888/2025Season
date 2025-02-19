@@ -137,7 +137,7 @@ public class RobotContainer {
                                                 new InstantCommand(() -> roller.setRollerOutput(0.),
                                                                 roller)));
                 Driver1.rightBumper().whileTrue(new RunCommand(
-                                () -> pivot.runPivotManualVoltage(pivot.outputvoltage),
+                                () -> pivot.runPivotHoldingVoltage(),
                                 pivot));
                 Driver1.x().onTrue(new InstantCommand(() -> pivot.updateVoltage(-0.025))
                                 .andThen(new InstantCommand(() -> SmartDashboard.putNumber("Volts",
