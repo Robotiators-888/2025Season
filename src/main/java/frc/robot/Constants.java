@@ -244,11 +244,11 @@ public final class Constants {
         public static class Roller {
                 public static final int kRollerCanID = 30;
                 public static final double kIntakeCurrentThreshold = 25; // Amps
-                public static final int kRollerCurrentLimit = 60;
+                public static final int kRollerCurrentLimit = 40;
 
                 public static final double kIntakeSpeed = 0.4; // Percent
                 public static final double kIntakeFinishSpeed = 0.1; // Percent
-                public static final double kIntakeStartingTime = 2; // Seconds
+                public static final double kIntakeStartingTime = .55; // Seconds
                 public static final double kIntakeFinishTime = 0.1; // Seconds
 
                 public static final double kEjectSpeed = 0.4; // Percent
