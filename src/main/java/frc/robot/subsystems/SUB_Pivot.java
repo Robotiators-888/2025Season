@@ -15,9 +15,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PivotConstants;
@@ -44,6 +42,20 @@ public class SUB_Pivot extends SubsystemBase {
     armPrimary.configure(armMotorConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     this.absoluteEncoder = absoluteEncoder;
+
+    constantApplicationMap.put(156.0, 0.425);
+    constantApplicationMap.put(185.0, 0.6);
+    constantApplicationMap.put(226.5, 0.475);
+    constantApplicationMap.put(264.0, 0.2);
+    constantApplicationMap.put(304.0, -0.225);
+    constantApplicationMap.put(324.0, -0.35);
+
+    coralConstantApplicationMap.put(160.0, 0.6);
+    coralConstantApplicationMap.put(195.0, 0.75);
+    coralConstantApplicationMap.put(225.8, 0.725);
+    coralConstantApplicationMap.put(252.0, 0.5);
+    coralConstantApplicationMap.put(285.0, 0.0);
+    coralConstantApplicationMap.put(320.0, -0.425);
 
   }
 

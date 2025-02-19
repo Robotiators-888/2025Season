@@ -96,7 +96,6 @@ public final class Constants {
                 public static final double kTurningFF = 0;
                 public static final double kTurningMinOutput = -1;
                 public static final double kTurningMaxOutput = 1;
-
                 public static final double headingTolerance = Degrees.of(1).in(Radians);
                 // Max Rot = Max Linear ((meters/sec)/60 (m/s)) / radius
                 public static final double kMaxRotationalSpeed =
@@ -247,10 +246,10 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 25; // Amps
                 public static final int kRollerCurrentLimit = 60;
 
-                public static final double kIntakeSpeed = .4; // Percent
-                public static final double kIntakeFinishSpeed = .1; // Percent
+                public static final double kIntakeSpeed = 0.4; // Percent
+                public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = 2; // Seconds
-                public static final double kIntakeFinishTime = .1; // Seconds
+                public static final double kIntakeFinishTime = 0.1; // Seconds
 
                 public static final double kEjectSpeed = 0.4; // Percent
                 public static final double kFreeSpinThreshold = 240; // RPM

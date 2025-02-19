@@ -84,29 +84,39 @@ public class SUB_Elevator extends SubsystemBase {
   }
 
   public void runElevator() {
-    if(goal.position - .09 < 0){
-      runElevatorManualVoltage(0);
+    if(goal.position - .01 < 0){
+      runElevatorManualVoltage(-.05);
       return;
     }
     
-    if(Math.abs(goal.position - primaryencoder.getPosition())<.01){
+    if(Math.abs(goal.position - primaryencoder.getPosition())<.02){
       runElevatorManualVoltage(.6);
       return;
     }
 
     if(goal.position > primaryencoder.getPosition()){
+      if (goal.position - primaryencoder.getPosition() > .25){
+        runElevatorManualVoltage(3);
+        return;
+      }
       if (goal.position - primaryencoder.getPosition() > .15){
-        runElevatorManualVoltage(7.5);
+        runElevatorManualVoltage(2);
+        return;
       }
       runElevatorManualVoltage(1.5);
       return;
     }
 
     if(goal.position < primaryencoder.getPosition()){
-      if (Math.abs(primaryencoder.getPosition() - goal.position) > .15){
-        runElevatorManualVoltage(-.4);
+      if (Math.abs(primaryencoder.getPosition() - goal.position) > .35){
+        runElevatorManualVoltage(-0.5);
+        return;
       }
-      runElevatorManualVoltage(.1);
+      if (Math.abs(primaryencoder.getPosition() - goal.position) > .15){
+        runElevatorManualVoltage(0);
+        return;
+      }
+      runElevatorManualVoltage(.15);
       return;
     }
     runElevatorManual(0);

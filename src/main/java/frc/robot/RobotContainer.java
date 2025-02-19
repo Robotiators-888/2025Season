@@ -4,17 +4,14 @@
 
 package frc.robot;
 
-import frc.robot.Constants.Climber;
 import frc.robot.Constants.Elevator;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
@@ -55,16 +52,17 @@ public class RobotContainer {
                                                 OperatorConstants.kDriveDeadband),
                                 true, true), drivetrain));
 
-                pivot.setDefaultCommand(new RunCommand(
-                                () -> pivot.runPivot(() -> false, () -> false), pivot));
+                // pivot.setDefaultCommand(new RunCommand(
+                //                 () -> pivot.runPivot(() -> false, () -> false), pivot));
                 elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(), elevator));
 
                 // Collision Avoidance Tester Code
                 
                 
+                // pivot.setDefaultCommand(new RunCommand(
+                //                 () -> pivot.runPivotManualVoltage(pivot.outputvoltage), pivot));
                 pivot.setDefaultCommand(new RunCommand(
-                                () -> pivot.runPivotManualVoltage(pivot.outputvoltage), pivot));
-
+                                () -> pivot.runPivotManualVoltage(0), pivot));
                 Driver1.povDown().whileTrue(new RunCommand(
                                 () -> drivetrain.drive(-MathUtil.applyDeadband(
                                                 Math.copySign(Math.pow(Driver1.getRawAxis(1), 2),
@@ -139,8 +137,8 @@ public class RobotContainer {
                                                 new InstantCommand(() -> roller.setRollerOutput(0.),
                                                                 roller)));
                 Driver1.rightBumper().whileTrue(new RunCommand(
-                                () -> elevator.runElevatorManualVoltage(elevator.outputvoltage),
-                                elevator));
+                                () -> pivot.runPivotManualVoltage(pivot.outputvoltage),
+                                pivot));
                 Driver1.x().onTrue(new InstantCommand(() -> pivot.updateVoltage(-0.025))
                                 .andThen(new InstantCommand(() -> SmartDashboard.putNumber("Volts",
                                                 pivot.outputvoltage))));

@@ -25,7 +25,7 @@ public class SUB_Roller extends SubsystemBase {
   private RelativeEncoder encoder = roller.getEncoder();
   private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
   private Boolean hasCoral = false;
-  private Timer timer;
+  private Timer timer = new Timer();
 
   private SUB_Roller() {
     config.voltageCompensation(12);
@@ -39,23 +39,23 @@ public class SUB_Roller extends SubsystemBase {
   }
 
   public boolean atCurrentThresholdandTimerElapsed() {
-    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold && timer.get() > Roller.kIntakeStartingTime;
+    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold
+        && timer.get() > Roller.kIntakeStartingTime;
   }
 
   public BooleanSupplier isFreeSpinning() {
     return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
   }
 
-  public void timerInteract(boolean start){
-    if(start){
+  public void timerInteract(boolean start) {
+    if (start) {
       timer.reset();
       timer.start();
-    }
-    else{
+    } else {
       timer.stop();
       timer.reset();
     }
-    
+
   }
 
   public void setRollerOutput(double percent) {
