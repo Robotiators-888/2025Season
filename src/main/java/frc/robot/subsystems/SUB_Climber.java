@@ -23,7 +23,7 @@ public class SUB_Climber extends SubsystemBase {
         climber.configure(climberConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void move(double speed) {
+    public void setSpeed(double speed) {
         climber.set(speed);
     }
 

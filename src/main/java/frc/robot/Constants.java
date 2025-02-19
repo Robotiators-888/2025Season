@@ -206,11 +206,11 @@ public final class Constants {
                                 new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now,
                                                                    // change later
 
-                public static final double kIntakeSetpoint = 0.0;
-                public static final double kElevatingSetpoint = 0.0;
-                public static final double kCoralSetpoint = 0.0;
-                public static final double kAlgaeSetpoint = 0.0;
-                public static final double toleranceRadians = 0.0;
+                public static final double kIntakeSetpoint = 324.88;
+                public static final double kElevatingSetpoint = 185;
+                public static final double kCoralSetpoint = 300;
+                public static final double kAlgaeSetpoint = 156;
+                public static final double toleranceDegrees = 0.0;
         }
 
         public static final class Elevator {
@@ -246,7 +246,7 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 25; // Amps
                 public static final int kRollerCurrentLimit = 40;
 
-                public static final double kIntakeSpeed = 0.4; // Percent
+                public static final double kIntakeSpeed = 0.2; // Percent
                 public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = .55; // Seconds
                 public static final double kIntakeFinishTime = 0.1; // Seconds

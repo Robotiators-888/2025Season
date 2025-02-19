@@ -28,7 +28,7 @@ public class SUB_Pivot extends SubsystemBase {
   private SparkMaxConfig armMotorConfig = new SparkMaxConfig();
   public double outputvoltage = 0;
 
-  private double setpoint = 0;// TOOD: Change
+  private double setpoint = PivotConstants.kIntakeSetpoint;// TOOD: Change
   private PIDController voltagePID = new PIDController(0, 0, 0); // TODO: Change constants
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
@@ -52,13 +52,14 @@ public class SUB_Pivot extends SubsystemBase {
     constantApplicationMap.put(324.0, -0.35);
     constantApplicationMap.put(Double.MAX_VALUE, -0.35);
 
-
+    coralConstantApplicationMap.put(Double.MIN_VALUE, 0.6);
     coralConstantApplicationMap.put(160.0, 0.6);
     coralConstantApplicationMap.put(195.0, 0.75);
     coralConstantApplicationMap.put(225.8, 0.725);
     coralConstantApplicationMap.put(252.0, 0.5);
     coralConstantApplicationMap.put(285.0, 0.0);
     coralConstantApplicationMap.put(320.0, -0.425);
+    constantApplicationMap.put(Double.MAX_VALUE, -0.425);
 
   }
 
@@ -70,10 +71,13 @@ public class SUB_Pivot extends SubsystemBase {
     armPrimary.setVoltage(volts);
   }
 
-  public void runPivotHoldingVoltage() {
-    armPrimary.setVoltage(constantApplicationMap.get(absoluteEncoder.getPosition()));
+  public void runPivotHoldingVoltage(Supplier<Boolean> hasCoral) {
+    if (hasCoral.get()){
+      armPrimary.setVoltage(coralConstantApplicationMap.get(absoluteEncoder.getPosition()));
+    } else {
+      armPrimary.setVoltage(constantApplicationMap.get(absoluteEncoder.getPosition()));
+    }
   }
-
 
   public void updateVoltage(double voltage) {
     outputvoltage = outputvoltage + voltage;
@@ -82,8 +86,7 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void runPivot(Supplier<Boolean> hasCoral, Supplier<Boolean> hasAlgae) {
     double error = setpoint - absoluteEncoder.getPosition();
-
-    double outputVoltage = voltagePID.calculate(error);
+    double outputVoltage = voltagePID.calculate(absoluteEncoder.getPosition(), setpoint);
 
     if (hasCoral.get()) {
       outputVoltage += coralConstantApplicationMap.get(absoluteEncoder.getPosition());
@@ -94,6 +97,9 @@ public class SUB_Pivot extends SubsystemBase {
     }
 
     SmartDashboard.putNumber("Pivot Output Voltage", outputVoltage);
+    SmartDashboard.putNumber("Pivot Voltage PID Output", voltagePID.calculate(absoluteEncoder.getPosition(), setpoint));
+    SmartDashboard.putNumber("Pivot Holding Voltage", outputVoltage - voltagePID.calculate(absoluteEncoder.getPosition(), setpoint));
+    SmartDashboard.putNumber("Pivot Setpoint Error", error);
 
     runPivotManualVoltage(outputVoltage);
   }
@@ -108,12 +114,12 @@ public class SUB_Pivot extends SubsystemBase {
 
   public boolean atSetpoint(double setpointRadians) {
     return Math
-        .abs(absoluteEncoder.getPosition() - setpointRadians) < PivotConstants.toleranceRadians;
+        .abs(absoluteEncoder.getPosition() - setpointRadians) < PivotConstants.toleranceDegrees;
   }
 
   public boolean atSetpoint(Supplier<Double> setpointRadians) {
     return Math.abs(
-        absoluteEncoder.getPosition() - setpointRadians.get()) < PivotConstants.toleranceRadians;
+        absoluteEncoder.getPosition() - setpointRadians.get()) < PivotConstants.toleranceDegrees;
   }
 
   public static SUB_Pivot getInstance(SparkAbsoluteEncoder absoluteEncoder) {
@@ -126,5 +132,6 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void periodic() {
     SmartDashboard.putNumber("ABSEncoder", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("Pivot SETPOINT", setpoint);
   }
 }
