@@ -48,11 +48,14 @@ public class RobotContainer {
          */
         public RobotContainer() {
 
-            drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
-                -Math.pow(MathUtil.applyDeadband(Driver1.getRawAxis(1), OperatorConstants.kDriveDeadband),2),
-                -Math.pow(MathUtil.applyDeadband(Driver1.getRawAxis(0), OperatorConstants.kDriveDeadband),2),
-                -Math.pow(MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband),2), true,
-                true), drivetrain));
+                drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
+                                -0.1*MathUtil.applyDeadband(Driver1.getRawAxis(1),
+                                                OperatorConstants.kDriveDeadband),
+                                -0.1*MathUtil.applyDeadband(Driver1.getRawAxis(0),
+                                                OperatorConstants.kDriveDeadband),
+                                -0.1*MathUtil.applyDeadband(Driver1.getRawAxis(4),
+                                                OperatorConstants.kDriveDeadband),
+                                true, true), drivetrain));
 
                 // pivot.setDefaultCommand(new RunCommand(
                 // () -> pivot.runPivot(() -> false, () -> false), pivot));
@@ -145,7 +148,7 @@ public class RobotContainer {
                                                                                                                                                 0)))))
                                                 .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller)))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.), roller));
-
+        
                 Driver2.rightBumper()
                                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
                                                 .until(roller.isFreeSpinning())
@@ -159,6 +162,10 @@ public class RobotContainer {
                 Driver1.rightBumper().whileTrue(new RunCommand(
                                 () -> pivot.runPivot(() -> false, ()->false),
                                 pivot));
+
+                // Driver1.rightBumper().whileTrue(new RunCommand(
+                //         () -> pivot.runPivotHoldingVoltage(() -> false),
+                //                 pivot));
 
                 // Driver1.x().onTrue(new InstantCommand(() -> pivot.updateVoltage(-0.025))
                 //                 .andThen(new InstantCommand(() -> SmartDashboard.putNumber("Volts",

@@ -29,7 +29,7 @@ public final class Constants {
         public static class OperatorConstants {
                 public static final int kDriver1ControllerPort = 0;
                 public static final int kDriver2ControllerPort = 1;
-                public static final double kDriveDeadband = 0.5;
+                public static final double kDriveDeadband = 0.2;
         }
 
         public static class Swerve {
@@ -243,12 +243,12 @@ public final class Constants {
 
         public static class Roller {
                 public static final int kRollerCanID = 30;
-                public static final double kIntakeCurrentThreshold = 25; // Amps
+                public static final double kIntakeCurrentThreshold = 35; // Amps
                 public static final int kRollerCurrentLimit = 40;
 
-                public static final double kIntakeSpeed = 0.2; // Percent
+                public static final double kIntakeSpeed = 0.25; // Percent
                 public static final double kIntakeFinishSpeed = 0.1; // Percent
-                public static final double kIntakeStartingTime = .55; // Seconds
+                public static final double kIntakeStartingTime = 1.25; // Seconds
                 public static final double kIntakeFinishTime = 0.1; // Seconds
 
                 public static final double kEjectSpeed = 0.4; // Percent

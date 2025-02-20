@@ -24,6 +24,7 @@ public class SUB_Roller extends SubsystemBase {
   private SparkMaxConfig config = new SparkMaxConfig();
   private RelativeEncoder encoder = roller.getEncoder();
   private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
+
   private Boolean hasCoral = false;
   private Timer timer = new Timer();
 
@@ -83,5 +84,6 @@ public class SUB_Roller extends SubsystemBase {
 
   public void periodic() {
     SmartDashboard.putNumber("Roller RPM", (encoder.getVelocity() / 60));
+    SmartDashboard.putNumber("Roller Current", roller.getOutputCurrent());
   }
 }
