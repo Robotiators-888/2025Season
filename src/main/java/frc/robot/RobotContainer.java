@@ -97,6 +97,10 @@ public class RobotContainer {
                 // RunCommand(()->pivot.changeSetpoint(()->RobotState.getCorrectPivotSetpoint()),
                 // pivot));
 
+
+
+                Driver1.leftStick().onTrue(new InstantCommand(()->drivetrain.zeroHeading()));
+
                 Driver2.a().onTrue(new InstantCommand(
                                 () -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)));
                 Driver2.b().onTrue(new InstantCommand(
@@ -141,11 +145,12 @@ public class RobotContainer {
                                                                 () -> roller.hasCoral(false)))
                                                 .andThen(new InstantCommand(
                                                                 () -> roller.setRollerOutput(0.),
-                                                                roller)));
+                                                                roller)))
+                                                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
+                                roller));
                 Driver2.rightTrigger().whileTrue(new RunCommand(
-                                () -> roller.setRollerOutput(-Roller.kEjectSpeed), roller).andThen(
-                                                new InstantCommand(() -> roller.setRollerOutput(0.),
-                                                                roller)));
+                                () -> roller.setRollerOutput(-Roller.kEjectSpeed), roller)).onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
+                                roller));
 
                 Driver1.rightBumper().whileTrue(new RunCommand(
                                 () -> pivot.runPivot(() -> false, () -> false), pivot));

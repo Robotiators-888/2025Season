@@ -81,6 +81,10 @@ public class SUB_Drivetrain extends SubsystemBase {
     return -navx.getAngle();
   }
 
+  public void resetHeading() {
+    navx.reset();
+  }
+
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
