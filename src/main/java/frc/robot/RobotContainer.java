@@ -149,11 +149,13 @@ public class RobotContainer {
                                                 .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller)))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.), roller));
         
+                // Driver2.rightBumper()
+                //                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+                //                                 .until(roller.isFreeSpinning())
+                //                                 .andThen(new InstantCommand(() -> roller.hasCoral(false)))
+                //                                 .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller)));
                 Driver2.rightBumper()
-                                .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
-                                                .until(roller.isFreeSpinning())
-                                                .andThen(new InstantCommand(() -> roller.hasCoral(false)))
-                                                .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller)));
+                                                .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)).whileFalse(new RunCommand(() -> roller.setRollerOutput(0), roller));
                 Driver2.rightTrigger().whileTrue(new RunCommand(
                                 () -> roller.setRollerOutput(-Roller.kEjectSpeed), roller).andThen(
                                                 new InstantCommand(() -> roller.setRollerOutput(0.),

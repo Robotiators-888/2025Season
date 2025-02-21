@@ -207,7 +207,7 @@ public final class Constants {
                                                                    // change later
 
                 public static final double kIntakeSetpoint = 324.88;
-                public static final double kElevatingSetpoint = 185;
+                public static final double kElevatingSetpoint = 273.5;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 156;
                 public static final double toleranceDegrees = 0.0;
@@ -229,7 +229,7 @@ public final class Constants {
                 public static final double kL1Setpoint = .15;
                 public static final double kL2Setpoint = .35;
                 public static final double kL3Setpoint = .5;
-                public static final double kL4Setpoint = .75;
+                public static final double kL4Setpoint = .805;
 
 
                 public static final double kP = 0;
@@ -244,15 +244,15 @@ public final class Constants {
         public static class Roller {
                 public static final int kRollerCanID = 30;
                 public static final double kIntakeCurrentThreshold = 35; // Amps
-                public static final int kRollerCurrentLimit = 40;
+                public static final int kRollerCurrentLimit = 60;
 
                 public static final double kIntakeSpeed = 0.25; // Percent
                 public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds
                 public static final double kIntakeFinishTime = 0.1; // Seconds
 
-                public static final double kEjectSpeed = 0.4; // Percent
-                public static final double kFreeSpinThreshold = 240; // RPM
+                public static final double kEjectSpeed = 0.8; // Percent
+                public static final double kFreeSpinThreshold = 6000; // RPM
         }
         public static class Climber {
                 public static final int kClimberCanID = 40;
