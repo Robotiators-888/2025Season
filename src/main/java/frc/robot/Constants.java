@@ -29,7 +29,7 @@ public final class Constants {
         public static class OperatorConstants {
                 public static final int kDriver1ControllerPort = 0;
                 public static final int kDriver2ControllerPort = 1;
-                public static final double kDriveDeadband = 0.2;
+                public static final double kDriveDeadband = 0.05;
         }
 
         public static class Swerve {
