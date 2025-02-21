@@ -30,7 +30,7 @@ public class SUB_Elevator extends SubsystemBase {
   private SparkMax secondary = new SparkMax(36, MotorType.kBrushless);
   private SparkMaxConfig config = new SparkMaxConfig();
   private RelativeEncoder primaryencoder = primary.getEncoder();
-  private SparkLimitSwitch lowerLimitSwitch = primary.getForwardLimitSwitch();
+  private SparkLimitSwitch lowerLimitSwitch = primary.getReverseLimitSwitch();
   private SparkClosedLoopController primaryPID = primary.getClosedLoopController();
   private final TrapezoidProfile profile =
       new TrapezoidProfile(new TrapezoidProfile.Constraints(1.0, 0.5));
@@ -85,7 +85,11 @@ public class SUB_Elevator extends SubsystemBase {
 
   public void runElevator() {
     if(goal.position - .01 < 0){
-      runElevatorManualVoltage(-.05);
+      if(lowerLimitSwitch.isPressed()){
+        runElevatorManualVoltage(0);
+        return;
+      }
+      runElevatorManualVoltage(-.5);
       return;
     }
     

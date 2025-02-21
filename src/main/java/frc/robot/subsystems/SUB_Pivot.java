@@ -29,7 +29,7 @@ public class SUB_Pivot extends SubsystemBase {
   public double outputvoltage = 0;
 
   private double setpoint = PivotConstants.kIntakeSetpoint;// TOOD: Change
-  private PIDController voltagePID = new PIDController(0.02, 0, 0); // TODO: Change constants
+  private PIDController voltagePID = new PIDController(0.02, 0.0001, 0.002); // TODO: Change constants
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();
@@ -39,6 +39,7 @@ public class SUB_Pivot extends SubsystemBase {
   public SUB_Pivot(SparkAbsoluteEncoder absoluteEncoder) {
     armMotorConfig.inverted(true);
     armMotorConfig.disableFollowerMode();
+    
     armPrimary.configure(armMotorConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     this.absoluteEncoder = absoluteEncoder;
@@ -88,6 +89,11 @@ public class SUB_Pivot extends SubsystemBase {
     double error = setpoint - absoluteEncoder.getPosition();
     double outputVoltage = voltagePID.calculate(absoluteEncoder.getPosition(), setpoint);
 
+    if (Math.abs(error) < 3){
+      outputVoltage = 0;
+      voltagePID.reset(); // Reset I accumulation 
+    }
+
     if (hasCoral.get()) {
       outputVoltage += coralConstantApplicationMap.get(absoluteEncoder.getPosition());
     } else if (hasAlgae.get()) {
@@ -100,6 +106,7 @@ public class SUB_Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Voltage PID Output", voltagePID.calculate(absoluteEncoder.getPosition(), setpoint));
     SmartDashboard.putNumber("Pivot Holding Voltage", outputVoltage - voltagePID.calculate(absoluteEncoder.getPosition(), setpoint));
     SmartDashboard.putNumber("Pivot Setpoint Error", error);
+    SmartDashboard.putNumber("Pivot Error Accumulation", voltagePID.getAccumulatedError());
 
     runPivotManualVoltage(outputVoltage);
   }
