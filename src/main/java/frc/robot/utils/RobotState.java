@@ -15,8 +15,8 @@ public class RobotState {
     public static double getCorrectPivotSetpoint() {
         double currentPosition = elevator.getCurrentPosition();
 
-        boolean isMovingUp = elevator.goal.position > currentPosition;
-        boolean isMovingDown = elevator.goal.position < currentPosition;
+        // boolean isMovingUp = elevator.goal.position > currentPosition;
+        // boolean isMovingDown = elevator.goal.position < currentPosition;
 
         double lowerBoundCollisionRange = 0;
 

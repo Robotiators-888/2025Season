@@ -25,7 +25,8 @@ public class SUB_Roller extends SubsystemBase {
   private RelativeEncoder encoder = roller.getEncoder();
   private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
 
-  private Boolean hasCoral = false;
+  public Boolean hasCoral = false;
+  public Boolean hasAlgae = false;
   private Timer timer = new Timer();
 
   private SUB_Roller() {
