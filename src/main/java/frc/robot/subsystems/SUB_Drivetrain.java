@@ -86,9 +86,6 @@ public class SUB_Drivetrain extends SubsystemBase {
 
   AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
-  public void setGyroRotation(double angleDegrees) {
-    navx.reset();
-  }
 
   public double getAngle() {
     return -navx.getAngle();
@@ -268,7 +265,7 @@ public class SUB_Drivetrain extends SubsystemBase {
     var swerveModuleStates =
         Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(getAngle()))
+                Rotation2d.fromDegrees(getHeading()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
         Constants.Drivetrain.kMaxSpeedMetersPerSecond);
