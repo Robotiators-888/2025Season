@@ -211,6 +211,9 @@ public final class Constants {
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 156;
                 public static final double toleranceDegrees = 0.0;
+
+                public static final double kUpperBoundStuckPoint = 340.0;
+                public static final double kLowerBoundStuckPoint = 327.0;
         }
 
         public static final class Elevator {

@@ -91,7 +91,6 @@ public class SUB_Pivot extends SubsystemBase {
 
     if (Math.abs(error) < 3){
       outputVoltage = 0;
-      voltagePID.reset(); // Reset I accumulation 
     }
 
     if (hasCoral.get()) {
@@ -100,6 +99,10 @@ public class SUB_Pivot extends SubsystemBase {
       outputVoltage += algaeConstantApplicationMap.get(absoluteEncoder.getPosition());
     } else {
       outputVoltage += constantApplicationMap.get(absoluteEncoder.getPosition());
+    }
+
+    if (absoluteEncoder.getPosition() < PivotConstants.kUpperBoundStuckPoint && absoluteEncoder.getPosition() > PivotConstants.kLowerBoundStuckPoint) {
+      outputVoltage -= 0.2;
     }
 
     SmartDashboard.putNumber("Pivot Output Voltage", outputVoltage);
@@ -113,10 +116,12 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void changeSetpoint(double setpoint) {
     this.setpoint = setpoint;
+    voltagePID.reset(); // Reset I accumulation 
   }
 
   public void changeSetpoint(Supplier<Double> setpoint) {
     this.setpoint = setpoint.get();
+    voltagePID.reset(); // Reset I accumulation 
   }
 
   public boolean atSetpoint(double setpointRadians) {
