@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+<<<<<<< HEAD
 import frc.robot.Constants.Field;
 import frc.robot.Constants.Operator;
 import frc.robot.commands.CMD_ReefAlign;
@@ -42,6 +43,10 @@ import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.AutoGenerator;
 
+=======
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.PowerDistribution;
+>>>>>>> c65268a4f089a01d12a549d3bc2a81ee06786730
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -55,6 +60,7 @@ public class RobotContainer {
   private static final SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
   private static final AutoGenerator autoGenerator = AutoGenerator.getInstance();
   private final SendableChooser<Command> autoChooser;
+  public static PowerDistribution powerDistribution = new PowerDistribution();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController Driver1 =
@@ -122,6 +128,10 @@ public class RobotContainer {
   private void configureBindings() {
     Driver1.leftBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
     Driver1.rightBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
+  }
+
+  public void robotInit() {
+    powerDistribution.setSwitchableChannel(true);
   }
 
 
