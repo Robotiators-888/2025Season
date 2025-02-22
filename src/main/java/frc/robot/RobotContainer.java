@@ -168,7 +168,7 @@ public class RobotContainer {
 //     constraints);
     //return AutoBuilder.followPath(path);
 
-      PathPlannerAuto auto = new PathPlannerAuto("Straight Auto");
+      PathPlannerAuto auto = new PathPlannerAuto("New Auto");
       return auto;
 
     // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
