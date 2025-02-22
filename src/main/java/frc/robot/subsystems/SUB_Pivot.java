@@ -49,8 +49,10 @@ public class SUB_Pivot extends SubsystemBase {
     constantApplicationMap.put(185.0, 0.6);
     constantApplicationMap.put(226.5, 0.475);
     constantApplicationMap.put(264.0, 0.2);
+    constantApplicationMap.put(285.0, 0.0); // 0.791666667
     constantApplicationMap.put(304.0, -0.225);
     constantApplicationMap.put(324.0, -0.35);
+    constantApplicationMap.put(327.0, -0.4);
     constantApplicationMap.put(Double.MAX_VALUE, -0.35);
 
     coralConstantApplicationMap.put(Double.MIN_VALUE, 0.6);
@@ -58,7 +60,6 @@ public class SUB_Pivot extends SubsystemBase {
     coralConstantApplicationMap.put(195.0, 0.75);
     coralConstantApplicationMap.put(225.8, 0.725);
     coralConstantApplicationMap.put(252.0, 0.5);
-    coralConstantApplicationMap.put(285.0, 0.0);
     coralConstantApplicationMap.put(320.0, -0.425);
     constantApplicationMap.put(Double.MAX_VALUE, -0.425);
 
@@ -85,7 +86,7 @@ public class SUB_Pivot extends SubsystemBase {
     outputvoltage = MathUtil.clamp(outputvoltage, -3, 6);
   }
 
-  public void runPivot(Supplier<Boolean> hasCoral, Supplier<Boolean> hasAlgae) {
+  public void runPivot(Supplier<Boolean> hasCoral) {
     double error = setpoint - absoluteEncoder.getPosition();
     double outputVoltage = voltagePID.calculate(absoluteEncoder.getPosition(), setpoint);
 
@@ -95,8 +96,6 @@ public class SUB_Pivot extends SubsystemBase {
 
     if (hasCoral.get()) {
       outputVoltage += coralConstantApplicationMap.get(absoluteEncoder.getPosition());
-    } else if (hasAlgae.get()) {
-      outputVoltage += algaeConstantApplicationMap.get(absoluteEncoder.getPosition());
     } else {
       outputVoltage += constantApplicationMap.get(absoluteEncoder.getPosition());
     }
