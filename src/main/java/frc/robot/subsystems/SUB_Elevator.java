@@ -55,7 +55,7 @@ public class SUB_Elevator extends SubsystemBase {
       SmartDashboard.putBoolean("Homed", false);
     }
     
-    if (activesetpoint <= 0 && getCurrentPosition() >= Elevator.kMediumDownErrorThreshold) {
+    if (activesetpoint <= 0 && getCurrentPosition() <= Elevator.kMediumDownErrorThreshold) {
       HomeElevator();
       return;
     }
@@ -117,7 +117,7 @@ public class SUB_Elevator extends SubsystemBase {
   }
 
   public void ChangeSetpoint(double setpoint) {
-
+    activesetpoint = setpoint;
     SmartDashboard.putNumber("Elevator Target Setpoint", setpoint);
   }
 

@@ -246,7 +246,7 @@ public final class Constants {
                 public static final double kL1Setpoint = 0.15;
                 public static final double kL2Setpoint = 0.35;
                 public static final double kL3Setpoint = 0.5;
-                public static final double kL4Setpoint = 0.805;
+                public static final double kL4Setpoint = 0.80;
         }
 
         public static class Roller {
