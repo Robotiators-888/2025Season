@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,6 +40,8 @@ public class RobotContainer {
   public static SUB_Roller roller = SUB_Roller.getInstance();
   public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
   public static SUB_Climber climber = SUB_Climber.getInstance();
+  public static PowerDistribution powerDistribution = new PowerDistribution();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController Driver1 = new CommandXboxController(OperatorConstants.kDriver1ControllerPort);
 
@@ -203,6 +206,12 @@ public class RobotContainer {
     Driver1.rightTrigger().onTrue(new InstantCommand(() -> elevator.zeroEncoder()));
 
   }
+
+  public void robotInit() {
+    powerDistribution.setSwitchableChannel(true);
+  }
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
