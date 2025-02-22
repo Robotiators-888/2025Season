@@ -210,7 +210,7 @@ public final class Constants {
                 public static final double kElevatingSetpoint = 273.5;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 156;
-                public static final double toleranceDegrees = 0.0;
+                public static final double toleranceDegrees = 7.0;
 
                 public static final double kUpperBoundStuckPoint = 340.0;
                 public static final double kLowerBoundStuckPoint = 327.0;

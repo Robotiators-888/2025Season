@@ -11,10 +11,12 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
@@ -57,14 +59,14 @@ public class RobotContainer {
 
     // pivot.setDefaultCommand(new RunCommand(
     // () -> pivot.runPivot(() -> false, () -> false), pivot));
-    elevator.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> elevator.runElevator(), elevator), new WaitCommand(0.0), pivot.atSetpoint(PivotConstants.kElevatingSetpoint));
+    elevator.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> elevator.runElevator(), elevator), new WaitCommand(0.0), ()->pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
 
     // Collision Avoidance Tester Code
 
     // pivot.setDefaultCommand(new RunCommand(
     // () -> pivot.runPivotManualVoltage(pivot.outputvoltage), pivot));
     pivot.setDefaultCommand(
-        new RunCommand(() -> pivot.runPivotManualVoltage(0), pivot));
+        new RunCommand(() -> pivot.runPivot(()->false, ()->false), pivot));
     Driver1.povDown().whileTrue(new RunCommand(
         () -> drivetrain.drive(-MathUtil.applyDeadband(
             Math.copySign(Math.pow(Driver1.getRawAxis(1), 2),
@@ -120,7 +122,7 @@ public class RobotContainer {
         new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))));
     Driver2.x().onTrue(new ParallelCommandGroup(new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
         new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))));
-    Driver2.y().onTrue(new ParallelCommandGroup(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)),
+    Driver2.y().onTrue(new ParallelCommandGroup(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
         new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))));
 
     Driver2.leftBumper().whileTrue(new InstantCommand(() -> roller.timerInteract(true))
