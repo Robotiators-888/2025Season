@@ -180,6 +180,11 @@ public static final class Drivetrain {
         public static final Transform3d kRobotToCamera1 =
                 new Transform3d(Units.inchesToMeters(15.25-7.5), Units.inchesToMeters(13.5 - 1.5),
                 Units.inchesToMeters(11.25), cameraRotation);
+        public static final String kCam2Name = "AprilTagCam2";
+        public static final Rotation3d cameraRotation2 = new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(-25));
+        public static final Transform3d kRobotToCamera2 =
+                new Transform3d(Units.inchesToMeters(15.25-7.5), Units.inchesToMeters(13.5 - 1.5),
+                Units.inchesToMeters(11.25), cameraRotation);
 
   }
 

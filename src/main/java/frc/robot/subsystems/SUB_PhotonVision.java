@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-import org.photonvision.EstimatedRobotPose;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,8 +25,10 @@ public class SUB_PhotonVision extends SubsystemBase {
   private static SUB_PhotonVision INSTANCE = null;
 
   private final PhotonCamera cam1 = new PhotonCamera(PhotonVision.kCam1Name);
+  private final PhotonCamera cam2 = new PhotonCamera(PhotonVision.kCam2Name);
   private PhotonTrackedTarget bestTarget;
-  private final PhotonPoseEstimator poseEstimator;
+  private final PhotonPoseEstimator poseEstimator1;
+  private final PhotonPoseEstimator poseEstimator2;
   public AprilTagFieldLayout at_field;
 
   public static SUB_PhotonVision getInstance() {
@@ -44,9 +47,12 @@ public class SUB_PhotonVision extends SubsystemBase {
       SmartDashboard.putBoolean("DEBUG/FILE FOUND?", false);
     }
 
-    poseEstimator = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    poseEstimator1 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         PhotonVision.kRobotToCamera1);
-    poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    poseEstimator2 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+        PhotonVision.kRobotToCamera2);
+    poseEstimator1.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    poseEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
@@ -55,7 +61,7 @@ public class SUB_PhotonVision extends SubsystemBase {
     for (PhotonPipelineResult result : results) {
       if (result.hasTargets()) {
         bestTarget = result.getBestTarget();
-        finalPose = poseEstimator.update(result);
+        finalPose = poseEstimator1.update(result);
       }
     }
     return finalPose;

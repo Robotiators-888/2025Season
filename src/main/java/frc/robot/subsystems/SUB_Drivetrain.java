@@ -122,7 +122,6 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   private SUB_Drivetrain() {
-    navx.setAngleAdjustment(180);
     navx.reset();
   }
 
