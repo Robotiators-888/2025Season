@@ -34,7 +34,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-<<<<<<< HEAD
 import frc.robot.Constants.Field;
 import frc.robot.Constants.Operator;
 import frc.robot.commands.CMD_ReefAlign;
@@ -43,10 +42,8 @@ import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.AutoGenerator;
 
-=======
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.PowerDistribution;
->>>>>>> c65268a4f089a01d12a549d3bc2a81ee06786730
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
