@@ -218,30 +218,38 @@ public final class Constants {
 
         public static final class Elevator {
                 public static final double kHomingEncoderLocation = 0;
-                public static final double kResetHomingThreshold = 1000;
-                public static final double kEncoderNearZero = 10;
+                public static final double kResetHomingThreshold = 0.05;
+                public static final double kEncoderNearZero = 0.01;
+                public static final double kHomingEmergencyCurrent = 40;
+                public static final double kHomingVoltage = -0.2;
+                public static final double kTolerance = 0.05;
 
-                public static final double kHomingEmergencyCurrent = 20;
-                public static final boolean kStartingHoming = false;
-                public static final double kHomingSpeed = 0.3;
-                public static final double kTolerance = .05;
-                public static final double kPIDTolerance = 20;
-                public static final double kTimeStep = 0.02;
+
+                public static final double kMaxUpVoltage = 3.25;
+                public static final double kMaxUpErrorThreshold = 0.25;
+                public static final double kHighUpVoltage = 2.5;
+                public static final double kHighUpErrorThreshold = 0.15;
+                public static final double kMediumUpVoltage = 2;
+                public static final double kMediumUpErrorThreshold = 0.1;
+                public static final double kSlowUpVoltage = 1.5;
+
+                public static final double kMaxDownVoltage = -0.75;
+                public static final double kMaxDownErrorThreshold = 0.25;
+                public static final double kHighDownVoltage = -0.5;
+                public static final double kHighDownErrorThreshold = 0.20;
+                public static final double kMediumDownVoltage = -0.2;
+                public static final double kMediumDownErrorThreshold = 0.15;
+                public static final double kSlowDownVoltage = 0.1;
+
+                public static final double kEmptyHoldingVoltage = 0.6;
+                public static final double kCoralHoldingVoltage = 0.79;
+                public static final double kAlgaeHoldingVoltage = 0.72;
 
                 public static final double kStartingSetpoint = 0;
-                public static final double kL1Setpoint = .15;
-                public static final double kL2Setpoint = .35;
-                public static final double kL3Setpoint = .5;
-                public static final double kL4Setpoint = .805;
-
-
-                public static final double kP = 0;
-                public static final double kI = 0;
-                public static final double kD = 0;
-
-                public static final double kG = 0.6;
-                public static final double kS = 0.3;
-                public static final double kV = 5.00;
+                public static final double kL1Setpoint = 0.15;
+                public static final double kL2Setpoint = 0.35;
+                public static final double kL3Setpoint = 0.5;
+                public static final double kL4Setpoint = 0.80;
         }
 
         public static class Roller {
