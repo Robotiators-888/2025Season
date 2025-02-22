@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -116,14 +117,11 @@ public class RobotContainer {
     // Driver2.y().onTrue(new InstantCommand(
     //     () -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)));
 
-    Driver2.a().onTrue(new ParallelCommandGroup(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)),
-        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))));
-    Driver2.b().onTrue(new ParallelCommandGroup(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint)),
-        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))));
-    Driver2.x().onTrue(new ParallelCommandGroup(new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
-        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))));
-    Driver2.y().onTrue(new ParallelCommandGroup(new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
-        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))));
+    Driver2.a().onTrue(new SequentialCommandGroup(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)), new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint))));
+    Driver2.b().onTrue(new SequentialCommandGroup(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)), new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint))));
+    Driver2.x().onTrue(new SequentialCommandGroup(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)), new InstantCommand(() -> elevator.ChangeSetpoint(0.0))));
+    Driver2.y().onTrue(new SequentialCommandGroup(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)), new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint))));
+   
 
     Driver2.leftBumper().whileTrue(new InstantCommand(() -> roller.timerInteract(true))
         .andThen(new RunCommand(
