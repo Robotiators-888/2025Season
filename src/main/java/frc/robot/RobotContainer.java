@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.PowerDistribution;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,6 +24,7 @@ import edu.wpi.first.math.MathUtil;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
+  public static PowerDistribution powerDistribution = new PowerDistribution();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController Driver1 =
@@ -67,6 +69,10 @@ public class RobotContainer {
   private void configureBindings() {
 
 
+  }
+
+  public void robotInit() {
+    powerDistribution.setSwitchableChannel(true);
   }
 
 
