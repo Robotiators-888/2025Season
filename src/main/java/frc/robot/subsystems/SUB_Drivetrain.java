@@ -122,7 +122,7 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   private SUB_Drivetrain() {
-    navx.reset();
+    //navx.reset();
   }
 
   @Override

@@ -27,6 +27,8 @@ public class SUB_PhotonVision extends SubsystemBase {
   private final PhotonCamera cam1 = new PhotonCamera(PhotonVision.kCam1Name);
   private final PhotonCamera cam2 = new PhotonCamera(PhotonVision.kCam2Name);
   private PhotonTrackedTarget bestTarget;
+  private PhotonTrackedTarget bestTarget1;
+  private PhotonTrackedTarget bestTarget2;
   private final PhotonPoseEstimator poseEstimator1;
   private final PhotonPoseEstimator poseEstimator2;
   public AprilTagFieldLayout at_field;
@@ -56,15 +58,29 @@ public class SUB_PhotonVision extends SubsystemBase {
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    List<PhotonPipelineResult> results = cam1.getAllUnreadResults();
-    Optional<EstimatedRobotPose> finalPose = Optional.empty();
-    for (PhotonPipelineResult result : results) {
+    List<PhotonPipelineResult> results1 = cam1.getAllUnreadResults();
+    Optional<EstimatedRobotPose> finalPose1 = Optional.empty();
+    for (PhotonPipelineResult result : results1) {
       if (result.hasTargets()) {
-        bestTarget = result.getBestTarget();
-        finalPose = poseEstimator1.update(result);
+        bestTarget1 = result.getBestTarget();
+        finalPose1 = poseEstimator1.update(result);
       }
     }
-    return finalPose;
+    List<PhotonPipelineResult> results2 = cam2.getAllUnreadResults();
+    Optional<EstimatedRobotPose> finalPose2 = Optional.empty();
+    for (PhotonPipelineResult result : results2) {
+      if (result.hasTargets()) {
+        bestTarget2 = result.getBestTarget();
+        finalPose2 = poseEstimator2.update(result);
+      }
+    }
+    if (bestTarget1.getPoseAmbiguity() < bestTarget2.getPoseAmbiguity()) {
+      bestTarget = bestTarget1;
+      return finalPose1;
+    } else {
+      bestTarget = bestTarget2;
+      return finalPose2;
+    }
   }
 
   public PhotonTrackedTarget getBestTarget() {
