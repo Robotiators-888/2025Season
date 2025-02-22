@@ -212,6 +212,9 @@ public final class Constants {
                 public static final double kAlgaeSetpoint = 156;
                 public static final double toleranceDegrees = 7.0;
 
+                public static final double kL2Setpoint = 300;
+
+
                 public static final double kUpperBoundStuckPoint = 340.0;
                 public static final double kLowerBoundStuckPoint = 327.0;
         }
@@ -246,9 +249,9 @@ public final class Constants {
                 public static final double kAlgaeHoldingVoltage = 0.72;
 
                 public static final double kStartingSetpoint = 0;
-                public static final double kL1Setpoint = 0.15;
-                public static final double kL2Setpoint = 0.35;
-                public static final double kL3Setpoint = 0.5;
+                public static final double kL1Setpoint = 0.1;
+                public static final double kL2Setpoint = 0.2604;
+                public static final double kL3Setpoint = 0.4;
                 public static final double kL4Setpoint = 0.80;
         }
 
