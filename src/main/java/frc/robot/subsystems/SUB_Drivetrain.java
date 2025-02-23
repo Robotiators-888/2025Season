@@ -47,7 +47,11 @@ public class SUB_Drivetrain extends SubsystemBase {
 
 
   public StructPublisher<Pose2d> publisher3 = NetworkTableInstance.getDefault()
-  .getStructTopic("PhotonPose", Pose2d.struct).publish(); 
+  .getStructTopic("PhotonCam1Pose", Pose2d.struct).publish(); 
+
+
+  public StructPublisher<Pose2d> publisher4 = NetworkTableInstance.getDefault()
+  .getStructTopic("PhotonCam2Pose", Pose2d.struct).publish(); 
 
   public final Field2d m_field = new Field2d();
   private static SUB_Drivetrain INSTANCE = null;
@@ -86,11 +90,6 @@ public class SUB_Drivetrain extends SubsystemBase {
 
   AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
-
-  public double getAngle() {
-    return -navx.getAngle();
-  }
-
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
   private double m_currentTranslationMag = 0.0;
@@ -100,8 +99,6 @@ public class SUB_Drivetrain extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter =
       new SlewRateLimiter(Constants.Drivetrain.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
-  // public static SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
-  // public static SUB_Limelight limelight = SUB_Limelight.getInstance();
 
   Pose2d pose = new Pose2d();
   // Odometry class for tracking robot pose
@@ -314,6 +311,11 @@ public class SUB_Drivetrain extends SubsystemBase {
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     navx.reset();
+  }
+
+
+  public double getAngle() {
+    return -navx.getAngle();
   }
 
   /**

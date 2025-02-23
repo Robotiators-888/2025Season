@@ -219,32 +219,46 @@ public class RobotContainer {
   }
 
   public static void photonPoseUpdate() {
-    Optional<EstimatedRobotPose> photonPoseOptional = photonVision.getEstimatedGlobalPose();
-    
+    Optional<EstimatedRobotPose> photonPoseOptional = photonVision.getCam1Pose();
+
     if (photonPoseOptional.isPresent()) {
       Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-      drivetrain.publisher3.set(photonPose.toPose2d());
+      
       if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength && photonPose.getY() >= 0
-          && photonPose.getY() <= Field.fieldWidth) {
+          && photonPose.getY() <= Field.fieldWidth && photonVision.getCam1BestTarget() != null) {
+
         Pose2d closestTag = photonVision.at_field
-            .getTagPose(photonVision.getBestTarget().getFiducialId()).orElse(new Pose3d()).toPose2d();
+            .getTagPose(photonVision.getCam1BestTarget().getFiducialId()).get().toPose2d();
         Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
 
         double distance = translate.getNorm();
         double xStddev = distance * 1.5;
         double yStddev = xStddev * 4;
         //double rotStddev = Units.degreesToRadians(120.0);
+        drivetrain.publisher3.set(photonPose.toPose2d());
+        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, Double.MAX_VALUE));  
+        drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
+      }
+    }
 
-        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, Double.MAX_VALUE));
+    photonPoseOptional = photonVision.getCam2Pose();
 
-        SmartDashboard.putNumberArray("PHOTON/Pose", new Double[] {photonPose.toPose2d().getX(),
-            photonPose.toPose2d().getY(), photonPose.toPose2d().getRotation().getDegrees()});
-        SmartDashboard.putNumberArray("PHOTON/Pose3d",
-            new Double[] {photonPose.getX(), photonPose.getY(), photonPose.getZ(),
-                photonPose.getRotation().getQuaternion().getW(),
-                photonPose.getRotation().getQuaternion().getX(),
-                photonPose.getRotation().getQuaternion().getY(),
-                photonPose.getRotation().getQuaternion().getZ()});
+    if (photonPoseOptional.isPresent()) {
+      Pose3d photonPose = photonPoseOptional.get().estimatedPose;
+      
+      if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength && photonPose.getY() >= 0
+          && photonPose.getY() <= Field.fieldWidth && photonVision.getCam2BestTarget() != null) {
+
+        Pose2d closestTag = photonVision.at_field
+            .getTagPose(photonVision.getCam2BestTarget().getFiducialId()).get().toPose2d();
+        Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
+
+        double distance = translate.getNorm();
+        double xStddev = distance * 1.5;
+        double yStddev = xStddev * 4;
+        //double rotStddev = Units.degreesToRadians(120.0);
+        drivetrain.publisher4.set(photonPose.toPose2d());
+        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, Double.MAX_VALUE));  
         drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
       }
     }
