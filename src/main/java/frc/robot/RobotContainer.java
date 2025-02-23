@@ -127,10 +127,12 @@ public class RobotContainer {
                 () -> pivot.changeSetpoint(PivotConstants.kCoralSetpoint)));
 
         // Driver 2
-        Driver2.rightBumper()
+        Driver2.a()
                 .onTrue(new SequentialCommandGroup(
                         new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                        new InstantCommand(() -> elevator.ChangeSetpoint(0.0))));
+                        new InstantCommand(() -> elevator.ChangeSetpoint(0)),
+                        Commands.waitUntil(() -> elevator.atSetpoint(0))
+                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint))));
 
         Driver2.a()
                 .onTrue(new SequentialCommandGroup(
