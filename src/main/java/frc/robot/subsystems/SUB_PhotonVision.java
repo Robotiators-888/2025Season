@@ -26,9 +26,8 @@ public class SUB_PhotonVision extends SubsystemBase {
 
   private final PhotonCamera cam1 = new PhotonCamera(PhotonVision.kCam1Name);
   private final PhotonCamera cam2 = new PhotonCamera(PhotonVision.kCam2Name);
-  private PhotonTrackedTarget bestTarget;
-  private PhotonTrackedTarget bestTarget1;
-  private PhotonTrackedTarget bestTarget2;
+  private PhotonTrackedTarget cam1BestTarget;
+  private PhotonTrackedTarget cam2BestTarget;
   private final PhotonPoseEstimator poseEstimator1;
   private final PhotonPoseEstimator poseEstimator2;
   public AprilTagFieldLayout at_field;
@@ -57,34 +56,36 @@ public class SUB_PhotonVision extends SubsystemBase {
     poseEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+  public Optional<EstimatedRobotPose> getCam1Pose() {
     List<PhotonPipelineResult> results1 = cam1.getAllUnreadResults();
     Optional<EstimatedRobotPose> finalPose1 = Optional.empty();
     for (PhotonPipelineResult result : results1) {
       if (result.hasTargets()) {
-        bestTarget1 = result.getBestTarget();
+        cam1BestTarget = result.getBestTarget();
         finalPose1 = poseEstimator1.update(result);
       }
     }
+    return finalPose1;
+  }
+
+  public Optional<EstimatedRobotPose> getCam2Pose() {
     List<PhotonPipelineResult> results2 = cam2.getAllUnreadResults();
     Optional<EstimatedRobotPose> finalPose2 = Optional.empty();
     for (PhotonPipelineResult result : results2) {
       if (result.hasTargets()) {
-        bestTarget2 = result.getBestTarget();
+        cam2BestTarget = result.getBestTarget();
         finalPose2 = poseEstimator2.update(result);
       }
     }
-    if (bestTarget1.getPoseAmbiguity() < bestTarget2.getPoseAmbiguity()) {
-      bestTarget = bestTarget1;
-      return finalPose1;
-    } else {
-      bestTarget = bestTarget2;
-      return finalPose2;
-    }
+    return finalPose2;
   }
 
-  public PhotonTrackedTarget getBestTarget() {
-    return bestTarget;
+  public PhotonTrackedTarget getCam1BestTarget() {
+    return cam1BestTarget;
+  }
+
+  public PhotonTrackedTarget getCam2BestTarget() {
+    return cam2BestTarget;
   }
 
   public double getTargetYaw(PhotonTrackedTarget target) {
@@ -105,9 +106,6 @@ public class SUB_PhotonVision extends SubsystemBase {
 
   @Override
   public void periodic() {
-    var result = cam1.getLatestResult();
-    if (result.hasTargets()) {
-      bestTarget = result.getBestTarget();
-    }
+
   }
 }
