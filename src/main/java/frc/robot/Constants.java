@@ -263,12 +263,16 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 35; // Amps
                 public static final int kRollerCurrentLimit = 60;
 
-                public static final double kIntakeSpeed = 0.25; // Percent
-                public static final double kIntakeFinishSpeed = 0.1; // Percent
+                public static final double kCoralIntakeSpeed = 0.25; // Percent
+                public static final double kCoralIntakeFinishSpeed = 0.1; // Percent
+
+                public static final double kAlgaeIntakeSpeed = -0.25;
+                public static final double kAlgaeEjectSpeed = 0.8;
+
                 public static final double kIntakeStartingTime = 1.25; // Seconds
                 public static final double kIntakeFinishTime = 0.1; // Seconds
 
-                public static final double kEjectSpeed = 0.8; // Percent
+                public static final double kCoralEjectSpeed = 0.8; // Percent
                 public static final double kFreeSpinThreshold = 420; // RPM
         }
         public static class Climber {

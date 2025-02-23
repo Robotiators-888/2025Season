@@ -56,6 +56,10 @@ public class SUB_Roller extends SubsystemBase {
     this.hasAlgae = hasAlgae;
   }
 
+  public BooleanSupplier isFreeSpinning() {
+    return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
+  }
+
   public SparkAbsoluteEncoder getAbsoluteEncoder() {
     return absoluteEncoder;
   }

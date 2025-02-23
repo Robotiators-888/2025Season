@@ -53,40 +53,6 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
-        drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
-                -MathUtil.applyDeadband(Driver1.getRawAxis(1),
-                        OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Driver1.getRawAxis(0),
-                        OperatorConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Driver1.getRawAxis(4),
-                        OperatorConstants.kDriveDeadband),
-                true, true), drivetrain));
-
-        elevator.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> elevator.runElevator(), elevator),
-                new WaitCommand(0.0), () -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
-
-        // Unstable
-        pivot.setDefaultCommand(
-                new RunCommand(() -> pivot.runPivot(() -> false), pivot));
-        // pivot.setDefaultCommand(
-        //         new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
-
-        roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0), roller));
-
-        Driver1.povDown().whileTrue(new RunCommand(
-                () -> drivetrain.drive(-MathUtil.applyDeadband(
-                        Math.copySign(Math.pow(Driver1.getRawAxis(1), 2),
-                                Driver1.getRawAxis(1)),
-                        OperatorConstants.kDriveDeadband),
-                        -MathUtil.applyDeadband(Math.copySign(
-                                Math.pow(Driver1.getRawAxis(0), 2),
-                                Driver1.getRawAxis(0)),
-                                OperatorConstants.kDriveDeadband),
-                        -MathUtil.applyDeadband(Driver1.getRawAxis(4),
-                                OperatorConstants.kDriveDeadband),
-                        false, true),
-                drivetrain));
-
         // Configure the trigger bindings
         configureBindings();
     }
@@ -107,7 +73,39 @@ public class RobotContainer {
      */
     private void configureBindings() {
 
-        Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
+        drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(
+                -MathUtil.applyDeadband(Driver1.getRawAxis(1),
+                        OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Driver1.getRawAxis(0),
+                        OperatorConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Driver1.getRawAxis(4),
+                        OperatorConstants.kDriveDeadband),
+                true, true), drivetrain));
+
+        elevator.setDefaultCommand(new ConditionalCommand(new RunCommand(() -> elevator.runElevator(), elevator),
+                new WaitCommand(0.0), () -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
+
+        // Unstable
+        pivot.setDefaultCommand(
+                new RunCommand(() -> pivot.runPivot(() -> false), pivot));
+        // pivot.setDefaultCommand(
+        // new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
+
+        roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0), roller));
+
+        Driver1.povDown().whileTrue(new RunCommand(
+                () -> drivetrain.drive(-MathUtil.applyDeadband(
+                        Math.copySign(Math.pow(Driver1.getRawAxis(1), 2),
+                                Driver1.getRawAxis(1)),
+                        OperatorConstants.kDriveDeadband),
+                        -MathUtil.applyDeadband(Math.copySign(
+                                Math.pow(Driver1.getRawAxis(0), 2),
+                                Driver1.getRawAxis(0)),
+                                OperatorConstants.kDriveDeadband),
+                        -MathUtil.applyDeadband(Driver1.getRawAxis(4),
+                                OperatorConstants.kDriveDeadband),
+                        false, true),
+                drivetrain));
         Driver1.leftTrigger().whileTrue(new RunCommand(
                 () -> climber.setSpeed(Climber.kClimberPercentOutput)))
                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
@@ -117,17 +115,16 @@ public class RobotContainer {
         ;
         Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
 
+        // Testing COMMANDs
         Driver1.y().onTrue(new InstantCommand(
                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)));
         Driver1.b().onTrue(new InstantCommand(
                 () -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
         Driver1.x().onTrue(new InstantCommand(
                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
-        Driver1.a().onTrue(new InstantCommand(
-                () -> pivot.changeSetpoint(PivotConstants.kCoralSetpoint)));
 
         // Driver 2
-        Driver2.a()
+        Driver2.povDown()
                 .onTrue(new SequentialCommandGroup(
                         new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                         new InstantCommand(() -> elevator.ChangeSetpoint(0)),
@@ -164,7 +161,7 @@ public class RobotContainer {
 
         Driver2.leftBumper()
                 .whileTrue(new RunCommand(
-                        () -> roller.setRollerOutput(Roller.kIntakeSpeed),
+                        () -> roller.setRollerOutput(Roller.kCoralIntakeSpeed),
                         roller).until(() -> roller.getHasCoral())
 
                         .andThen(new ParallelCommandGroup(
@@ -194,8 +191,16 @@ public class RobotContainer {
                                                         0))));
 
         Driver2.leftTrigger().whileTrue(new RunCommand(
-                () -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
-                .until(() -> !roller.getHasCoral()));
+                () -> roller.setRollerOutput(Roller.kCoralEjectSpeed), roller)
+                .until(roller.isFreeSpinning())
+                .andThen(new InstantCommand(
+                        () -> roller.setRollerOutput(0.),
+                        roller)))
+                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
+                        roller));
+
+        Driver2.rightBumper().whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kAlgaeIntakeSpeed), roller));
+        Driver2.rightTrigger().whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kAlgaeEjectSpeed), roller));
 
     }
 
