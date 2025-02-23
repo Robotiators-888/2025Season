@@ -12,6 +12,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,10 +26,8 @@ public class SUB_Roller extends SubsystemBase {
   private SparkMaxConfig config = new SparkMaxConfig();
   private RelativeEncoder encoder = roller.getEncoder();
   private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
-
-  public Boolean hasCoral = false;
-  public Boolean hasAlgae = false;
-  private Timer timer = new Timer();
+  private DigitalInput bannerSensor = new DigitalInput(0);
+  private boolean hasAlgae = false;;
 
   private SUB_Roller() {
     config.voltageCompensation(12);
@@ -40,36 +40,20 @@ public class SUB_Roller extends SubsystemBase {
 
   }
 
-  public boolean atCurrentThresholdandTimerElapsed() {
-    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold
-        && timer.get() > Roller.kIntakeStartingTime;
-  }
-
-  public BooleanSupplier isFreeSpinning() {
-    return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
-  }
-
-  public void timerInteract(boolean start) {
-    if (start) {
-      timer.reset();
-      timer.start();
-    } else {
-      timer.stop();
-      timer.reset();
-    }
-
-  }
-
   public void setRollerOutput(double percent) {
     roller.set(percent);
   }
 
-  public boolean hasCoral() {
-    return hasCoral;
+  public boolean getHasCoral() {
+    return !bannerSensor.get();
   }
 
-  public void hasCoral(boolean hasCoral) {
-    this.hasCoral = hasCoral;
+  public boolean getHasAlgae() {
+    return hasAlgae;
+  }
+
+  public void setHasAlgae(boolean hasAlgae) {
+    this.hasAlgae = hasAlgae;
   }
 
   public SparkAbsoluteEncoder getAbsoluteEncoder() {
@@ -84,8 +68,5 @@ public class SUB_Roller extends SubsystemBase {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Roller RPM", (encoder.getVelocity() / 60));
-    SmartDashboard.putNumber("Roller Current", roller.getOutputCurrent());
-    SmartDashboard.putNumber("Roller Output Voltage", roller.getBusVoltage() * roller.getAppliedOutput());
   }
 }

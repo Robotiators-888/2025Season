@@ -61,11 +61,11 @@ public class SUB_Elevator extends SubsystemBase {
     }
 
     if (Math.abs(activesetpoint - primaryencoder.getPosition()) < .02) {
-      if (roller.hasCoral) {
+      if (roller.getHasCoral()) {
         runElevatorManualVoltage(Elevator.kCoralHoldingVoltage);
         return;
       }
-      if (roller.hasAlgae) {
+      if (roller.getHasAlgae()) {
         runElevatorManualVoltage(Elevator.kAlgaeHoldingVoltage);
         return;
       }

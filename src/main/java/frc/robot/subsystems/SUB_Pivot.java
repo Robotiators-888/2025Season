@@ -67,6 +67,7 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void runPivotManual(double manual) {
     armPrimary.set(manual);
+    changeSetpoint(absoluteEncoder.getPosition());
   }
 
   public void runPivotManualVoltage(double volts) {
