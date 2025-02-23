@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Top(Mid) Cage to I"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": null
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Random Autos",
+  "folder": null,
   "choreoAuto": false
 }
