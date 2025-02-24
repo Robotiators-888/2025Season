@@ -197,7 +197,7 @@ public class RobotContainer {
 
 
   public void robotPeriodic() {
-    photonPoseUpdate();
+    //photonPoseUpdate();
     
   }
 
@@ -234,9 +234,9 @@ public class RobotContainer {
         double distance = translate.getNorm();
         double xStddev = distance * 1.5;
         double yStddev = xStddev * 4;
-        //double rotStddev = Units.degreesToRadians(120.0);
+        double rotStddev = Units.degreesToRadians(120.0);
         drivetrain.publisher3.set(photonPose.toPose2d());
-        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, Double.MAX_VALUE));  
+        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));  
         drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
       }
     }
@@ -256,9 +256,9 @@ public class RobotContainer {
         double distance = translate.getNorm();
         double xStddev = distance * 1.5;
         double yStddev = xStddev * 4;
-        //double rotStddev = Units.degreesToRadians(120.0);
+        double rotStddev = Units.degreesToRadians(120.0);
         drivetrain.publisher4.set(photonPose.toPose2d());
-        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, Double.MAX_VALUE));  
+        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev,rotStddev));  
         drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
       }
     }
