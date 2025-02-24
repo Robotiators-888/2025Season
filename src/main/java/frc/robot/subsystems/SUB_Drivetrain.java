@@ -119,7 +119,7 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   private SUB_Drivetrain() {
-    //navx.reset();
+    zeroHeading();
   }
 
   @Override
@@ -310,7 +310,7 @@ public class SUB_Drivetrain extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    navx.reset();
+    navx.zeroYaw();
   }
 
 
