@@ -159,36 +159,37 @@ public class RobotContainer {
             );
 
 
-    Driver2.leftBumper()
-        .whileTrue(new InstantCommand(() -> roller.timerInteract(true))
-            .andThen(new RunCommand(
-                () -> roller.setRollerOutput(Roller.kIntakeSpeed),
-                roller).until(() -> roller.atCurrentThresholdandTimerElapsed()))
-            .andThen(new ParallelCommandGroup(
-                new RunCommand(() -> roller.setRollerOutput(
-                    Roller.kIntakeFinishSpeed), roller),
-                new InstantCommand(
-                    () -> roller.timerInteract(false)),
-                new InstantCommand(() -> Driver1.getHID().setRumble(
-                    RumbleType.kBothRumble, 1)),
-                new InstantCommand(() -> Driver2.getHID().setRumble(
-                    RumbleType.kBothRumble, 1)),
-                new InstantCommand(() -> roller.hasCoral(true)))
-                .withTimeout(Roller.kIntakeFinishTime)
-                .andThen(new ParallelCommandGroup(
-                    new InstantCommand(
-                        () -> Driver1.getHID()
-                            .setRumble(RumbleType.kBothRumble,
-                                0)),
-                    new InstantCommand(
-                        () -> Driver2.getHID()
-                            .setRumble(RumbleType.kBothRumble,
-                                0)))))
-            .andThen(new InstantCommand(() -> roller.setRollerOutput(0.),
-                roller)))
-        .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
-            roller));
+    // Driver2.leftBumper()
+    //     .whileTrue(new InstantCommand(() -> roller.timerInteract(true))
+    //         .andThen(new RunCommand(
+    //             () -> roller.setRollerOutput(Roller.kIntakeSpeed),
+    //             roller).until(() -> roller.atCurrentThresholdandTimerElapsed()))
+    //         .andThen(new ParallelCommandGroup(
+    //             new RunCommand(() -> roller.setRollerOutput(
+    //                 Roller.kIntakeFinishSpeed), roller),
+    //             new InstantCommand(
+    //                 () -> roller.timerInteract(false)),
+    //             new InstantCommand(() -> Driver1.getHID().setRumble(
+    //                 RumbleType.kBothRumble, 1)),
+    //             new InstantCommand(() -> Driver2.getHID().setRumble(
+    //                 RumbleType.kBothRumble, 1)),
+    //             new InstantCommand(() -> roller.hasCoral(true)))
+    //             .withTimeout(Roller.kIntakeFinishTime)
+    //             .andThen(new ParallelCommandGroup(
+    //                 new InstantCommand(
+    //                     () -> Driver1.getHID()
+    //                         .setRumble(RumbleType.kBothRumble,
+    //                             0)),
+    //                 new InstantCommand(
+    //                     () -> Driver2.getHID()
+    //                         .setRumble(RumbleType.kBothRumble,
+    //                             0)))))
+    //         .andThen(new InstantCommand(() -> roller.setRollerOutput(0.),
+    //             roller)))
+    //     .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
+    //         roller));
 
+    Driver2.leftBumper().whileTrue(new RunCommand(()->roller.setRollerOutput(Roller.kIntakeSpeed))).onFalse(new InstantCommand(()->roller.setRollerOutput(0)));
     Driver2.leftTrigger().whileTrue(new RunCommand(
         () -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
         .until(roller.isFreeSpinning())
