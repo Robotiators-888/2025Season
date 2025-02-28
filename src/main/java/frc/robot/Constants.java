@@ -206,11 +206,11 @@ public final class Constants {
                                 new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now,
                                                                    // change later
 
-                public static final double kIntakeSetpoint = 331;
-                public static final double kElevatingSetpoint = 273.5;
+                public static final double kIntakeSetpoint = 330;
+                public static final double kElevatingSetpoint = 280;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 156;
-                public static final double toleranceDegrees = 5.0;
+                public static final double toleranceDegrees = 6.5;
 
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 300;

@@ -5,12 +5,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
 import java.util.function.Supplier;
-
-import com.revrobotics.RelativeEncoder;
+import java.util.spi.CurrencyNameProvider;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -24,24 +24,29 @@ import frc.robot.Constants.PivotConstants;
 public class SUB_Pivot extends SubsystemBase {
   private static SUB_Pivot INSTANCE = null;
 
-  private SparkMax armPrimary = new SparkMax(31, MotorType.kBrushless);
+  private SparkFlex armPrimary = new SparkFlex(31, MotorType.kBrushless);
   private SparkAbsoluteEncoder absoluteEncoder;
-  private RelativeEncoder relativeEncoder = armPrimary.getEncoder();
   private SparkMaxConfig armMotorConfig = new SparkMaxConfig();
   public double outputvoltage = 0;
 
   private double setpoint = PivotConstants.kIntakeSetpoint;// TOOD: Change
-  private PIDController voltagePID = new PIDController(0.02, 0.0001, 0.002); // TODO: Change constants
+  private PIDController voltagePID = new PIDController(0.02, 0, 0.002); // TODO: Change
+                                                                        // constants
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap algaeConstantApplicationMap = new InterpolatingDoubleTreeMap();
 
+  private double previousPosition;
+  private double currentPosition;
 
   public SUB_Pivot(SparkAbsoluteEncoder absoluteEncoder) {
+
+    voltagePID.disableContinuousInput();
+
     armMotorConfig.inverted(true);
     armMotorConfig.disableFollowerMode();
-    armMotorConfig.encoder.positionConversionFactor(360.0/(5*(30.0/16.0)));
+    armMotorConfig.encoder.positionConversionFactor(360.0 / (5 * (30.0 / 16.0)));
     armPrimary.configure(armMotorConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     this.absoluteEncoder = absoluteEncoder;
@@ -55,7 +60,8 @@ public class SUB_Pivot extends SubsystemBase {
     constantApplicationMap.put(304.0, -0.225);
     constantApplicationMap.put(324.0, -0.35);
     constantApplicationMap.put(327.0, -0.4);
-    constantApplicationMap.put(Double.MAX_VALUE, -0.35);
+    constantApplicationMap.put(338.0, -0.475);
+    constantApplicationMap.put(Double.MAX_VALUE, -0.475);
 
     coralConstantApplicationMap.put(Double.MIN_VALUE, 0.6);
     coralConstantApplicationMap.put(160.0, 0.6);
@@ -65,7 +71,8 @@ public class SUB_Pivot extends SubsystemBase {
     coralConstantApplicationMap.put(320.0, -0.425);
     constantApplicationMap.put(Double.MAX_VALUE, -0.425);
 
-    relativeEncoder.setPosition(absoluteEncoder.getPosition());
+    previousPosition = absoluteEncoder.getPosition();
+    currentPosition = absoluteEncoder.getPosition();
   }
 
   public void runPivotManual(double manual) {
@@ -76,8 +83,9 @@ public class SUB_Pivot extends SubsystemBase {
     armPrimary.setVoltage(volts);
   }
 
+
   public void runPivotHoldingVoltage(Supplier<Boolean> hasCoral) {
-    if (hasCoral.get()){
+    if (hasCoral.get()) {
       armPrimary.setVoltage(coralConstantApplicationMap.get(absoluteEncoder.getPosition()));
     } else {
       armPrimary.setVoltage(constantApplicationMap.get(absoluteEncoder.getPosition()));
@@ -92,26 +100,27 @@ public class SUB_Pivot extends SubsystemBase {
 
 
   public void runPivot(Supplier<Boolean> hasCoral) {
-    double error = setpoint - relativeEncoder.getPosition();
-    double outputVoltage = voltagePID.calculate(relativeEncoder.getPosition(), setpoint);
+    double error = setpoint - currentPosition;
+    double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -3, 3);
 
-    if (Math.abs(error) < 3){
-      outputVoltage = 0;
-    }
-
-    if (hasCoral.get()) {
-      outputVoltage += coralConstantApplicationMap.get(relativeEncoder.getPosition());
-    } else {
-      outputVoltage += constantApplicationMap.get(relativeEncoder.getPosition());
-    }
-
-    if (relativeEncoder.getPosition() < PivotConstants.kUpperBoundStuckPoint && relativeEncoder.getPosition() > PivotConstants.kLowerBoundStuckPoint) {
+    if (setpoint == PivotConstants.kIntakeSetpoint && currentPosition > 333) {
       outputVoltage -= 0.2;
     }
+    if (hasCoral.get()) {
+      outputVoltage += coralConstantApplicationMap.get(currentPosition);
+    } else {
+      outputVoltage += constantApplicationMap.get(currentPosition);
+    }
+
+    // if (absoluteEncoder.getPosition() < PivotConstants.kUpperBoundStuckPoint
+    // && absoluteEncoder.getPosition() > PivotConstants.kLowerBoundStuckPoint) {
+    // outputVoltage -= 0.2;
+    // }
 
     SmartDashboard.putNumber("Pivot Output Voltage", outputVoltage);
-    SmartDashboard.putNumber("Pivot Voltage PID Output", voltagePID.calculate(relativeEncoder.getPosition(), setpoint));
-    SmartDashboard.putNumber("Pivot Holding Voltage", outputVoltage - voltagePID.calculate(relativeEncoder.getPosition(), setpoint));
+    SmartDashboard.putNumber("Pivot Voltage PID Output",
+        voltagePID.calculate(currentPosition, setpoint));
+    SmartDashboard.putNumber("Pivot Holding Voltage", constantApplicationMap.get(currentPosition));
     SmartDashboard.putNumber("Pivot Setpoint Error", error);
     SmartDashboard.putNumber("Pivot Error Accumulation", voltagePID.getAccumulatedError());
 
@@ -120,22 +129,18 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void changeSetpoint(double setpoint) {
     this.setpoint = setpoint;
-    voltagePID.reset(); // Reset I accumulation 
   }
 
   public void changeSetpoint(Supplier<Double> setpoint) {
     this.setpoint = setpoint.get();
-    voltagePID.reset(); // Reset I accumulation 
   }
 
-  public boolean atSetpoint(double setpointRadians) {
-    return Math
-        .abs(absoluteEncoder.getPosition() - setpointRadians) < PivotConstants.toleranceDegrees;
+  public boolean atSetpoint(double setpoint) {
+    return Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees;
   }
 
-  public boolean atSetpoint(Supplier<Double> setpointRadians) {
-    return Math.abs(
-        absoluteEncoder.getPosition() - setpointRadians.get()) < PivotConstants.toleranceDegrees;
+  public boolean atSetpoint(Supplier<Double> setpoint) {
+    return Math.abs(currentPosition - setpoint.get()) < PivotConstants.toleranceDegrees;
   }
 
   public static SUB_Pivot getInstance(SparkAbsoluteEncoder absoluteEncoder) {
@@ -148,7 +153,18 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void periodic() {
     SmartDashboard.putNumber("ABSEncoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("RELEncoder", relativeEncoder.getPosition());
+    SmartDashboard.putNumber("ABSEncoder Position", currentPosition);
     SmartDashboard.putNumber("Pivot SETPOINT", setpoint);
+
+    currentPosition = absoluteEncoder.getPosition();
+
+    if (Math.abs(currentPosition - previousPosition) > 50) {
+      currentPosition = previousPosition;
+      SmartDashboard.putBoolean("SPIKED??", true);
+    } else {
+      previousPosition = currentPosition;
+    }
+
+    SmartDashboard.putNumber("ABSEncoder Position", currentPosition);
   }
 }
