@@ -82,6 +82,7 @@ public class SUB_Roller extends SubsystemBase {
   }
 
   public void periodic() {
+    SmartDashboard.putBoolean("Banner sensor", bannerSensor.get());
     SmartDashboard.putNumber("Roller RPM", (encoder.getVelocity() / 60));
     SmartDashboard.putNumber("Roller Current", roller.getOutputCurrent());
     SmartDashboard.putNumber("Roller Output Voltage", roller.getBusVoltage() * roller.getAppliedOutput());

@@ -51,7 +51,7 @@ public class SUB_Pivot extends SubsystemBase {
         PersistMode.kPersistParameters);
     this.absoluteEncoder = absoluteEncoder;
 
-    constantApplicationMap.put(-1.0, 0.425);
+    constantApplicationMap.put(1.0, 0.425);
     constantApplicationMap.put(156.0, 0.425);
     constantApplicationMap.put(185.0, 0.6);
     constantApplicationMap.put(226.5, 0.475);
@@ -61,7 +61,7 @@ public class SUB_Pivot extends SubsystemBase {
     constantApplicationMap.put(324.0, -0.35);
     constantApplicationMap.put(327.0, -0.4);
     constantApplicationMap.put(338.0, -0.475);
-    constantApplicationMap.put(Double.MAX_VALUE, -0.475);
+    constantApplicationMap.put(359.0, -0.475);
 
     coralConstantApplicationMap.put(-1.0, 0.6);
     coralConstantApplicationMap.put(160.0, 0.6);
@@ -69,7 +69,7 @@ public class SUB_Pivot extends SubsystemBase {
     coralConstantApplicationMap.put(225.8, 0.725);
     coralConstantApplicationMap.put(252.0, 0.5);
     coralConstantApplicationMap.put(320.0, -0.425);
-    constantApplicationMap.put(Double.MAX_VALUE, -0.425);
+    constantApplicationMap.put(359.0, -0.425);
 
     previousPosition = absoluteEncoder.getPosition();
     currentPosition = absoluteEncoder.getPosition();
@@ -102,6 +102,7 @@ public class SUB_Pivot extends SubsystemBase {
   public void runPivot(Supplier<Boolean> hasCoral) {
     double error = setpoint - currentPosition;
     double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -3, 3);
+
 
     if (setpoint == PivotConstants.kIntakeSetpoint && currentPosition > 333) {
       outputVoltage -= 0.2;
