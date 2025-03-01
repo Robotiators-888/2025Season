@@ -52,8 +52,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
 import frc.robot.Constants.Operator;
 import frc.robot.commands.CMD_ReefAlign;
-import frc.robot.subsystems.SUB_Drivetrain;
-import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.AutoGenerator;
 import edu.wpi.first.math.MathUtil;
@@ -61,9 +59,12 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
@@ -79,17 +80,15 @@ public class RobotContainer {
   public static PowerDistribution powerDistribution = new PowerDistribution();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController Driver1 =
-      new CommandXboxController(Operator.kDriver1ControllerPort);
+  private final CommandXboxController Driver1 = new CommandXboxController(Operator.kDriver1ControllerPort);
 
-  private final CommandXboxController Driver2 =
-      new CommandXboxController(Operator.kDriver2ControllerPort);
+  private final CommandXboxController Driver2 = new CommandXboxController(Operator.kDriver2ControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    drivetrain.setDefaultCommand(new RunCommand( //Unstable
+    drivetrain.setDefaultCommand(new RunCommand( // Unstable
         () -> drivetrain.drive(
             MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
             MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
@@ -101,9 +100,9 @@ public class RobotContainer {
             new WaitCommand(0.0), () -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
 
     // pivot.setDefaultCommand(
-    // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false), pivot));
+    // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false),
+    // pivot));
     pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivot(() -> false), pivot));
-
 
     Driver1.povDown()
         .whileTrue(new RunCommand(
@@ -118,7 +117,7 @@ public class RobotContainer {
                 true),
             drivetrain));
 
-    File pathFolder = new File(Filesystem.getDeployDirectory()+"/pathplanner/paths/");
+    File pathFolder = new File(Filesystem.getDeployDirectory() + "/pathplanner/paths/");
     File[] listOfFiles = pathFolder.listFiles();
     List<String> pathNames = new ArrayList<>();
 
@@ -132,24 +131,70 @@ public class RobotContainer {
 
     for (String pathName : pathNames) {
       String modifiedPathName = pathName.substring(0, pathName.length() - 5);
-      NamedCommands.registerCommand(modifiedPathName+" Pathfind", getPathCommand(modifiedPathName));
+      NamedCommands.registerCommand(modifiedPathName + " Pathfind", getPathCommand(modifiedPathName));
     }
+
+    NamedCommands.registerCommand("scoreL1", new SequentialCommandGroup(
+        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+        new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)),
+        Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL1Setpoint))
+            .andThen(() -> pivot.changeSetpoint(PivotConstants.kL1Setpoint)))
+        .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+            .until(roller.isFreeSpinning())
+            .andThen(new InstantCommand(() -> roller.hasCoral(false)))
+            .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
+
+    NamedCommands.registerCommand("scoreL2", new SequentialCommandGroup(
+        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+        new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint)),
+        Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
+            .andThen(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)))
+        .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+            .until(roller.isFreeSpinning())
+            .andThen(new InstantCommand(() -> roller.hasCoral(false)))
+            .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
+
+    NamedCommands.registerCommand("scoreL3", new SequentialCommandGroup(
+        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+        new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL3Setpoint)),
+        Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL3Setpoint))
+            .andThen(() -> pivot.changeSetpoint(PivotConstants.kL3Setpoint)))
+        .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+            .until(roller.isFreeSpinning())
+            .andThen(new InstantCommand(() -> roller.hasCoral(false)))
+            .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
+
+    NamedCommands.registerCommand("scoreL4", new SequentialCommandGroup(
+        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+        new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
+        Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
+            .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint)))
+        .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+            .until(roller.isFreeSpinning())
+            .andThen(new InstantCommand(() -> roller.hasCoral(false)))
+            .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
+            
     // Configure the trigger bindings
     configureBindings();
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    
+
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary
    * predicate, or via the named factories in
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
+   * for
    * {@link CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+   * controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
    */
   private void configureBindings() {
     // TODO: ADD LEFT ALIGN AND RIGHT ALIGN COMMANDS
@@ -208,7 +253,6 @@ public class RobotContainer {
             Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
                 .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint))));
 
-
     // Driver2.leftBumper()
     // .whileTrue(new InstantCommand(() -> roller.timerInteract(true))
     // .andThen(new RunCommand(
@@ -255,25 +299,21 @@ public class RobotContainer {
     powerDistribution.setSwitchableChannel(true);
   }
 
-
   public Command getPathCommand(String pathName) {
     Pathfinding.setPathfinder(new LocalADStar());
     try {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
       PathConstraints constraints = new PathConstraints(
-            0.5, 0.5,
-            Units.degreesToRadians(180), Units.degreesToRadians(180)); //unstable
-    return AutoBuilder.pathfindThenFollowPath(
-     path,
-    constraints);
+          0.5, 0.5,
+          Units.degreesToRadians(180), Units.degreesToRadians(180)); // unstable
+      return AutoBuilder.pathfindThenFollowPath(
+          path,
+          constraints);
     } catch (Exception e) {
       DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
       return Commands.none();
     }
   }
-
-
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -281,53 +321,52 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-//     return autoChooser.getSelected();
-//     Pathfinding.setPathfinder(new LocalADStar());
+    // return autoChooser.getSelected();
+    // Pathfinding.setPathfinder(new LocalADStar());
 
-//     try{
+    // try{
     // // Load the path we want to pathfind to and follow
-//     PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
-//     drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
-//     // // Create the constraints to use while pathfinding. The constraints defined in the path will only be used for the path.
-//     PathConstraints constraints = new PathConstraints(
-//             0.5, 0.5,
-//             Units.degreesToRadians(180), Units.degreesToRadians(180));
+    // PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
+    // drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
+    // // // Create the constraints to use while pathfinding. The constraints
+    // defined in the path will only be used for the path.
+    // PathConstraints constraints = new PathConstraints(
+    // 0.5, 0.5,
+    // Units.degreesToRadians(180), Units.degreesToRadians(180));
 
-//     // Since AutoBuilder is configured, we can use it to build pathfinding commands
-//     return AutoBuilder.pathfindThenFollowPath(
-//      path,
-//     constraints);
-    //return AutoBuilder.followPath(path);
+    // // Since AutoBuilder is configured, we can use it to build pathfinding
+    // commands
+    // return AutoBuilder.pathfindThenFollowPath(
+    // path,
+    // constraints);
+    // return AutoBuilder.followPath(path);
 
-      PathPlannerAuto auto = new PathPlannerAuto("New Auto");
-      return auto;
+    PathPlannerAuto auto = new PathPlannerAuto("New Auto");
+    return auto;
 
     // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
-    
+
     // RobotConfig robotConfig = RobotConfig.fromGUISettings();
     // PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
 
     // drivetrain.resetPose(
-    //   AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
+    // AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
     // );
     // return AutoBuilder.followPath(path);
-//     } catch (Exception e) {
-//         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-//         return Commands.none();
-//     }
+    // } catch (Exception e) {
+    // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    // return Commands.none();
+    // }
   }
 
-
   public void robotPeriodic() {
-    //photonPoseUpdate();
-    
+    // photonPoseUpdate();
+
   }
 
   public void autonomousPeriodic() {
-    
-  }
 
-  
+  }
 
   public void teleopPeriodic() {
     try {
@@ -345,7 +384,7 @@ public class RobotContainer {
 
     if (photonPoseOptional.isPresent()) {
       Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-      
+
       if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength && photonPose.getY() >= 0
           && photonPose.getY() <= Field.fieldWidth && photonVision.getCam1BestTarget() != null) {
 
@@ -358,7 +397,7 @@ public class RobotContainer {
         double yStddev = xStddev * 4;
         double rotStddev = Units.degreesToRadians(120.0);
         drivetrain.publisher3.set(photonPose.toPose2d());
-        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));  
+        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
         drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
       }
     }
@@ -367,7 +406,7 @@ public class RobotContainer {
 
     if (photonPoseOptional.isPresent()) {
       Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-      
+
       if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength && photonPose.getY() >= 0
           && photonPose.getY() <= Field.fieldWidth && photonVision.getCam2BestTarget() != null) {
 
@@ -380,7 +419,7 @@ public class RobotContainer {
         double yStddev = xStddev * 4;
         double rotStddev = Units.degreesToRadians(120.0);
         drivetrain.publisher4.set(photonPose.toPose2d());
-        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev,rotStddev));  
+        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
         drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
       }
     }
