@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.621499999999999,
-        "y": 2.045749999999997
+        "x": 5.292793949379392,
+        "y": 2.371601425420113
       },
       "isLocked": false,
       "linkedName": "E ReefScore"
     },
     {
       "anchor": {
-        "x": 0.6337499999999994,
-        "y": 1.4022499999999958
+        "x": 5.41702302631579,
+        "y": 2.1872532894736842
       },
       "prevControl": {
-        "x": 1.5405000000000002,
-        "y": 1.5387499999999945
+        "x": 5.162047308030671,
+        "y": 2.5831875961368373
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Pickup(Left)"
+      "linkedName": "E Backup"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 53.426969021480694
+    "rotation": 123.69006752597983
   },
   "reversed": false,
-  "folder": "2 Piece Coral Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 122.00538320808354

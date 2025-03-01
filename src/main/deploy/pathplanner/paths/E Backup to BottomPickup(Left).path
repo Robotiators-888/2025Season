@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.0815789473684205,
-        "y": 2.6875822368421054
+        "x": 5.41702302631579,
+        "y": 2.1872532894736842
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.316339794640794,
-        "y": 2.5199712950515187
+        "x": 2.9153782894736837,
+        "y": 2.4085526315789467
       },
       "isLocked": false,
-      "linkedName": "Bottom MidCageStart"
+      "linkedName": "E Backup"
     },
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 0.6337499999999994,
+        "y": 1.4022499999999958
       },
       "prevControl": {
-        "x": 5.193848700116039,
-        "y": 2.510228374753256
+        "x": 1.461921163880933,
+        "y": 1.6432297911504257
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": "Bottom Pickup(Left)"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.00538320808354
+    "rotation": 53.426969021480694
   },
   "reversed": false,
-  "folder": "1 Piece Coral Paths",
+  "folder": "2 Piece Coral Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.39690880561946
+    "rotation": 123.69006752597983
   },
   "useDefaultConstraints": true
 }

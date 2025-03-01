@@ -51,7 +51,7 @@ public class SUB_Pivot extends SubsystemBase {
         PersistMode.kPersistParameters);
     this.absoluteEncoder = absoluteEncoder;
 
-    constantApplicationMap.put(Double.MIN_VALUE, 0.425);
+    constantApplicationMap.put(-1.0, 0.425);
     constantApplicationMap.put(156.0, 0.425);
     constantApplicationMap.put(185.0, 0.6);
     constantApplicationMap.put(226.5, 0.475);
@@ -63,7 +63,7 @@ public class SUB_Pivot extends SubsystemBase {
     constantApplicationMap.put(338.0, -0.475);
     constantApplicationMap.put(Double.MAX_VALUE, -0.475);
 
-    coralConstantApplicationMap.put(Double.MIN_VALUE, 0.6);
+    coralConstantApplicationMap.put(-1.0, 0.6);
     coralConstantApplicationMap.put(160.0, 0.6);
     coralConstantApplicationMap.put(195.0, 0.75);
     coralConstantApplicationMap.put(225.8, 0.725);
@@ -107,6 +107,7 @@ public class SUB_Pivot extends SubsystemBase {
       outputVoltage -= 0.2;
     }
     if (hasCoral.get()) {
+      SmartDashboard.putBoolean("coral constants?", true);
       outputVoltage += coralConstantApplicationMap.get(currentPosition);
     } else {
       outputVoltage += constantApplicationMap.get(currentPosition);
@@ -136,6 +137,9 @@ public class SUB_Pivot extends SubsystemBase {
   }
 
   public boolean atSetpoint(double setpoint) {
+    SmartDashboard.putNumber("CURRENT POSITION ELEVATOR CONDITIONAL", currentPosition);
+    SmartDashboard.putNumber("cdl", Math.abs(currentPosition - setpoint));
+    SmartDashboard.putBoolean("GOOD TO ELEVATE?", Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees);
     return Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees;
   }
 

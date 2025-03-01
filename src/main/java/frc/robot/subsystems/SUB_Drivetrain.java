@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
@@ -162,7 +163,7 @@ public class SUB_Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("FRONT RIGHT MODULE POSITION",
         frontRight.getPosition().distanceMeters);
 
-    SmartDashboard.putNumber("NavX angle", getAngle());
+    SmartDashboard.putNumber("NavX angle", Units.degreesToRadians(getAngle()));
 
   }
 
@@ -172,7 +173,9 @@ public class SUB_Drivetrain extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_poseEstimator.getEstimatedPosition();
+    Pose2d pose =  m_poseEstimator.getEstimatedPosition();
+
+    return new Pose2d(pose.getX(), pose.getY(), Rotation2d.fromDegrees(getAngle()));
   }
 
   /**

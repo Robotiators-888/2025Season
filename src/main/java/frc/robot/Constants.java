@@ -254,7 +254,7 @@ public static final class Drivetrain {
                 public static final int kRollerCurrentLimit = 60;
 
                 public static final double kIntakeSpeed = 0.25; // Percent
-                public static final double kIntakeFinishSpeed = 0.1; // Percent
+                public static final double kIntakeFinishSpeed = -0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds
                 public static final double kIntakeFinishTime = 0.1; // Seconds
 

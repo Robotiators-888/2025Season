@@ -12,6 +12,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,6 +25,7 @@ public class SUB_Roller extends SubsystemBase {
   private SparkMax roller = new SparkMax(Roller.kRollerCanID, MotorType.kBrushless);
   private SparkMaxConfig config = new SparkMaxConfig();
   private RelativeEncoder encoder = roller.getEncoder();
+  private DigitalInput bannerSensor = new DigitalInput(9);
   private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
 
   public Boolean hasCoral = false;
@@ -40,15 +43,6 @@ public class SUB_Roller extends SubsystemBase {
 
   }
 
-  public boolean atCurrentThresholdandTimerElapsed() {
-    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold
-        && timer.get() > Roller.kIntakeStartingTime;
-  }
-
-  public BooleanSupplier isFreeSpinning() {
-    return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
-  }
-
   public void timerInteract(boolean start) {
     if (start) {
       timer.reset();
@@ -64,14 +58,18 @@ public class SUB_Roller extends SubsystemBase {
     roller.set(percent);
   }
 
-  public boolean hasCoral() {
-    return hasCoral;
+  public boolean getHasCoral() {
+    return !bannerSensor.get();
   }
 
-  public void hasCoral(boolean hasCoral) {
-    this.hasCoral = hasCoral;
+  public boolean getHasAlgae() {
+    return hasAlgae;
   }
 
+  public void setHasAlgae(boolean hasAlgae) {
+    this.hasAlgae = hasAlgae;
+  }
+  
   public SparkAbsoluteEncoder getAbsoluteEncoder() {
     return absoluteEncoder;
   }

@@ -1,10 +1,11 @@
 {
-  "robotWidth": 0.762,
-  "robotLength": 0.94,
+  "robotWidth": 0.851,
+  "robotLength": 0.9525,
   "holonomicMode": true,
   "pathFolders": [
-    "2 Piece Coral Paths",
     "1 Piece Coral Paths",
+    "2 Piece Coral Paths",
+    "Reef Backup Paths",
     "Random Paths"
   ],
   "autoFolders": [
@@ -18,8 +19,8 @@
   "robotMass": 61.235,
   "robotMOI": 7.4719,
   "robotTrackwidth": 0.546,
-  "driveWheelRadius": 0.037,
-  "driveGearing": 4.714,
+  "driveWheelRadius": 0.038,
+  "driveGearing": 5.5,
   "maxDriveSpeed": 5.74,
   "driveMotorType": "vortex",
   "driveCurrentLimit": 60.0,
