@@ -58,9 +58,7 @@ public class RobotContainer {
         -MathUtil.applyDeadband(Driver1.getRawAxis(4), OperatorConstants.kDriveDeadband), true,
         true), drivetrain));
 
-    elevator.setDefaultCommand(
-        new ConditionalCommand(new RunCommand(() -> elevator.runElevator(), elevator),
-            new WaitCommand(0.0), () -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
+    elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(), elevator).unless(()->!pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
 
     // pivot.setDefaultCommand(
     // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false), pivot));
