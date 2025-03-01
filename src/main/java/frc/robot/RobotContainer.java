@@ -65,7 +65,7 @@ public class RobotContainer {
     // pivot.setDefaultCommand(
     // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false), pivot));
     pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivot(() -> false), pivot));
-
+    roller.setDefaultCommand(new RunCommand(()->roller.setRollerOutput(0.0), roller));
 
     Driver1.povDown()
         .whileTrue(new RunCommand(() -> drivetrain.drive(
@@ -179,12 +179,39 @@ public class RobotContainer {
     // roller));
 
     Driver2.leftBumper()
-        .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed)))
-        .onFalse(new InstantCommand(() -> roller.setRollerOutput(0)));
+    .whileTrue(new RunCommand(
+            () -> roller.setRollerOutput(Roller.kIntakeSpeed),
+            roller).until(() -> roller.getHasCoral())
+
+            .andThen(new ParallelCommandGroup(
+                    new InstantCommand(() -> Driver1.getHID().setRumble(
+                            RumbleType.kBothRumble, 1)),
+                    new InstantCommand(() -> Driver2.getHID().setRumble(
+                            RumbleType.kBothRumble, 1)))
+                    .withTimeout(Roller.kIntakeFinishTime)
+                    .andThen(new ParallelCommandGroup(
+                            new InstantCommand(
+                                    () -> Driver1.getHID()
+                                            .setRumble(RumbleType.kBothRumble,
+                                                    0)),
+                            new InstantCommand(
+                                    () -> Driver2.getHID()
+                                            .setRumble(RumbleType.kBothRumble,
+                                                    0))))))
+    .onFalse(
+            new ParallelCommandGroup(
+                    new InstantCommand(
+                            () -> Driver1.getHID()
+                                    .setRumble(RumbleType.kBothRumble,
+                                            0)),
+                    new InstantCommand(
+                            () -> Driver2.getHID()
+                                    .setRumble(RumbleType.kBothRumble,
+                                            0))));
+
     Driver2.leftTrigger()
         .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
             .until(roller.isFreeSpinning())
-            .andThen(new InstantCommand(() -> roller.hasCoral(false)))
             .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller)))
         .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.), roller));
 
