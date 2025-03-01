@@ -409,14 +409,14 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    try {
-      PathPlannerPath paths = PathPlannerPath.fromPathFile("New Path");
-      drivetrain.publisher1.set(AllianceFlipUtil.apply(paths.getStartingHolonomicPose().get()));
-    } catch (Exception e) {
-      DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-    }
-    SmartDashboard.putNumber("Raw X Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband));
-    SmartDashboard.putNumber("Raw Y Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband));
+    // try {
+    //   PathPlannerPath paths = PathPlannerPath.fromPathFile("New Path");
+    //   drivetrain.publisher1.set(AllianceFlipUtil.apply(paths.getStartingHolonomicPose().get()));
+    // } catch (Exception e) {
+    //   DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+    // }
+    // SmartDashboard.putNumber("Raw X Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband));
+    // SmartDashboard.putNumber("Raw Y Speed", -MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband));
   }
 
   public static void photonPoseUpdate() {
