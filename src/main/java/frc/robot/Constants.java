@@ -41,7 +41,7 @@ public final class Constants {
         // This changes the drive speed of the module (a pinion gear with more teeth
         // will result in a
         // robot that drives faster).
-        public static final int kDrivingMotorPinionTeeth = 14; // on shreyan soul it is 14 tooth
+        public static final int kDrivingMotorPinionTeeth = 12; // on shreyan soul it is 14 tooth
 
         // Invert the turning encoder, since the output shaft rotates in the opposite
         // direction of
