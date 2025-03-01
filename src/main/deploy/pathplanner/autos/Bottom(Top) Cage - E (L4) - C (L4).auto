@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom(Top) Cage to E"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "E to BottomPickup(Left)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BottomPickup(Left) to C"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
