@@ -136,6 +136,7 @@ public class SUB_Pivot extends SubsystemBase {
   }
 
   public boolean atSetpoint(double setpoint) {
+    SmartDashboard.putBoolean("GOOD TO ELEVATE?", Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees);
     return Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees;
   }
 
