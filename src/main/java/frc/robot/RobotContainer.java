@@ -32,7 +32,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.Climber;
+import frc.robot.Constants.Elevator;
+import frc.robot.Constants.Operator;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.Roller;
+import frc.robot.subsystems.*;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
@@ -43,6 +57,7 @@ import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.AutoGenerator;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
 /**
@@ -57,6 +72,10 @@ public class RobotContainer {
   private static final SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
   private static final AutoGenerator autoGenerator = AutoGenerator.getInstance();
   private final SendableChooser<Command> autoChooser;
+  public static SUB_Elevator elevator = SUB_Elevator.getInstance();
+  public static SUB_Roller roller = SUB_Roller.getInstance();
+  public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
+  public static SUB_Climber climber = SUB_Climber.getInstance();
   public static PowerDistribution powerDistribution = new PowerDistribution();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -66,7 +85,9 @@ public class RobotContainer {
   private final CommandXboxController Driver2 =
       new CommandXboxController(Operator.kDriver2ControllerPort);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     drivetrain.setDefaultCommand(new RunCommand( //Unstable
         () -> drivetrain.drive(
@@ -75,7 +96,15 @@ public class RobotContainer {
             -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband), true, true),
         drivetrain));
 
-        
+    elevator.setDefaultCommand(
+        new ConditionalCommand(new RunCommand(() -> elevator.runElevator(), elevator),
+            new WaitCommand(0.0), () -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
+
+    // pivot.setDefaultCommand(
+    // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false), pivot));
+    pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivot(() -> false), pivot));
+
+
     Driver1.povDown()
         .whileTrue(new RunCommand(
             () -> drivetrain.drive(
@@ -123,9 +152,103 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
-    Driver1.leftBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
-    Driver1.rightBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
-    Driver1.y().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
+    // TODO: ADD LEFT ALIGN AND RIGHT ALIGN COMMANDS
+
+    Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO: Change
+    Driver1.leftTrigger()
+        .whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput)))
+        .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
+    Driver1.leftBumper()
+        .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
+        .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
+    Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
+
+    Driver1.y()
+        .onTrue(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)));
+    Driver1.b()
+        .onTrue(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
+    Driver1.x()
+        .onTrue(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
+    Driver1.a()
+        .onTrue(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kCoralSetpoint)));
+
+    // Driver 2
+    Driver2.rightBumper()
+        .onTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+            new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
+            Commands.waitUntil(() -> elevator.atSetpoint(0.0))
+                .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint))));
+
+    Driver2.a()
+        .onTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+            new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)),
+            Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL1Setpoint))
+                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL1Setpoint))));
+
+    Driver2.b()
+        .onTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+            new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint)),
+            Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
+                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint))));
+
+    Driver2.x()
+        .onTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+            new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL3Setpoint)),
+            Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL3Setpoint))
+                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL3Setpoint))));
+
+    Driver2.y()
+        .onTrue(new SequentialCommandGroup(
+            new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+            new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
+            Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
+                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint))));
+
+
+    // Driver2.leftBumper()
+    // .whileTrue(new InstantCommand(() -> roller.timerInteract(true))
+    // .andThen(new RunCommand(
+    // () -> roller.setRollerOutput(Roller.kIntakeSpeed),
+    // roller).until(() -> roller.atCurrentThresholdandTimerElapsed()))
+    // .andThen(new ParallelCommandGroup(
+    // new RunCommand(() -> roller.setRollerOutput(
+    // Roller.kIntakeFinishSpeed), roller),
+    // new InstantCommand(
+    // () -> roller.timerInteract(false)),
+    // new InstantCommand(() -> Driver1.getHID().setRumble(
+    // RumbleType.kBothRumble, 1)),
+    // new InstantCommand(() -> Driver2.getHID().setRumble(
+    // RumbleType.kBothRumble, 1)),
+    // new InstantCommand(() -> roller.hasCoral(true)))
+    // .withTimeout(Roller.kIntakeFinishTime)
+    // .andThen(new ParallelCommandGroup(
+    // new InstantCommand(
+    // () -> Driver1.getHID()
+    // .setRumble(RumbleType.kBothRumble,
+    // 0)),
+    // new InstantCommand(
+    // () -> Driver2.getHID()
+    // .setRumble(RumbleType.kBothRumble,
+    // 0)))))
+    // .andThen(new InstantCommand(() -> roller.setRollerOutput(0.),
+    // roller)))
+    // .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
+    // roller));
+
+    Driver2.leftBumper()
+        .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed)))
+        .onFalse(new InstantCommand(() -> roller.setRollerOutput(0)));
+    Driver2.leftTrigger()
+        .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+            .until(roller.isFreeSpinning())
+            .andThen(new InstantCommand(() -> roller.hasCoral(false)))
+            .andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller)))
+        .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.), roller));
+
   }
 
   public void robotInit() {

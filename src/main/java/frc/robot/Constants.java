@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -187,4 +189,80 @@ public static final class Drivetrain {
 
   }
 
+        public static final class PivotConstants {
+                public static final ArmFeedforward noCoralArmFeedforward =
+                                new ArmFeedforward(0, 0.69, 0.34);
+                public static final ArmFeedforward coralArmFeedforward =
+                                new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now,
+                                                                   // change later
+
+                public static final double kIntakeSetpoint = 330;
+                public static final double kElevatingSetpoint = 280;
+                public static final double kCoralSetpoint = 300;
+                public static final double kAlgaeSetpoint = 156;
+                public static final double toleranceDegrees = 6.5;
+
+                public static final double kL1Setpoint = 300;
+                public static final double kL2Setpoint = 300;
+                public static final double kL3Setpoint = 300;
+                public static final double kL4Setpoint = 283;
+
+
+                public static final double kUpperBoundStuckPoint = 340.0;
+                public static final double kLowerBoundStuckPoint = 327.0;
+        }
+
+        public static final class Elevator {
+                public static final double kHomingEncoderLocation = 0;
+                public static final double kResetHomingThreshold = 0.05;
+                public static final double kEncoderNearZero = 0.01;
+                public static final double kHomingEmergencyCurrent = 40;
+                public static final double kHomingVoltage = -0.2;
+                public static final double kTolerance = 0.05;
+
+
+                public static final double kMaxUpVoltage = 3.25;
+                public static final double kMaxUpErrorThreshold = 0.25;
+                public static final double kHighUpVoltage = 2.5;
+                public static final double kHighUpErrorThreshold = 0.15;
+                public static final double kMediumUpVoltage = 2;
+                public static final double kMediumUpErrorThreshold = 0.1;
+                public static final double kSlowUpVoltage = 1.5;
+
+                public static final double kMaxDownVoltage = -0.75;
+                public static final double kMaxDownErrorThreshold = 0.25;
+                public static final double kHighDownVoltage = -0.5;
+                public static final double kHighDownErrorThreshold = 0.20;
+                public static final double kMediumDownVoltage = -0.2;
+                public static final double kMediumDownErrorThreshold = 0.15;
+                public static final double kSlowDownVoltage = 0.1;
+
+                public static final double kEmptyHoldingVoltage = 0.6;
+                public static final double kCoralHoldingVoltage = 0.79;
+                public static final double kAlgaeHoldingVoltage = 0.72;
+
+                public static final double kStartingSetpoint = 0;
+                public static final double kL1Setpoint = 0.1;
+                public static final double kL2Setpoint = 0.259;
+                public static final double kL3Setpoint = 0.48;
+                public static final double kL4Setpoint = 0.80;
+        }
+
+        public static class Roller {
+                public static final int kRollerCanID = 30;
+                public static final double kIntakeCurrentThreshold = 35; // Amps
+                public static final int kRollerCurrentLimit = 60;
+
+                public static final double kIntakeSpeed = 0.25; // Percent
+                public static final double kIntakeFinishSpeed = 0.1; // Percent
+                public static final double kIntakeStartingTime = 1.25; // Seconds
+                public static final double kIntakeFinishTime = 0.1; // Seconds
+
+                public static final double kEjectSpeed = 0.8; // Percent
+                public static final double kFreeSpinThreshold = 420; // RPM
+        }
+        public static class Climber {
+                public static final int kClimberCanID = 40;
+                public static final double kClimberPercentOutput = 0.2;
+        }
 }
