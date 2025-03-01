@@ -42,7 +42,6 @@ import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.utils.AllianceFlipUtil;
 import frc.robot.utils.AutoGenerator;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
