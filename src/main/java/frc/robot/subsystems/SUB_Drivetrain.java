@@ -103,12 +103,7 @@ public class SUB_Drivetrain extends SubsystemBase {
   Pose2d pose = new Pose2d();
   // Odometry class for tracking robot pose
 
-  public SwerveDrivePoseEstimator m_poseEstimator =
-      new SwerveDrivePoseEstimator(Constants.Drivetrain.kDriveKinematics,
-          Rotation2d.fromDegrees(getAngle()),
-          new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(),
-              backLeft.getPosition(), backRight.getPosition()},
-          new Pose2d(0, 0, new Rotation2d(0)));
+  public SwerveDrivePoseEstimator m_poseEstimator;
 
   public static SUB_Drivetrain getInstance() {
     if (INSTANCE == null) {
@@ -119,7 +114,13 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   private SUB_Drivetrain() {
-    zeroHeading();
+    navx.zeroYaw();
+
+    m_poseEstimator = new SwerveDrivePoseEstimator(Constants.Drivetrain.kDriveKinematics,
+    Rotation2d.fromDegrees(getAngle()),
+    new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(),
+        backLeft.getPosition(), backRight.getPosition()},
+    new Pose2d(0, 0, new Rotation2d(0)));
   }
 
   @Override
@@ -311,6 +312,7 @@ public class SUB_Drivetrain extends SubsystemBase {
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     navx.zeroYaw();
+    m_poseEstimator.resetRotation(Rotation2d.fromDegrees(navx.getAngle()));
   }
 
 

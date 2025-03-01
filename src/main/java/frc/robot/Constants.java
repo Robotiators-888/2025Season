@@ -39,7 +39,7 @@ public final class Constants {
         // This changes the drive speed of the module (a pinion gear with more teeth
         // will result in a
         // robot that drives faster).
-        public static final int kDrivingMotorPinionTeeth = 14;
+        public static final int kDrivingMotorPinionTeeth = 14; // on shreyan soul it is 14 tooth
 
         // Invert the turning encoder, since the output shaft rotates in the opposite
         // direction of
@@ -49,7 +49,7 @@ public final class Constants {
         // Calculations required for driving motor conversion factors and feed forward
         public static final double kDrivingMotorFreeSpeedRps =
                         Motor.kVortexFreeSpeedRpm / 60;
-        public static final double kWheelDiameterMeters = Units.inchesToMeters(2.9970);
+        public static final double kWheelDiameterMeters = Units.inchesToMeters(2.989);
         // Thrifty tread 2.95in
         // Orange Tread 2.70
         // Black Rev 2.95
@@ -149,8 +149,7 @@ public static final class Drivetrain {
                                         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
                                         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
                                         new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-                                        new Translation2d(-kWheelBase / 2,
-                                                        -kTrackWidth / 2));
+                                        new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
         // Angular offsets of the modules relative to the chassis in radians
         public static final double kFrontLeftChassisAngularOffset = -Math.PI / 2.0;

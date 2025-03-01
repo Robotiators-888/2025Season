@@ -125,7 +125,7 @@ public class RobotContainer {
   private void configureBindings() {
     Driver1.leftBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
     Driver1.rightBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
-    Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
+    Driver1.y().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
   }
 
   public void robotInit() {
@@ -196,7 +196,7 @@ public class RobotContainer {
 
 
   public void robotPeriodic() {
-    photonPoseUpdate();
+    //photonPoseUpdate();
     
   }
 
