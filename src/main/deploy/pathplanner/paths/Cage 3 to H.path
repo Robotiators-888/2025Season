@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3139554794520545,
-        "y": 4.025
+        "x": 7.175,
+        "y": 4.99366883116883
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4048510078001613,
-        "y": 4.03387066014868
+        "x": 6.295714686076658,
+        "y": 4.465593037496343
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CageStart3"
     },
     {
       "anchor": {
-        "x": 1.6678510273972602,
-        "y": 4.025
+        "x": 5.82150974025974,
+        "y": 4.191193181818182
       },
       "prevControl": {
-        "x": 1.91537027479561,
-        "y": 3.989868501777544
+        "x": 6.206410876097528,
+        "y": 4.433506553348623
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "H Score"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.07595464722743
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Random Paths (Delete Eventually)",
+  "folder": "Start to Score",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

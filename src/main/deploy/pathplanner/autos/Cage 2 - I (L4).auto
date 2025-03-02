@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom(Top) Cage to E"
+            "pathName": "Cage 2 to I"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreL4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "E Backup to BottomPickup(Left)"
+            "pathName": "I Backup"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "BottomPickup(Left) to C"
+            "name": "stow"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "1 Piece",
   "choreoAuto": false
 }

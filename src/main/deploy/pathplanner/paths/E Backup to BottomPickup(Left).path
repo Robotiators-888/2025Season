@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.41702302631579,
-        "y": 2.1872532894736842
+        "x": 5.242207792207791,
+        "y": 2.4722808441558435
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9153782894736837,
-        "y": 2.4085526315789467
+        "x": 2.7405630553656852,
+        "y": 2.693580186261106
       },
       "isLocked": false,
       "linkedName": "E Backup"
@@ -45,7 +45,7 @@
     "rotation": 53.426969021480694
   },
   "reversed": false,
-  "folder": "2 Piece Coral Paths",
+  "folder": "Score to Pickup",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 123.69006752597983

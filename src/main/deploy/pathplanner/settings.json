@@ -3,13 +3,16 @@
   "robotLength": 0.9525,
   "holonomicMode": true,
   "pathFolders": [
-    "1 Piece Coral Paths",
-    "2 Piece Coral Paths",
+    "Pickup to Score",
+    "Random Paths (Delete Eventually)",
     "Reef Backup Paths",
-    "Random Paths"
+    "Score to Pickup",
+    "Start to Score"
   ],
   "autoFolders": [
-    "Random Autos"
+    "1 Piece",
+    "New Folder",
+    "2 Piece"
   ],
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,

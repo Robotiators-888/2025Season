@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom(Mid) Cage to E"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL4"
+            "pathName": "Cage 4 to E"
           }
         },
         {
@@ -23,21 +17,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "stow"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "E Backup to BottomPickup(Left)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intake"
           }
         },
         {
@@ -45,17 +27,11 @@
           "data": {
             "pathName": "BottomPickup(Left) to C"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL4"
-          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "2 Piece",
   "choreoAuto": false
 }

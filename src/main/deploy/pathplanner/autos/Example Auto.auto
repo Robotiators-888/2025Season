@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": null
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Random Autos",
+  "folder": "2 Piece",
   "choreoAuto": false
 }

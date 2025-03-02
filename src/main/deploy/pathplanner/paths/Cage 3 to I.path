@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.0815789473684205,
-        "y": 2.6875822368421054
+        "x": 7.175,
+        "y": 4.99366883116883
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.316339794640794,
-        "y": 2.5199712950515187
+        "x": 6.161696997966942,
+        "y": 5.118580560410003
       },
       "isLocked": false,
-      "linkedName": "Bottom MidCageStart"
+      "linkedName": "CageStart3"
     },
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 5.332426948051948,
+        "y": 5.1028814935064934
       },
       "prevControl": {
-        "x": 5.193848700116039,
-        "y": 2.510228374753256
+        "x": 5.538303235271604,
+        "y": 4.961054294561264
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": "I ReefScore"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5373437954083122,
+      "rotationDegrees": -121.52699999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.00538320808354
+    "rotation": -121.52699999999999
   },
   "reversed": false,
-  "folder": "1 Piece Coral Paths",
+  "folder": "Start to Score",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.39690880561946
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

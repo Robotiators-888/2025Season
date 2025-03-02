@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.066905737704918,
-        "y": 7.0
+        "x": 7.175,
+        "y": 6.138027597402597
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.066905737704917,
-        "y": 7.0
+        "x": 6.241354168588986,
+        "y": 6.307133878002521
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CageStart2"
     },
     {
       "anchor": {
-        "x": 5.502356557377048,
-        "y": 5.325665983606557
+        "x": 5.014285714285714,
+        "y": 5.235836038961038
       },
       "prevControl": {
-        "x": 4.8070696721311466,
-        "y": 6.824129098360657
+        "x": 5.2855414546891915,
+        "y": 5.534631488522425
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "J Score"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.470294100066006
+    "rotation": -121.52699999999999
   },
   "reversed": false,
-  "folder": "Random Paths",
+  "folder": "Start to Score",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.5622133187638
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
