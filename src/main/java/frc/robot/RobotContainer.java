@@ -401,7 +401,6 @@ public class RobotContainer {
 
   public void robotPeriodic() {
     photonPoseUpdate();
-
   }
 
   public void autonomousPeriodic() {
@@ -436,7 +435,7 @@ public class RobotContainer {
         double xStddev = distance / 16.0;
         double yStddev = xStddev;
         double rotStddev = Units.degreesToRadians(120.0);
-        drivetrain.publisher3.set(photonPose.toPose2d());
+        //drivetrain.publisher3.set(photonPose.toPose2d());
         drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
         drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
       }
