@@ -218,8 +218,9 @@ public class RobotContainer {
     Driver1.leftBumper()
         .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
         .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
-    Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
 
+    Driver1.rightTrigger().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
+    Driver1.rightBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
     Driver1.y()
         .onTrue(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)));
     Driver1.b()
