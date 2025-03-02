@@ -30,8 +30,7 @@ public class SUB_Pivot extends SubsystemBase {
   public double outputvoltage = 0;
 
   private double setpoint = PivotConstants.kIntakeSetpoint;// TOOD: Change
-  private PIDController voltagePID = new PIDController(0.02, 0, 0.002); // TODO: Change
-                                                                        // constants
+  private PIDController voltagePID = new PIDController(0.02, 0, 0); // TODO: Change
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();
@@ -100,9 +99,9 @@ public class SUB_Pivot extends SubsystemBase {
 
 
   public void runPivot(Supplier<Boolean> hasCoral) {
+    currentPosition = absoluteEncoder.getPosition();
     double error = setpoint - currentPosition;
     double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -3, 3);
-
 
     if (setpoint == PivotConstants.kIntakeSetpoint && currentPosition > 333) {
       outputVoltage -= 0.2;
@@ -161,14 +160,12 @@ public class SUB_Pivot extends SubsystemBase {
     SmartDashboard.putNumber("ABSEncoder Position", currentPosition);
     SmartDashboard.putNumber("Pivot SETPOINT", setpoint);
 
-    currentPosition = absoluteEncoder.getPosition();
-
-    if (Math.abs(currentPosition - previousPosition) > 50) {
-      currentPosition = previousPosition;
-      SmartDashboard.putBoolean("SPIKED??", true);
-    } else {
-      previousPosition = currentPosition;
-    }
+    // if (Math.abs(currentPosition - previousPosition) > 50) {
+    //   currentPosition = previousPosition;
+    //   SmartDashboard.putBoolean("SPIKED??", true);
+    // } else {
+    //   previousPosition = currentPosition;
+    // }
 
     SmartDashboard.putNumber("ABSEncoder Position", currentPosition);
   }

@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 4 to E"
+            "pathName": "(Shortened) Cage 4 to E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreL4"
           }
         },
         {
@@ -17,9 +23,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "stow"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "E Backup to BottomPickup(Left)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         },
         {
@@ -27,11 +45,17 @@
           "data": {
             "pathName": "BottomPickup(Left) to C"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreL4"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "New Folder",
+  "folder": "2 Piece",
   "choreoAuto": false
 }
