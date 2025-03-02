@@ -84,13 +84,13 @@ public class SUB_Pivot extends SubsystemBase {
   }
 
 
-  public void runPivotHoldingVoltage(Supplier<Boolean> hasCoral) {
-    if (hasCoral.get()) {
-      armPrimary.setVoltage(coralConstantApplicationMap.get(absoluteEncoder.getPosition()));
-    } else {
-      armPrimary.setVoltage(constantApplicationMap.get(absoluteEncoder.getPosition()));
-    }
-  }
+  // public void runPivotHoldingVoltage(Supplier<Boolean> hasCoral) {
+  //   if (hasCoral.get()) {
+  //     armPrimary.setVoltage(coralConstantApplicationMap.get(absoluteEncoder.getPosition()));
+  //   } else {
+  //     armPrimary.setVoltage(constantApplicationMap.get(absoluteEncoder.getPosition()));
+  //   }
+  // }
 
   public void updateVoltage(double voltage) {
     outputvoltage = outputvoltage + voltage;
@@ -104,15 +104,15 @@ public class SUB_Pivot extends SubsystemBase {
     double error = setpoint - currentPosition;
     double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -3, 3);
 
-    if (setpoint == PivotConstants.kIntakeSetpoint && currentPosition > 333) {
-      outputVoltage -= 0.2;
-    }
-    if (hasCoral.get()) {
-      SmartDashboard.putBoolean("coral constants?", true);
-      outputVoltage += coralConstantApplicationMap.get(currentPosition);
-    } else {
-      outputVoltage += constantApplicationMap.get(currentPosition);
-    }
+    // if (setpoint == PivotConstants.kIntakeSetpoint && currentPosition > 333) {
+    //   outputVoltage -= 0.2;
+    // // }
+    // if (hasCoral.get()) {
+    //   SmartDashboard.putBoolean("coral constants?", true);
+    //   outputVoltage += coralConstantApplicationMap.get(currentPosition);
+    // } else {
+    //   outputVoltage += constantApplicationMap.get(currentPosition);
+    // }
 
     // if (absoluteEncoder.getPosition() < PivotConstants.kUpperBoundStuckPoint
     // && absoluteEncoder.getPosition() > PivotConstants.kLowerBoundStuckPoint) {
