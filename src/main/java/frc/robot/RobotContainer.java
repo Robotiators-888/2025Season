@@ -117,22 +117,22 @@ public class RobotContainer {
                 true),
             drivetrain));
 
-    File pathFolder = new File(Filesystem.getDeployDirectory() + "/pathplanner/paths/");
-    File[] listOfFiles = pathFolder.listFiles();
-    List<String> pathNames = new ArrayList<>();
+    // File pathFolder = new File(Filesystem.getDeployDirectory() + "/pathplanner/paths/");
+    // File[] listOfFiles = pathFolder.listFiles();
+    // List<String> pathNames = new ArrayList<>();
 
-    if (listOfFiles != null) {
-      for (File file : listOfFiles) {
-        if (file.isFile() && file.getName().endsWith(".path")) {
-          pathNames.add(file.getName());
-        }
-      }
-    }
+    // if (listOfFiles != null) {
+    //   for (File file : listOfFiles) {
+    //     if (file.isFile() && file.getName().endsWith(".path")) {
+    //       pathNames.add(file.getName());
+    //     }
+    //   }
+    // }
 
-    for (String pathName : pathNames) {
-      String modifiedPathName = pathName.substring(0, pathName.length() - 5);
-      NamedCommands.registerCommand(modifiedPathName + " Pathfind", getPathCommand(modifiedPathName));
-    }
+    // for (String pathName : pathNames) {
+    //   String modifiedPathName = pathName.substring(0, pathName.length() - 5);
+    //   NamedCommands.registerCommand(modifiedPathName + " Pathfind", getPathCommand(modifiedPathName));
+    // }
 
     NamedCommands.registerCommand("scoreL1", new SequentialCommandGroup(
         new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
