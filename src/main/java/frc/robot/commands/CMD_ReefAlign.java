@@ -17,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
@@ -34,8 +35,8 @@ public class CMD_ReefAlign extends RunCommand {
   private final PIDController yController = new PIDController(0.2, 0, 0.02);
   private final PIDController robotAngleController = new PIDController(0.7, 0, 0);
 
-  private final double xMagnitude = Units.inchesToMeters(63); // 15 + 48 inches to meters
-  private final double yMagnitude = Units.inchesToMeters(24);
+  private final double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
+  private final double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
 
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
     super(() -> {}, drivetrain);

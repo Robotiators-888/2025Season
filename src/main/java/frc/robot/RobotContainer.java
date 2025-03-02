@@ -209,7 +209,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // TODO: ADD LEFT ALIGN AND RIGHT ALIGN COMMANDS
 
     Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO: Change
     Driver1.leftTrigger()

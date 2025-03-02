@@ -162,6 +162,11 @@ public static final class Drivetrain {
         public static final boolean kGyroReversed = true;
 
         public static final double kGyroRotation = 0;
+
+        // Constants for CMD_ReefAlign
+        public static final double kXShiftMagnitude = Units.inchesToMeters(48 + (kWheelBase / 2)); // Distance away from the April Tag
+        public static final double kYShiftMagnitude = Units.inchesToMeters(24); // Distance shifted to the left/right of the April Tag
+        
 }
 
   // Motor Constants
