@@ -28,6 +28,7 @@ public class SUB_Pivot extends SubsystemBase {
   private SparkAbsoluteEncoder absoluteEncoder;
   private SparkMaxConfig armMotorConfig = new SparkMaxConfig();
   public double outputvoltage = 0;
+  public double outputvoltage2 = 0;
 
   private double setpoint = PivotConstants.kIntakeSetpoint;// TOOD: Change
   private PIDController voltagePID = new PIDController(0.02, 0, 0); // TODO: Change
@@ -145,6 +146,12 @@ public class SUB_Pivot extends SubsystemBase {
 
   public boolean atSetpoint(Supplier<Double> setpoint) {
     return Math.abs(currentPosition - setpoint.get()) < PivotConstants.toleranceDegrees;
+  }
+
+  public void changeVoltage(double voltage) {
+    outputvoltage2 += voltage;
+    runPivotManualVoltage(outputvoltage2);
+    SmartDashboard.putNumber("Pivot Output Voltage", outputvoltage2);
   }
 
   public static SUB_Pivot getInstance(SparkAbsoluteEncoder absoluteEncoder) {

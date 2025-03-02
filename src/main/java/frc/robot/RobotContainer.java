@@ -101,7 +101,7 @@ public class RobotContainer {
     // pivot.setDefaultCommand(
     // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false),
     // pivot));
-    pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
+    // TODO: pivot.setDefaultCommand(new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
     roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0), roller));
 
     Driver1.povDown()
@@ -264,7 +264,9 @@ public class RobotContainer {
             new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
             Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
                 .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint))));
-
+    Driver2.povDown().onTrue(new InstantCommand(() -> pivot.changeVoltage(-0.1)));
+    Driver2.povUp().onTrue(new InstantCommand(() -> pivot.changeVoltage(0.1)));
+    
     // Driver2.leftBumper()
     // .whileTrue(new InstantCommand(() -> roller.timerInteract(true))
     // .andThen(new RunCommand(
