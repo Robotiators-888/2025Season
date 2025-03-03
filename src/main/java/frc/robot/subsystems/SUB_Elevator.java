@@ -69,6 +69,10 @@ public class SUB_Elevator extends SubsystemBase {
         runElevatorManualVoltage(Elevator.kAlgaeHoldingVoltage);
         return;
       }
+      if (primaryencoder.getPosition() > .6){
+        runElevatorManualVoltage(Elevator.kEmptyHoldingVoltageTop);
+        return;
+      }
       runElevatorManualVoltage(Elevator.kEmptyHoldingVoltage);
       return;
     }

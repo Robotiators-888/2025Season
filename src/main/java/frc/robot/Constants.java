@@ -243,6 +243,7 @@ public static final class Drivetrain {
                 public static final double kSlowDownVoltage = 0.1;
 
                 public static final double kEmptyHoldingVoltage = 0.6;
+                public static final double kEmptyHoldingVoltageTop = 0.69;
                 public static final double kCoralHoldingVoltage = 0.79;
                 public static final double kAlgaeHoldingVoltage = 0.72;
 

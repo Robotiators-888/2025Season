@@ -5,8 +5,9 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
-
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -28,7 +29,7 @@ public class SUB_Pivot extends SubsystemBase {
   // public double outputvoltage2 = 0;
 
   private double setpoint = PivotConstants.kIntakeSetpoint;// TODO: Change
-  private PIDController voltagePID = new PIDController(0.025, 0.02, 0.0); // TODO: Change
+  private PIDController voltagePID = new PIDController(0.035, 0, 0.0035); // TODO: Change
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();
@@ -101,6 +102,10 @@ public class SUB_Pivot extends SubsystemBase {
     currentPosition = absoluteEncoder.getPosition();
     double error = setpoint - currentPosition;
     double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -3, 3);
+    // if (setpoint == PivotConstants.kIntakeSetpoint && absoluteEncoder.getPosition() > 334.5){
+    //   outputVoltage -= 0.2;
+    //   SmartDashboard.putBoolean("Has Triggered", true);
+    // }
 
     // if (setpoint == PivotConstants.kIntakeSetpoint && currentPosition > 333) {
     //   outputVoltage -= 0.2;
