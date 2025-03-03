@@ -4,16 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-
 import java.util.function.Supplier;
-import java.util.spi.CurrencyNameProvider;
+
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -28,10 +25,10 @@ public class SUB_Pivot extends SubsystemBase {
   private SparkAbsoluteEncoder absoluteEncoder;
   private SparkMaxConfig armMotorConfig = new SparkMaxConfig();
   public double outputvoltage = 0;
-  public double outputvoltage2 = 0;
+  // public double outputvoltage2 = 0;
 
-  private double setpoint = PivotConstants.kIntakeSetpoint;// TOOD: Change
-  private PIDController voltagePID = new PIDController(0.02, 0, 0); // TODO: Change
+  private double setpoint = PivotConstants.kIntakeSetpoint;// TODO: Change
+  private PIDController voltagePID = new PIDController(0.025, 0.02, 0.0); // TODO: Change
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();
@@ -47,6 +44,7 @@ public class SUB_Pivot extends SubsystemBase {
     armMotorConfig.inverted(true);
     armMotorConfig.disableFollowerMode();
     armMotorConfig.encoder.positionConversionFactor(360.0 / (5 * (30.0 / 16.0)));
+    armMotorConfig.smartCurrentLimit(50,60,240);
     armPrimary.configure(armMotorConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     this.absoluteEncoder = absoluteEncoder;
@@ -148,11 +146,11 @@ public class SUB_Pivot extends SubsystemBase {
     return Math.abs(currentPosition - setpoint.get()) < PivotConstants.toleranceDegrees;
   }
 
-  public void changeVoltage(double voltage) {
-    outputvoltage2 += voltage;
-    runPivotManualVoltage(outputvoltage2);
-    SmartDashboard.putNumber("Pivot Output Voltage", outputvoltage2);
-  }
+  // public void changeVoltage(double voltage) {
+  //   outputvoltage2 += voltage;
+  //   runPivotManualVoltage(outputvoltage2);
+  //   SmartDashboard.putNumber("Pivot Output Voltage", outputvoltage2);
+  // }
 
   public static SUB_Pivot getInstance(SparkAbsoluteEncoder absoluteEncoder) {
     if (INSTANCE == null) {
@@ -173,6 +171,7 @@ public class SUB_Pivot extends SubsystemBase {
     // } else {
     //   previousPosition = currentPosition;
     // }
+    SmartDashboard.putNumber("Pivot Current", armPrimary.getOutputCurrent());
 
     SmartDashboard.putNumber("ABSEncoder Position", currentPosition);
   }
