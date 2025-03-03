@@ -31,9 +31,9 @@ public class CMD_ReefAlign extends RunCommand {
   private final boolean isLeftAlign;
   private List<Integer> targetTagSet;
 
-  private final PIDController xController = new PIDController(0.2, 0, 0.02);
-  private final PIDController yController = new PIDController(0.2, 0, 0.02);
-  private final PIDController robotAngleController = new PIDController(0.7, 0, 0);
+  private final PIDController xController = new PIDController(0.1, 0, 0.02);
+  private final PIDController yController = new PIDController(0.1, 0, 0.02);
+  private final PIDController robotAngleController = new PIDController(0.1, 0, 0);
 
   private final double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
   private final double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
@@ -97,7 +97,7 @@ public class CMD_ReefAlign extends RunCommand {
     double ySpeed = yController.calculate(currentPose.getY(), tagPose.getY() + y);
     double omegaSpeed = robotAngleController.calculate(MathUtil.angleModulus(currentPose.getRotation().getRadians()), MathUtil.angleModulus(tagPose.getRotation().getRadians()));
 
-    drivetrain.drive(xSpeed, ySpeed, -omegaSpeed, true, false);
+    drivetrain.drive(-xSpeed, -ySpeed, omegaSpeed, true, false);
   }
 
   @Override
