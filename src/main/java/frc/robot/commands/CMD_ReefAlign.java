@@ -12,6 +12,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -91,11 +92,11 @@ public class CMD_ReefAlign extends RunCommand {
     double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
     double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
 
-    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, tagPose.getRotation()));
+    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, tagPose.getRotation().rotateBy(new Rotation2d(180))));
 
     double xSpeed = xController.calculate(currentPose.getX(), tagPose.getX() + x);
     double ySpeed = yController.calculate(currentPose.getY(), tagPose.getY() + y);
-    double omegaSpeed = robotAngleController.calculate(MathUtil.angleModulus(currentPose.getRotation().getRadians()), MathUtil.angleModulus(tagPose.getRotation().getRadians()));
+    double omegaSpeed = robotAngleController.calculate(MathUtil.angleModulus(currentPose.getRotation().getRadians()), MathUtil.angleModulus(tagPose.getRotation().getRadians()+Math.PI));
 
     drivetrain.drive(-xSpeed, -ySpeed, omegaSpeed, true, false);
   }
