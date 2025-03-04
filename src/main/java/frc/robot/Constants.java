@@ -166,8 +166,9 @@ public final class Constants {
 
                 // Constants for CMD_ReefAlign
                 public static final double kXShiftMagnitude =
-                                Units.inchesToMeters(5 + (kWheelBase / 2)); // Distance away from
-                                                                            // the April Tag
+                                Units.inchesToMeters(5+(30.5 / 2)); // Distance away from
+                                                                 
+                                // the April Tag
                 public static final double kYShiftMagnitude = Units.inchesToMeters(6.5); // Distance
                                                                                          // shifted
                                                                                          // to the

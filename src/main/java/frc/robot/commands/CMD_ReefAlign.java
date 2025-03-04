@@ -32,9 +32,9 @@ public class CMD_ReefAlign extends RunCommand {
   private final boolean isLeftAlign;
   private List<Integer> targetTagSet;
 
-  private final PIDController xController = new PIDController(0.1, 0, 0.02);
-  private final PIDController yController = new PIDController(0.5, 0, 0.05);
-  private final PIDController robotAngleController = new PIDController(0.5, 0, 0);
+  private final PIDController xController = new PIDController(0.3, 0, 0.03);
+  private final PIDController yController = new PIDController(0.3, 0, 0.03);
+  private final PIDController robotAngleController = new PIDController(0.7, 0, 0.05);
 
   private final double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
   private final double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
@@ -93,7 +93,8 @@ public class CMD_ReefAlign extends RunCommand {
 
     double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
     double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
-
+    SmartDashboard.putNumber("X", x);
+    SmartDashboard.putNumber("Y", y);
     drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, Rotation2d
         .fromRadians(MathUtil.angleModulus(tagPose.getRotation().getRadians() + Math.PI))));
 
