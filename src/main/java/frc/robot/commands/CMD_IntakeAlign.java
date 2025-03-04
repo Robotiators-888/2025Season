@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Optional;
 
 import edu.wpi.first.math.MathUtil;
@@ -22,33 +23,34 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
-public class CMD_ReefAlign extends RunCommand {
+public class CMD_IntakeAlign extends RunCommand {
   private final SUB_PhotonVision photonVision;
   private final SUB_Drivetrain drivetrain;
 
   private Pose2d tagPose;
   private Integer targetId;
-
-  private final boolean isLeftAlign;
   private List<Integer> targetTagSet;
 
   private final PIDController xController = new PIDController(0.1, 0, 0.02);
   private final PIDController yController = new PIDController(0.5, 0, 0.05);
   private final PIDController robotAngleController = new PIDController(0.5, 0, 0);
+  private HashMap<Integer, Pose2d> targetPositions = new HashMap<>();
 
-  private final double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
-  private final double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
-
-  public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
-      boolean isLeftAlign) {
+  public CMD_IntakeAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision) {
     super(() -> {
     }, drivetrain);
-    
+
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
-    this.isLeftAlign = isLeftAlign;
     robotAngleController.enableContinuousInput(-Math.PI, Math.PI);
     robotAngleController.setTolerance(Units.degreesToRadians(1));
+
+    targetPositions.put(13, new Pose2d(0.646, 6.602, photonVision.at_field.getTagPose(13).get().toPose2d().getRotation()));
+    targetPositions.put(12, new Pose2d(0.646, 1.388, photonVision.at_field.getTagPose(12).get().toPose2d().getRotation()));
+
+    targetPositions.put(2, new Pose2d(16.889, 6.602, photonVision.at_field.getTagPose(2).get().toPose2d().getRotation()));
+    targetPositions.put(1, new Pose2d(16.889, 1.388, photonVision.at_field.getTagPose(1).get().toPose2d().getRotation()));
+
     addRequirements(drivetrain);
   }
 
@@ -61,8 +63,8 @@ public class CMD_ReefAlign extends RunCommand {
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
       targetTagSet =
-          alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
-              : Arrays.asList(21, 20, 19, 18, 17, 22);
+          alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(1,2)
+              : Arrays.asList(12, 13);
     } else {
       SmartDashboard.putBoolean("Alliance Error", true);
       end(true);
@@ -71,7 +73,7 @@ public class CMD_ReefAlign extends RunCommand {
 
     double minDistance = Double.MAX_VALUE;
     for (int tag : targetTagSet) {
-      Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
+      Pose2d pose = photonVision.at_field.getTagPose(tag).get().toPose2d();
       Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
       double distance = translate.getNorm();
 
@@ -89,24 +91,19 @@ public class CMD_ReefAlign extends RunCommand {
   @Override
   public void execute() {
     Pose2d currentPose = drivetrain.getPose();
-    double angle = Units.degreesToRadians(60 * targetTagSet.indexOf(targetId));
-    double offset = Units.degreesToRadians(isLeftAlign ? 90 : -90);
+    Pose2d targetPose = targetPositions.get(targetId);
 
-    double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
-    double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
+    drivetrain.publisher1.set(targetPose);
 
-    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, Rotation2d
-        .fromRadians(MathUtil.angleModulus(tagPose.getRotation().getRadians() + Math.PI))));
-
-    double xSpeed = xController.calculate(currentPose.getX(), tagPose.getX() + x);
-    double ySpeed = yController.calculate(currentPose.getY(), tagPose.getY() + y);
+    double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
+    double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
     double omegaSpeed = robotAngleController.calculate(
         MathUtil.angleModulus(currentPose.getRotation().getRadians()),
-        MathUtil.angleModulus(tagPose.getRotation().getRadians() + Math.PI));
+        MathUtil.angleModulus(targetPose.getRotation().getRadians()));
 
     drivetrain.drive(xSpeed, ySpeed, omegaSpeed, true, false);
-    SmartDashboard.putNumber("X Error", currentPose.getX() - tagPose.getX());
-    SmartDashboard.putNumber("Y Error", currentPose.getY() - tagPose.getY());
+    SmartDashboard.putNumber("X Error", currentPose.getX() - targetPose.getX());
+    SmartDashboard.putNumber("Y Error", currentPose.getY() - targetPose.getY());
   }
 
   @Override

@@ -95,11 +95,11 @@ public class RobotContainer {
                         true, true),
                 drivetrain));
 
-        // Trigger c = new Trigger(()->!pivot.atSetpoint(PivotConstants.kElevatingSetpoint))
-        // c.onTrue(new RunCommand(() -> elevator.runElevator(), elevator);
+        // Trigger c = new Trigger(()->!pivot.atSetpoint(PivotConstants.kElevatingSetpoint));
+        // c.whileTrue(new RunCommand(() -> elevator.runElevator(), elevator));
 
         elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(), elevator)
-                .unless(() -> !pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
+                .onlyWhile(() -> !pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
 
         // pivot.setDefaultCommand(
         // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false),
