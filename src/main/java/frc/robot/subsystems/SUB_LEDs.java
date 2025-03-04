@@ -134,52 +134,56 @@ public class SUB_LEDs extends SubsystemBase {
   };
 
   static Spark blinkin;
-  public static double ledValue = -0.99;
-
-  public SUB_LEDs(int port) {
-    blinkin = new Spark(port);
-  }
-
-
-  /*
-   * Set the color and blink pattern of the LED strip.
-   * 
-   * Consult the Rev Robotics Blinkin manual Table 5 for a mapping of values to patterns.
-   * 
-   * @param val The LED blink color and patern value [-1,1]
-   * 
-   */
-  public static void set(double val) {
-    if ((val >= -1.0) && (val <= 1.0)) {
-      blinkin.set(val);
+  public static double ledValue = getAllianceColorValue();
+  
+    public SUB_LEDs(int port) {
+      blinkin = new Spark(port);
     }
-
-
-  }
-
-  public void updateLED() {
-    if (roller.hasCoral) {
-      set(BlinkinPattern.GREEN.value);
-    } else {
-      set(BlinkinPattern.RED.value);
+  
+  
+    /*
+     * Set the color and blink pattern of the LED strip.
+     * 
+     * Consult the Rev Robotics Blinkin manual Table 5 for a mapping of values to patterns.
+     * 
+     * @param val The LED blink color and patern value [-1,1]
+     * 
+     */
+    public static void set(double val) {
+      if ((val >= -1.0) && (val <= 1.0)) {
+        blinkin.set(val);
+      }
+  
+  
     }
-  }
-
-  @Override
-  public void periodic() {
-    updateLED();
-    // This method will be called once per scheduler run
-  }
-
-  public void setAllianceColor() {
+  
+    public void updateLED() {
+      if (roller.hasCoral) {
+        set(BlinkinPattern.GREEN.value);
+      } else {
+        set(BlinkinPattern.RED.value);
+      }
+    }
+  
+    @Override
+    public void periodic() {
+      updateLED();
+      // This method will be called once per scheduler run
+    }
+  
+    public static double getAllianceColorValue() {
     var alliance = DriverStation.getAlliance();
 
     if (alliance.isPresent()) {
       if (alliance.get() == DriverStation.Alliance.Red) {
-        blinkin.set(0.61);
+        return 0.61;
       } else {
-        blinkin.set(0.87);
+        return 0.87;
       }
+    }
+    else
+    {
+      return -0.99;
     }
   }
 
