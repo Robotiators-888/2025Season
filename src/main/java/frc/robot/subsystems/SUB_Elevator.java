@@ -14,10 +14,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.Elevator;
-import frc.robot.subsystems.SUB_LEDs.BlinkinPattern;
 
 
 public class SUB_Elevator extends SubsystemBase {
@@ -62,10 +60,6 @@ public class SUB_Elevator extends SubsystemBase {
       return;
     }
 
-    if (roller.hasCoral) {
-      new InstantCommand(() -> SUB_LEDs.set(BlinkinPattern.GREEN.value));
-      return;
-    }
     // may want to add more if and an else
 
     if (Math.abs(activesetpoint - primaryencoder.getPosition()) < .02) {
