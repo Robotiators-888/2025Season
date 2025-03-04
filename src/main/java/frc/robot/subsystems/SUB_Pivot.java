@@ -45,7 +45,7 @@ public class SUB_Pivot extends SubsystemBase {
     armMotorConfig.inverted(true);
     armMotorConfig.disableFollowerMode();
     armMotorConfig.encoder.positionConversionFactor(360.0 / (5 * (30.0 / 16.0)));
-    armMotorConfig.smartCurrentLimit(50,60,240);
+    armMotorConfig.smartCurrentLimit(50, 60, 240);
     armPrimary.configure(armMotorConfig, ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
     this.absoluteEncoder = absoluteEncoder;
@@ -84,11 +84,11 @@ public class SUB_Pivot extends SubsystemBase {
 
 
   // public void runPivotHoldingVoltage(Supplier<Boolean> hasCoral) {
-  //   if (hasCoral.get()) {
-  //     armPrimary.setVoltage(coralConstantApplicationMap.get(absoluteEncoder.getPosition()));
-  //   } else {
-  //     armPrimary.setVoltage(constantApplicationMap.get(absoluteEncoder.getPosition()));
-  //   }
+  // if (hasCoral.get()) {
+  // armPrimary.setVoltage(coralConstantApplicationMap.get(absoluteEncoder.getPosition()));
+  // } else {
+  // armPrimary.setVoltage(constantApplicationMap.get(absoluteEncoder.getPosition()));
+  // }
   // }
 
   public void updateVoltage(double voltage) {
@@ -103,18 +103,18 @@ public class SUB_Pivot extends SubsystemBase {
     double error = setpoint - currentPosition;
     double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -3, 3);
     // if (setpoint == PivotConstants.kIntakeSetpoint && absoluteEncoder.getPosition() > 334.5){
-    //   outputVoltage -= 0.2;
-    //   SmartDashboard.putBoolean("Has Triggered", true);
+    // outputVoltage -= 0.2;
+    // SmartDashboard.putBoolean("Has Triggered", true);
     // }
 
     // if (setpoint == PivotConstants.kIntakeSetpoint && currentPosition > 333) {
-    //   outputVoltage -= 0.2;
+    // outputVoltage -= 0.2;
     // // }
     // if (hasCoral.get()) {
-    //   SmartDashboard.putBoolean("coral constants?", true);
-    //   outputVoltage += coralConstantApplicationMap.get(currentPosition);
+    // SmartDashboard.putBoolean("coral constants?", true);
+    // outputVoltage += coralConstantApplicationMap.get(currentPosition);
     // } else {
-    //   outputVoltage += constantApplicationMap.get(currentPosition);
+    // outputVoltage += constantApplicationMap.get(currentPosition);
     // }
 
     // if (absoluteEncoder.getPosition() < PivotConstants.kUpperBoundStuckPoint
@@ -143,18 +143,20 @@ public class SUB_Pivot extends SubsystemBase {
   public boolean atSetpoint(double setpoint) {
     SmartDashboard.putNumber("CURRENT POSITION ELEVATOR CONDITIONAL", currentPosition);
     SmartDashboard.putNumber("cdl", Math.abs(currentPosition - setpoint));
-    SmartDashboard.putBoolean("GOOD TO ELEVATE?", Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees);
-    return Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees;
+    SmartDashboard.putBoolean("GOOD TO ELEVATE?",
+        Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees);
+    return Math.abs(absoluteEncoder.getPosition() - setpoint) < PivotConstants.toleranceDegrees;
   }
 
   public boolean atSetpoint(Supplier<Double> setpoint) {
-    return Math.abs(currentPosition - setpoint.get()) < PivotConstants.toleranceDegrees;
+    return Math
+        .abs(absoluteEncoder.getPosition() - setpoint.get()) < PivotConstants.toleranceDegrees;
   }
 
   // public void changeVoltage(double voltage) {
-  //   outputvoltage2 += voltage;
-  //   runPivotManualVoltage(outputvoltage2);
-  //   SmartDashboard.putNumber("Pivot Output Voltage", outputvoltage2);
+  // outputvoltage2 += voltage;
+  // runPivotManualVoltage(outputvoltage2);
+  // SmartDashboard.putNumber("Pivot Output Voltage", outputvoltage2);
   // }
 
   public static SUB_Pivot getInstance(SparkAbsoluteEncoder absoluteEncoder) {
@@ -171,10 +173,10 @@ public class SUB_Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Pivot SETPOINT", setpoint);
 
     // if (Math.abs(currentPosition - previousPosition) > 50) {
-    //   currentPosition = previousPosition;
-    //   SmartDashboard.putBoolean("SPIKED??", true);
+    // currentPosition = previousPosition;
+    // SmartDashboard.putBoolean("SPIKED??", true);
     // } else {
-    //   previousPosition = currentPosition;
+    // previousPosition = currentPosition;
     // }
     SmartDashboard.putNumber("Pivot Current", armPrimary.getOutputCurrent());
 

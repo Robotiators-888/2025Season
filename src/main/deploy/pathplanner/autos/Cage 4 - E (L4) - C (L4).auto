@@ -17,15 +17,35 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "E Backup"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stow"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "E Backup"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stow"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -35,15 +55,35 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BottomPickup(Left) to C"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "BottomPickup(Left) to C"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

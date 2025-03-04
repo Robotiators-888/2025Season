@@ -33,14 +33,16 @@ public class CMD_ReefAlign extends RunCommand {
   private List<Integer> targetTagSet;
 
   private final PIDController xController = new PIDController(0.1, 0, 0.02);
-  private final PIDController yController = new PIDController(0.1, 0, 0.02);
-  private final PIDController robotAngleController = new PIDController(0.1, 0, 0);
+  private final PIDController yController = new PIDController(0.5, 0, 0.05);
+  private final PIDController robotAngleController = new PIDController(0.5, 0, 0);
 
   private final double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
   private final double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
 
-  public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
-    super(() -> {}, drivetrain);
+  public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
+      boolean isLeftAlign) {
+    super(() -> {
+    }, drivetrain);
     this.drivetrain = drivetrain;
     this.photonVision = photonVision;
     this.isLeftAlign = isLeftAlign;
@@ -57,9 +59,9 @@ public class CMD_ReefAlign extends RunCommand {
 
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
-      targetTagSet = alliance.get() == DriverStation.Alliance.Red
-          ? Arrays.asList(7, 8, 9, 10, 11, 6)
-          : Arrays.asList(21, 20, 19, 18, 17, 22);
+      targetTagSet =
+          alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
+              : Arrays.asList(21, 20, 19, 18, 17, 22);
     } else {
       SmartDashboard.putBoolean("Alliance Error", true);
       end(true);
@@ -92,13 +94,18 @@ public class CMD_ReefAlign extends RunCommand {
     double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
     double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
 
-    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, tagPose.getRotation().rotateBy(new Rotation2d(180))));
+    drivetrain.publisher1.set(new Pose2d(tagPose.getX() + x, tagPose.getY() + y, Rotation2d
+        .fromRadians(MathUtil.angleModulus(tagPose.getRotation().getRadians() + Math.PI))));
 
     double xSpeed = xController.calculate(currentPose.getX(), tagPose.getX() + x);
     double ySpeed = yController.calculate(currentPose.getY(), tagPose.getY() + y);
-    double omegaSpeed = robotAngleController.calculate(MathUtil.angleModulus(currentPose.getRotation().getRadians()), MathUtil.angleModulus(tagPose.getRotation().getRadians()+Math.PI));
+    double omegaSpeed = robotAngleController.calculate(
+        MathUtil.angleModulus(currentPose.getRotation().getRadians()),
+        MathUtil.angleModulus(tagPose.getRotation().getRadians() + Math.PI));
 
-    drivetrain.drive(-xSpeed, -ySpeed, omegaSpeed, true, false);
+    drivetrain.drive(xSpeed, ySpeed, omegaSpeed, true, false);
+    SmartDashboard.putNumber("X Error", currentPose.getX() - tagPose.getX());
+    SmartDashboard.putNumber("Y Error", currentPose.getY() - tagPose.getY());
   }
 
   @Override
@@ -108,7 +115,8 @@ public class CMD_ReefAlign extends RunCommand {
 
   @Override
   public boolean isFinished() {
-    boolean atSetpoint = xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint();
+    boolean atSetpoint =
+        xController.atSetpoint() && yController.atSetpoint() && robotAngleController.atSetpoint();
     SmartDashboard.putBoolean("AlignCommandComplete!", atSetpoint);
     return atSetpoint;
   }

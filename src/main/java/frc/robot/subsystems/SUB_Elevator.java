@@ -50,26 +50,26 @@ public class SUB_Elevator extends SubsystemBase {
   }
 
   public void runElevator() {
-    if (getCurrentPosition() >= Elevator.kResetHomingThreshold){
+    if (getCurrentPosition() >= Elevator.kResetHomingThreshold) {
       SmartDashboard.putBoolean("EMERGENCY HOMED!!!", false);
       SmartDashboard.putBoolean("Homed", false);
     }
-    
+
     if (activesetpoint <= 0 && getCurrentPosition() <= Elevator.kMediumDownErrorThreshold) {
       HomeElevator();
       return;
     }
 
     if (Math.abs(activesetpoint - primaryencoder.getPosition()) < .02) {
-      if (roller.hasCoral) {
+      if (roller.getHasCoral()) {
         runElevatorManualVoltage(Elevator.kCoralHoldingVoltage);
         return;
       }
-      if (roller.hasAlgae) {
+      if (roller.getHasAlgae()) {
         runElevatorManualVoltage(Elevator.kAlgaeHoldingVoltage);
         return;
       }
-      if (primaryencoder.getPosition() > .6){
+      if (primaryencoder.getPosition() > .6) {
         runElevatorManualVoltage(Elevator.kEmptyHoldingVoltageTop);
         return;
       }
@@ -139,8 +139,7 @@ public class SUB_Elevator extends SubsystemBase {
       SmartDashboard.putBoolean("EMERGENCY HOMED!!!", true);
       runElevatorManualVoltage(0);
       return;
-    } 
-    else {
+    } else {
       runElevatorManualVoltage(Elevator.kHomingVoltage);
     }
     return;
