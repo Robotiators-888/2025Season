@@ -223,7 +223,7 @@ public final class Constants {
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 300;
                 public static final double kL3Setpoint = 300;
-                public static final double kL4Setpoint = 283;
+                public static final double kL4Setpoint = 273;
 
 
                 public static final double kUpperBoundStuckPoint = 340.0;
@@ -253,6 +253,7 @@ public final class Constants {
                 public static final double kHighDownErrorThreshold = 0.20;
                 public static final double kMediumDownVoltage = -0.4;
                 public static final double kMediumDownErrorThreshold = 0.09;
+                public static final double kSlowDownThreshold = 0.06;
                 public static final double kSlowDownVoltage = -0.25;
 
                 public static final double kEmptyHoldingVoltage = 0.6;
