@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -49,12 +51,31 @@ public class SUB_Elevator extends SubsystemBase {
     primaryencoder.setPosition(0);
   }
 
-  public void runElevator() {
+  public void runElevator(Supplier<Boolean> pivotSafe) {
     if (getCurrentPosition() >= Elevator.kResetHomingThreshold) {
       SmartDashboard.putBoolean("EMERGENCY HOMED!!!", false);
       SmartDashboard.putBoolean("Homed", false);
     }
 
+    if (!pivotSafe.get() && !this.atSetpoint()){
+      SmartDashboard.putBoolean("Elevator is Safe", false);
+      if (roller.getHasCoral()) {
+        runElevatorManualVoltage(Elevator.kCoralHoldingVoltage);
+        return;
+      }
+      if (roller.getHasAlgae()) {
+        runElevatorManualVoltage(Elevator.kAlgaeHoldingVoltage);
+        return;
+      }
+      if (primaryencoder.getPosition() > .6) {
+        runElevatorManualVoltage(Elevator.kEmptyHoldingVoltageTop);
+        return;
+      }
+      runElevatorManualVoltage(Elevator.kEmptyHoldingVoltage);
+      return;
+    }
+
+    SmartDashboard.putBoolean("Elevator is Safe", false);
     if (activesetpoint <= 0 && getCurrentPosition() <= Elevator.kMediumDownErrorThreshold) {
       HomeElevator();
       return;
