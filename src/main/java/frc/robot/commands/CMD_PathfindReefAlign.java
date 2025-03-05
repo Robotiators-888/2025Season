@@ -31,10 +31,10 @@ public class CMD_PathfindReefAlign extends Command {
   SUB_PhotonVision photonVision;
   SUB_Drivetrain drivetrain;
 
-  HashMap<Integer, Pose2d> redLeft = new HashMap<>();
-  HashMap<Integer, Pose2d> redRight = new HashMap<>();
-  HashMap<Integer, Pose2d> blueLeft = new HashMap<>();
-  HashMap<Integer, Pose2d> blueRight = new HashMap<>();
+  HashMap<Integer, Translation2d> redLeft = new HashMap<>();
+  HashMap<Integer, Translation2d> redRight = new HashMap<>();
+  HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
+  HashMap<Integer, Translation2d> blueRight = new HashMap<>();
 
   /** Creates a new CMD_PathfindReefAlign. */
   public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
@@ -42,33 +42,34 @@ public class CMD_PathfindReefAlign extends Command {
     this.drivetrain = drivetrain;
     this.isLeftAlign = isLeftAlign;
 
-    redLeft.put(null, null);
-    redLeft.put(null, null);
-    redLeft.put(null, null);
-    redLeft.put(null, null);
-    redLeft.put(null, null);
-    redLeft.put(null, null);
+    
+    redLeft.put(6, new Translation2d(13.564418, 2.7790076));
+    redLeft.put(7, new Translation2d(14.392148, 3.8401625));
+    redLeft.put(8, new Translation2d(13.886124, 5.0870549));
+    redLeft.put(9, new Translation2d(12.553386, 5.2727924));
+    redLeft.put(10, new Translation2d(11.725656,4.2116375 ));
+    redLeft.put(11, new Translation2d(12.23168, 2.9647451 ));
 
-    redRight.put(null, null);
-    redRight.put(null, null);
-    redRight.put(null, null);
-    redRight.put(null, null);
-    redRight.put(null, null);
-    redRight.put(null, null);
+    redRight.put(6, new Translation2d(13.88612437,2.9647451));
+    redRight.put(7, new Translation2d(14.392148, 4.2116375));
+    redRight.put(8, new Translation2d(13.56441763, 5.2727924));
+    redRight.put(9, new Translation2d(12.23167963, 5.0870549));
+    redRight.put(10, new Translation2d(11.725656, 3.8401625));
+    redRight.put(11, new Translation2d(12.55338637, 2.7790076));
 
-    blueLeft.put(null, null);
-    blueLeft.put(null, null);
-    blueLeft.put(null, null);
-    blueLeft.put(null, null);
-    blueLeft.put(null, null);
-    blueLeft.put(null, null);
+    blueLeft.put(17, new Translation2d(3.6622276, 2.9647451));
+    blueLeft.put(18, new Translation2d(3.5617949, 3.4996182));
+    blueLeft.put(19, new Translation2d(3.9839344, 5.2727924));
+    blueLeft.put(20, new Translation2d(5.3164184, 5.0870549));
+    blueLeft.put(21, new Translation2d(5.822696, 3.8401625));
+    blueLeft.put(22, new Translation2d(4.9947116, 2.7790076));
 
-    blueRight.put(null, null);
-    blueRight.put(null, null);
-    blueRight.put(null, null);
-    blueRight.put(null, null);
-    blueRight.put(null, null);
-    blueRight.put(null, null);
+    blueRight.put(17, new Translation2d(3.983934374, 2.7790076));
+    blueRight.put(18, new Translation2d(3.927626384, 3.5641242));
+    blueRight.put(19, new Translation2d(3.662227626, 5.0870549));
+    blueRight.put(20, new Translation2d(4.994711626, 5.2727924));
+    blueRight.put(21, new Translation2d(5.822696, 4.2116375));
+    blueRight.put(22, new Translation2d(5.316418374, 2.9647451));
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
@@ -83,7 +84,7 @@ public class CMD_PathfindReefAlign extends Command {
 
     List<Integer> targetTagSet;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-    HashMap<Integer, Pose2d> selectedMap;
+    HashMap<Integer, Translation2d> selectedMap;
     if (alliance.isPresent()) {
             targetTagSet =
                     alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
@@ -125,7 +126,9 @@ public class CMD_PathfindReefAlign extends Command {
     Units.degreesToRadians(540), Units.degreesToRadians(720));
 
 
-    pathfindingCommand = AutoBuilder.pathfindToPose(selectedMap.get(targetId), constraints);
+    Translation2d translate = selectedMap.get(targetId);
+    Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI/2)));
+    pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
 
     pathfindingCommand.initialize();
   }
