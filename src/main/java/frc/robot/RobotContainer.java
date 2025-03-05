@@ -411,7 +411,7 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                // return autoChooser.getSelected();
+                return autoChooser.getSelected();
                 // Pathfinding.setPathfinder(new LocalADStar());
 
                 // try{
@@ -431,8 +431,8 @@ public class RobotContainer {
                 // constraints);
                 // return AutoBuilder.followPath(path);
 
-                PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
-                return auto;
+                //PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
+                //return auto;
 
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
 
