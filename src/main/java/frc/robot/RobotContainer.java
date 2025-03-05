@@ -99,7 +99,7 @@ public class RobotContainer {
         // c.whileTrue(new RunCommand(() -> elevator.runElevator(), elevator));
 
         elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(), elevator)
-                .onlyWhile(() -> !pivot.atSetpoint(PivotConstants.kElevatingSetpoint)));
+                .onlyWhile(() -> (!pivot.atSetpoint(PivotConstants.kElevatingSetpoint) || elevator.atSetpoint())));
 
         // pivot.setDefaultCommand(
         // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false),

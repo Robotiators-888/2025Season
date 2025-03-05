@@ -116,6 +116,9 @@ public class SUB_Elevator extends SubsystemBase {
     return Math.abs(primaryencoder.getPosition() - setpoint) < Elevator.kTolerance;
   }
 
+  public boolean atSetpoint() {
+    return atSetpoint(activesetpoint);
+  }
   public double getCurrentPosition() {
     return primaryencoder.getPosition();
   }
