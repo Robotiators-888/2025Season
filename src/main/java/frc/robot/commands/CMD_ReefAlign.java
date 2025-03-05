@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -104,6 +107,13 @@ public class CMD_ReefAlign extends RunCommand {
     double omegaSpeed = robotAngleController.calculate(
         MathUtil.angleModulus(currentPose.getRotation().getRadians()),
         MathUtil.angleModulus(tagPose.getRotation().getRadians() + Math.PI));
+    Pathfinding.setPathfinder(new LocalADStar());
+
+    try{ 
+
+    } catch (Error e) {
+      
+    }
 
     drivetrain.drive(xSpeed, ySpeed, omegaSpeed, true, false);
     SmartDashboard.putNumber("X Error", currentPose.getX() - tagPose.getX());

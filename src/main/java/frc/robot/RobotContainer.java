@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
+import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.utils.AutoGenerator;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -230,8 +234,8 @@ public class RobotContainer {
                                 () -> climber.setSpeed(-Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
-                Driver1.rightTrigger().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
-                Driver1.rightBumper().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
+                Driver1.rightTrigger().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
+                Driver1.rightBumper().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
                 Driver1.y().onTrue(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)));
                 Driver1.b().onTrue(new InstantCommand(
@@ -385,6 +389,7 @@ public class RobotContainer {
         }
 
         public void robotInit() {
+                Pathfinding.setPathfinder(new LocalADStar());
                 powerDistribution.setSwitchableChannel(true);
         }
 
@@ -400,6 +405,7 @@ public class RobotContainer {
                         return Commands.none();
                 }
         }
+
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -445,6 +451,50 @@ public class RobotContainer {
                 // }
         }
 
+        public Command constructAligningCommand(boolean isLeftAlign) {
+                Pose2d tagPose = new Pose2d();
+                Integer targetId = 7;
+                double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
+                double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
+                
+
+                List<Integer> targetTagSet;
+                Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                        targetTagSet =
+                                alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
+                                : Arrays.asList(21, 20, 19, 18, 17, 22);
+                } else {
+                        return null;
+                }
+
+                
+
+                double minDistance = Double.MAX_VALUE;
+                for (int tag : targetTagSet) {
+                        Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
+                        Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
+                        double distance = translate.getNorm();
+
+                        if (distance < minDistance) {
+                                tagPose = pose;
+                                targetId = tag;
+                                minDistance = distance;
+                        }
+                }
+
+                double angle = Units.degreesToRadians(60 * targetTagSet.indexOf(targetId));
+                double offset = Units.degreesToRadians(isLeftAlign ? 90 : -90);
+
+                double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
+                double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
+
+                PathConstraints constraints = new PathConstraints(
+                3.0, 4.0,
+                Units.degreesToRadians(540), Units.degreesToRadians(720));
+                return AutoBuilder.pathfindToPose(new Pose2d(tagPose.getX()+x, tagPose.getY()+y, tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI/2.0))), constraints);
+        }
+
         public void robotPeriodic() {
                 photonPoseUpdate();
         }
@@ -452,6 +502,8 @@ public class RobotContainer {
         public void autonomousPeriodic() {
 
         }
+
+
 
         public void teleopPeriodic() {
                 // try {
