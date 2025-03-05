@@ -22,7 +22,7 @@ import frc.robot.Constants.Elevator;
 
 public class SUB_Elevator extends SubsystemBase {
   private static SUB_Elevator INSTANCE = null;
-  private double activesetpoint = 0;
+  private static double activesetpoint = 0;
   private SparkMax primary = new SparkMax(35, MotorType.kBrushless);
   private SparkMax secondary = new SparkMax(36, MotorType.kBrushless);
   private SparkMaxConfig config = new SparkMaxConfig();
@@ -76,7 +76,7 @@ public class SUB_Elevator extends SubsystemBase {
     }
 
     SmartDashboard.putBoolean("Elevator is Safe", false);
-    if (activesetpoint <= 0 && getCurrentPosition() <= Elevator.kMediumDownErrorThreshold) {
+    if (activesetpoint <= 0 && getCurrentPosition() <= Elevator.kSlowDownThreshold) {
       HomeElevator();
       return;
     }
@@ -97,7 +97,6 @@ public class SUB_Elevator extends SubsystemBase {
       runElevatorManualVoltage(Elevator.kEmptyHoldingVoltage);
       return;
     }
-
     if (activesetpoint > getCurrentPosition()) {
       if (activesetpoint - getCurrentPosition() > Elevator.kMaxUpErrorThreshold) {
         runElevatorManualVoltage(Elevator.kMaxUpVoltage);
@@ -127,7 +126,7 @@ public class SUB_Elevator extends SubsystemBase {
         runElevatorManualVoltage(Elevator.kMediumDownVoltage);
         return;
       }
-      runElevatorManualVoltage(Elevator.kSlowDownVoltage);
+      runElevatorManualVoltage(Elevator.kSlowDownThreshold);
       return;
     }
     runElevatorManualVoltage(0);
@@ -140,6 +139,7 @@ public class SUB_Elevator extends SubsystemBase {
   public boolean atSetpoint() {
     return atSetpoint(activesetpoint);
   }
+
   public double getCurrentPosition() {
     return primaryencoder.getPosition();
   }

@@ -340,8 +340,6 @@ public class RobotContainer {
                                                                                                 Roller.kIntakeFinishSpeed),
                                                                                 roller)).withTimeout(
                                                                                                 Roller.kIntakeFinishTime)
-                                                                                                .andThen(new WaitCommand(
-                                                                                                                1))
                                                                                                 .andThen(new ParallelCommandGroup(
                                                                                                                 new InstantCommand(
                                                                                                                                 () -> Driver1.getHID()
