@@ -5,25 +5,31 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "path",
+          "data": {
+            "pathName": "Cage 4 to G"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreL4"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "One Peice Path"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
-                  "name": "Coral Station Path Pathfind"
+                  "name": "stow"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Coral Station Path"
+                  "pathName": "G Backup"
                 }
               }
             ]
@@ -33,6 +39,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Random",
+  "folder": "1 Piece",
   "choreoAuto": false
 }

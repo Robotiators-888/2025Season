@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 3 to J (Shortened"
+            "pathName": "Cage 4 to F"
           }
         },
         {
@@ -21,22 +21,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "stow"
+                  "pathName": "F Backup"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "J Backup"
-                      }
-                    }
-                  ]
+                  "name": "stow"
                 }
               }
             ]
@@ -46,6 +39,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "2 Piece",
+  "folder": "1 Piece",
   "choreoAuto": false
 }

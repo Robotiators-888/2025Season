@@ -4,14 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "Pickup to Score",
-    "Random Paths (Delete Eventually)",
     "Reef Backup Paths",
     "Score to Pickup",
     "Start to Score"
   ],
   "autoFolders": [
     "1 Piece",
-    "Random",
     "2 Piece"
   ],
   "defaultMaxVel": 3.0,
