@@ -93,10 +93,9 @@ public class RobotContainer {
                 // Trigger c = new Trigger(()->!pivot.atSetpoint(PivotConstants.kElevatingSetpoint))
                 // c.onTrue(new RunCommand(() -> elevator.runElevator(), elevator);
 
-                elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(()->pivot.atSetpoint(PivotConstants.kElevatingSetpoint)), elevator));
-                // pivot.setDefaultCommand(
-                // new RunCommand(() -> pivot.runPivot(() -> roller.hasCoral(), () -> false),
-                // pivot));
+                elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(
+                                () -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint)),
+                                elevator));
                 pivot.setDefaultCommand(new RunCommand(
                                 () -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
                 roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0), roller));
@@ -234,8 +233,10 @@ public class RobotContainer {
                                 () -> climber.setSpeed(-Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
-                Driver1.rightTrigger().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
-                Driver1.rightBumper().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
+                Driver1.rightTrigger().whileTrue(
+                                new CMD_PathfindReefAlign(drivetrain, photonVision, true));
+                Driver1.rightBumper().whileTrue(
+                                new CMD_PathfindReefAlign(drivetrain, photonVision, false));
                 Driver1.y().onTrue(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)));
                 Driver1.b().onTrue(new InstantCommand(
@@ -431,8 +432,8 @@ public class RobotContainer {
                 // constraints);
                 // return AutoBuilder.followPath(path);
 
-                //PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
-                //return auto;
+                // PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
+                // return auto;
 
                 // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
 
@@ -454,23 +455,24 @@ public class RobotContainer {
                 Integer targetId = 7;
                 double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
                 double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
-                
+
 
                 List<Integer> targetTagSet;
                 Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
                 if (alliance.isPresent()) {
-                        targetTagSet =
-                                alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
-                                : Arrays.asList(21, 20, 19, 18, 17, 22);
+                        targetTagSet = alliance.get() == DriverStation.Alliance.Red
+                                        ? Arrays.asList(7, 8, 9, 10, 11, 6)
+                                        : Arrays.asList(21, 20, 19, 18, 17, 22);
                 } else {
                         return null;
                 }
 
-                
+
 
                 double minDistance = Double.MAX_VALUE;
                 for (int tag : targetTagSet) {
-                        Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
+                        Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d())
+                                        .toPose2d();
                         Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
                         double distance = translate.getNorm();
 
@@ -487,10 +489,14 @@ public class RobotContainer {
                 double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
                 double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
 
-                PathConstraints constraints = new PathConstraints(
-                3.0, 4.0,
-                Units.degreesToRadians(540), Units.degreesToRadians(720));
-                return AutoBuilder.pathfindToPose(new Pose2d(tagPose.getX()+x, tagPose.getY()+y, tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI/2.0))), constraints);
+                PathConstraints constraints = new PathConstraints(3.0, 4.0,
+                                Units.degreesToRadians(540), Units.degreesToRadians(720));
+                return AutoBuilder.pathfindToPose(
+                                new Pose2d(tagPose.getX() + x, tagPose.getY() + y,
+                                                tagPose.getRotation()
+                                                                .plus(Rotation2d.fromRadians(
+                                                                                Math.PI / 2.0))),
+                                constraints);
         }
 
         public void robotPeriodic() {

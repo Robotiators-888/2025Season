@@ -23,7 +23,11 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/*
+ * You should consider using the more terse Command factories API instead
+ * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#
+ * defining-commands
+ */
 public class CMD_PathfindReefAlign extends Command {
 
   Command pathfindingCommand;
@@ -37,20 +41,21 @@ public class CMD_PathfindReefAlign extends Command {
   HashMap<Integer, Translation2d> blueRight = new HashMap<>();
 
   /** Creates a new CMD_PathfindReefAlign. */
-  public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision, boolean isLeftAlign) {
+  public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
+      boolean isLeftAlign) {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
     this.isLeftAlign = isLeftAlign;
 
-    
+
     redLeft.put(6, new Translation2d(13.564418, 2.7790076));
     redLeft.put(7, new Translation2d(14.392148, 3.8401625));
     redLeft.put(8, new Translation2d(13.886124, 5.0870549));
     redLeft.put(9, new Translation2d(12.553386, 5.2727924));
-    redLeft.put(10, new Translation2d(11.725656,4.2116375 ));
-    redLeft.put(11, new Translation2d(12.23168, 2.9647451 ));
+    redLeft.put(10, new Translation2d(11.725656, 4.2116375));
+    redLeft.put(11, new Translation2d(12.23168, 2.9647451));
 
-    redRight.put(6, new Translation2d(13.88612437,2.9647451));
+    redRight.put(6, new Translation2d(13.88612437, 2.9647451));
     redRight.put(7, new Translation2d(14.392148, 4.2116375));
     redRight.put(8, new Translation2d(13.56441763, 5.2727924));
     redRight.put(9, new Translation2d(12.23167963, 5.0870549));
@@ -80,29 +85,29 @@ public class CMD_PathfindReefAlign extends Command {
   public void initialize() {
     Pose2d tagPose = new Pose2d();
     Integer targetId = 7;
-    
+
 
     List<Integer> targetTagSet;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     HashMap<Integer, Translation2d> selectedMap;
     if (alliance.isPresent()) {
-            targetTagSet =
-                    alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
-                    : Arrays.asList(21, 20, 19, 18, 17, 22);
-            
-            if (isLeftAlign) {
-              if (alliance.get() == DriverStation.Alliance.Red) {
-                selectedMap = redLeft;
-              } else {
-                selectedMap = blueLeft;
-              }
-            } else {
-              if (alliance.get() == DriverStation.Alliance.Red) {
-                selectedMap = redRight;
-              } else {
-                selectedMap = blueRight;
-              }
-            }
+      targetTagSet =
+          alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
+              : Arrays.asList(21, 20, 19, 18, 17, 22);
+
+      if (isLeftAlign) {
+        if (alliance.get() == DriverStation.Alliance.Red) {
+          selectedMap = redLeft;
+        } else {
+          selectedMap = blueLeft;
+        }
+      } else {
+        if (alliance.get() == DriverStation.Alliance.Red) {
+          selectedMap = redRight;
+        } else {
+          selectedMap = blueRight;
+        }
+      }
     } else {
       return;
     }
@@ -110,24 +115,24 @@ public class CMD_PathfindReefAlign extends Command {
 
     double minDistance = Double.MAX_VALUE;
     for (int tag : targetTagSet) {
-            Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
-            Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
-            double distance = translate.getNorm();
+      Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
+      Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
+      double distance = translate.getNorm();
 
-            if (distance < minDistance) {
-                    tagPose = pose;
-                    targetId = tag;
-                    minDistance = distance;
-            }
+      if (distance < minDistance) {
+        tagPose = pose;
+        targetId = tag;
+        minDistance = distance;
+      }
     }
 
-    PathConstraints constraints = new PathConstraints(
-    3.0, 4.0,
-    Units.degreesToRadians(540), Units.degreesToRadians(720));
+    PathConstraints constraints =
+        new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
 
     Translation2d translate = selectedMap.get(targetId);
-    Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI/2)));
+    Pose2d pose = new Pose2d(translate.getX(), translate.getY(),
+        tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
     pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
 
     pathfindingCommand.initialize();

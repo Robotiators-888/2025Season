@@ -56,7 +56,8 @@ public class SUB_Elevator extends SubsystemBase {
       SmartDashboard.putBoolean("EMERGENCY HOMED!!!", false);
       SmartDashboard.putBoolean("Homed", false);
     }
-
+    SmartDashboard.putNumber("Elevator Output Voltage", primary.getAppliedOutput() * primary.getBusVoltage());
+    SmartDashboard.putNumber("EncoderPos", primaryencoder.getPosition());
     if (!pivotSafe.get() && !this.atSetpoint()){
       SmartDashboard.putBoolean("Elevator is Safe", false);
       if (roller.getHasCoral()) {
