@@ -47,34 +47,31 @@ public class CMD_PathfindReefAlign extends Command {
     this.drivetrain = drivetrain;
     this.isLeftAlign = isLeftAlign;
 
-
-    redLeft.put(6, new Translation2d(13.564418, 2.7790076));
-    redLeft.put(7, new Translation2d(14.392148, 3.8401625));
-    redLeft.put(8, new Translation2d(13.886124, 5.0870549));
-    redLeft.put(9, new Translation2d(12.553386, 5.2727924));
-    redLeft.put(10, new Translation2d(11.725656, 4.2116375));
-    redLeft.put(11, new Translation2d(12.23168, 2.9647451));
-
-    redRight.put(6, new Translation2d(13.88612437, 2.9647451));
-    redRight.put(7, new Translation2d(14.392148, 4.2116375));
-    redRight.put(8, new Translation2d(13.56441763, 5.2727924));
-    redRight.put(9, new Translation2d(12.23167963, 5.0870549));
-    redRight.put(10, new Translation2d(11.725656, 3.8401625));
-    redRight.put(11, new Translation2d(12.55338637, 2.7790076));
-
-    blueLeft.put(17, new Translation2d(3.6622276, 2.9647451));
-    blueLeft.put(18, new Translation2d(3.5617949, 3.4996182));
-    blueLeft.put(19, new Translation2d(3.9839344, 5.2727924));
-    blueLeft.put(20, new Translation2d(5.3164184, 5.0870549));
-    blueLeft.put(21, new Translation2d(5.822696, 3.8401625));
-    blueLeft.put(22, new Translation2d(4.9947116, 2.7790076));
-
-    blueRight.put(17, new Translation2d(3.983934374, 2.7790076));
-    blueRight.put(18, new Translation2d(3.927626384, 3.5641242));
-    blueRight.put(19, new Translation2d(3.662227626, 5.0870549));
-    blueRight.put(20, new Translation2d(4.994711626, 5.2727924));
+    redRight.put(7, new Translation2d(14.392147999999999, 4.2116375));
+    redLeft.put(7, new Translation2d(14.392147999999999, 3.8401625));
+    redRight.put(8, new Translation2d(13.56441760656459, 5.272792393808464));
+    redLeft.put(8, new Translation2d(13.886124393435413, 5.087054893808464));
+    redRight.put(9, new Translation2d(12.231679606564587, 5.087054893808464));
+    redLeft.put(9, new Translation2d(12.55338639343541, 5.272792393808464));
+    redRight.put(10, new Translation2d(11.725655999999999, 3.8401625));
+    redLeft.put(10, new Translation2d(11.725655999999999, 4.2116375));
+    redRight.put(11, new Translation2d(12.55338639343541, 2.779007606191536));
+    redLeft.put(11, new Translation2d(12.231679606564587, 2.964745106191536));
+    redRight.put(6, new Translation2d(13.886124393435413, 2.964745106191536));
+    redLeft.put(6, new Translation2d(13.56441760656459, 2.779007606191536));
     blueRight.put(21, new Translation2d(5.822696, 4.2116375));
-    blueRight.put(22, new Translation2d(5.316418374, 2.9647451));
+    blueLeft.put(21, new Translation2d(5.822696, 3.8401625));
+    blueRight.put(20, new Translation2d(4.994711606564587, 5.272792393808464));
+    blueLeft.put(20, new Translation2d(5.316418393435412, 5.087054893808464));
+    blueRight.put(19, new Translation2d(3.662227606564587, 5.087054893808464));
+    blueLeft.put(19, new Translation2d(3.9839343934354114, 5.272792393808464));
+    blueRight.put(18, new Translation2d(3.15595, 3.8401625));
+    blueLeft.put(18, new Translation2d(3.15595, 4.2116375));
+    blueRight.put(17, new Translation2d(3.983934393435411, 2.779007606191536));
+    blueLeft.put(17, new Translation2d(3.6622276065645867, 2.964745106191536));
+    blueRight.put(22, new Translation2d(5.316418393435412, 2.964745106191536));
+    blueLeft.put(22, new Translation2d(4.994711606564588, 2.779007606191536));
+    
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
