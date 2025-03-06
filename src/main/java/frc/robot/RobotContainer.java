@@ -1,3 +1,4 @@
+// MONKEY
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -537,6 +538,34 @@ public class RobotContainer {
 
                                 Pose2d closestTag = photonVision.at_field.getTagPose(
                                                 photonVision.getCam1BestTarget().getFiducialId())
+                                                .get().toPose2d();
+                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
+                                                .getTranslation();
+
+                                double distance = translate.getNorm();
+                                double xStddev = distance / 16.0;
+                                double yStddev = xStddev;
+                                double rotStddev = Units.degreesToRadians(120.0);
+                                // drivetrain.publisher3.set(photonPose.toPose2d());
+                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
+                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
+                                                photonPoseOptional.get().timestampSeconds);
+                        }
+                }
+
+                photonPoseOptional = photonVision.getCam2Pose();
+
+                if (photonPoseOptional.isPresent()) {
+                        Pose3d photonPose = photonPoseOptional.get().estimatedPose;
+
+                        if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
+                                        && photonPose.getY() >= 0
+                                        && photonPose.getY() <= Field.fieldWidth
+                                        && photonVision.getCam2BestTarget() != null) {
+
+                                Pose2d closestTag = photonVision.at_field.getTagPose(
+                                                photonVision.getCam2BestTarget().getFiducialId())
                                                 .get().toPose2d();
                                 Translation2d translate = closestTag.minus(photonPose.toPose2d())
                                                 .getTranslation();

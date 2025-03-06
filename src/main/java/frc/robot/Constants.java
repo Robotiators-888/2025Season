@@ -195,21 +195,21 @@ public final class Constants {
                                 Units.degreesToRadians(180), Units.degreesToRadians(0),
                                 Units.degreesToRadians(-25));
                 public static final Transform3d kRobotToCamera1 = new Transform3d(
-                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 1.5),
+                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 1.5 - 0.75),
                                 Units.inchesToMeters(11), cameraRotation);
                 
                 public static final String kCam2Name = "AprilTagCam2";
                 public static final Rotation3d cameraRotation2 = new Rotation3d(0,
                                 Units.degreesToRadians(0), Units.degreesToRadians(-25));
                 public static final Transform3d kRobotToCamera2 = new Transform3d(
-                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 3.75),
+                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(-13.5 + 1.5 + 0.75),
                                 Units.inchesToMeters(23.5), cameraRotation);
-                // public static final String kCam2Name = "AprilTagCam2";
-                // public static final Rotation3d cameraRotation2 = new Rotation3d(0,
-                //                 Units.degreesToRadians(0), Units.degreesToRadians(-25));
-                // public static final Transform3d kRobotToCamera2 = new Transform3d(
-                //                 Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 3.75),
-                //                 Units.inchesToMeters(23.5), cameraRotation);
+                // public static final String kCam3Name = "AprilTagHighCam";
+                // public static final Rotation3d cameraRotation3 = new Rotation3d(0,
+                //                  Units.degreesToRadians(0), Units.degreesToRadians(-25));
+                // public static final Transform3d kRobotToCamera3 = new Transform3d(
+                //                  Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 3.75),
+                //                  Units.inchesToMeters(23.5), cameraRotation);
         }
 
         public static final class PivotConstants {
