@@ -378,64 +378,64 @@ public class RobotContainer {
 
 
         public Command getL4SetpointCommand() {
-                Command c = new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kL4Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
                                                 .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL4Setpoint)));
-                c.addRequirements(elevator, pivot);
+                                                                PivotConstants.kL4Setpoint))), new RunCommand(()->elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
                 return c;
         }
 
         public Command getL3SetpointCommand() {
-                Command c = new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kL3Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL3Setpoint))
                                                 .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL3Setpoint)));
-                c.addRequirements(elevator, pivot);
+                                                                PivotConstants.kL3Setpoint))), new RunCommand(()->elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
                 return c;
         }
 
 
         public Command getL2SetpointCommand() {
-                Command c = new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kL2Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
                                                 .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL2Setpoint)));
-                c.addRequirements(elevator, pivot);
+                                                                PivotConstants.kL2Setpoint))), new RunCommand(()->elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
                 return c;
         }
 
         public Command getZeroSetpointCommand() {
-                Command c = new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(0.0)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(0.0))
                                                 .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kIntakeSetpoint)));
-                c.addRequirements(elevator, pivot);
+                                                                PivotConstants.kIntakeSetpoint))), new RunCommand(()->elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
                 return c;
         }
 
         public Command getAlgaeSetpointCommand() {
-        Command c= new SequentialCommandGroup(new InstantCommand(
+        Command c= new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kAlgaeSetpoint)),
                                 Commands.waitUntil(
                                                 () -> elevator.atSetpoint(Elevator.kAlgaeSetpoint))
                                                 .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeSetpoint)));
-                c.addRequirements(elevator, pivot);
+                                                                PivotConstants.kAlgaeSetpoint))), new RunCommand(()->elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
                 return c;
         }
         
