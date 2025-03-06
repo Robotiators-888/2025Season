@@ -39,6 +39,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -378,7 +379,7 @@ public class RobotContainer {
 
 
         public Command getL4SetpointCommand() {
-                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kL4Setpoint)),
@@ -390,7 +391,7 @@ public class RobotContainer {
         }
 
         public Command getL3SetpointCommand() {
-                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kL3Setpoint)),
@@ -403,7 +404,7 @@ public class RobotContainer {
 
 
         public Command getL2SetpointCommand() {
-                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kL2Setpoint)),
@@ -415,7 +416,7 @@ public class RobotContainer {
         }
 
         public Command getZeroSetpointCommand() {
-                Command c = new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(0.0)),
@@ -427,7 +428,7 @@ public class RobotContainer {
         }
 
         public Command getAlgaeSetpointCommand() {
-        Command c= new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(
+        Command c= new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kAlgaeSetpoint)),
