@@ -249,45 +249,15 @@ public class RobotContainer {
 
                 // Driver 2
 
-                Driver2.a().onTrue(new SequentialCommandGroup(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kIntakeSetpoint))));
+                Driver2.a().onTrue(getZeroSetpointCommand());
 
-                Driver2.b().onTrue(new SequentialCommandGroup(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL2Setpoint))));
+                Driver2.b().onTrue(getL2SetpointCommand());
 
-                Driver2.x().onTrue(new SequentialCommandGroup(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL3Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL3Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL3Setpoint))));
+                Driver2.x().onTrue(getL3SetpointCommand());
 
-                Driver2.y().onTrue(new SequentialCommandGroup(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL4Setpoint))));
+                Driver2.y().onTrue(getL4SetpointCommand());
 
-                Driver2.povUp().onTrue(new SequentialCommandGroup(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kAlgaeSetpoint)),
-                                Commands.waitUntil(
-                                                () -> elevator.atSetpoint(Elevator.kAlgaeSetpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeSetpoint))));
+                Driver2.povUp().onTrue(getAlgaeSetpointCommand());
 
                 Driver1.povLeft().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
                 Driver1.povRight().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
@@ -406,6 +376,69 @@ public class RobotContainer {
                 }
         }
 
+
+        public Command getL4SetpointCommand() {
+                Command c = new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
+                                                .andThen(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kL4Setpoint)));
+                c.addRequirements(elevator, pivot);
+                return c;
+        }
+
+        public Command getL3SetpointCommand() {
+                Command c = new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kL3Setpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL3Setpoint))
+                                                .andThen(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kL3Setpoint)));
+                c.addRequirements(elevator, pivot);
+                return c;
+        }
+
+
+        public Command getL2SetpointCommand() {
+                Command c = new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
+                                                .andThen(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kL2Setpoint)));
+                c.addRequirements(elevator, pivot);
+                return c;
+        }
+
+        public Command getZeroSetpointCommand() {
+                Command c = new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(0.0)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
+                                                .andThen(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kIntakeSetpoint)));
+                c.addRequirements(elevator, pivot);
+                return c;
+        }
+
+        public Command getAlgaeSetpointCommand() {
+        Command c= new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kAlgaeSetpoint)),
+                                Commands.waitUntil(
+                                                () -> elevator.atSetpoint(Elevator.kAlgaeSetpoint))
+                                                .andThen(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kAlgaeSetpoint)));
+                c.addRequirements(elevator, pivot);
+                return c;
+        }
+        
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
