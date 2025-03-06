@@ -142,7 +142,6 @@ public class SUB_Pivot extends SubsystemBase {
 
   public boolean atSetpoint(double setpoint) {
     SmartDashboard.putNumber("CURRENT POSITION ELEVATOR CONDITIONAL", currentPosition);
-    SmartDashboard.putNumber("cdl", Math.abs(currentPosition - setpoint));
     SmartDashboard.putBoolean("GOOD TO ELEVATE?",
         Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees);
     return Math.abs(absoluteEncoder.getPosition() - setpoint) < PivotConstants.toleranceDegrees;
@@ -169,7 +168,6 @@ public class SUB_Pivot extends SubsystemBase {
 
   public void periodic() {
     SmartDashboard.putNumber("ABSEncoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("ABSEncoder Position", currentPosition);
     SmartDashboard.putNumber("Pivot SETPOINT", setpoint);
 
     // if (Math.abs(currentPosition - previousPosition) > 50) {
@@ -179,7 +177,5 @@ public class SUB_Pivot extends SubsystemBase {
     // previousPosition = currentPosition;
     // }
     SmartDashboard.putNumber("Pivot Current", armPrimary.getOutputCurrent());
-
-    SmartDashboard.putNumber("ABSEncoder Position", currentPosition);
   }
 }

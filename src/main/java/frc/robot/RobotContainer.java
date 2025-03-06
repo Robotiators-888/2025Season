@@ -259,7 +259,7 @@ public class RobotContainer {
                 Driver2.y().onTrue(getL4SetpointCommand());
 
                 Driver2.povUp().onTrue(getAlgaeSetpointCommand());
-
+                Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver1.povLeft().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
                 Driver1.povRight().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
                 // Driver2.povDown().onTrue(new InstantCommand(() -> pivot.changeVoltage(-0.02)));
@@ -439,6 +439,18 @@ public class RobotContainer {
                 c.addRequirements(elevator);
                 return c;
         }
+        public Command getL2AlgaeSetpointCommand() {
+                Command c= new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
+                                        () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                        new InstantCommand(() -> elevator
+                                                        .ChangeSetpoint(Elevator.kL2Setpoint)),
+                                        Commands.waitUntil(
+                                                        () -> elevator.atSetpoint(Elevator.kL2Setpoint))
+                                                        .andThen(() -> pivot.changeSetpoint(
+                                                                        PivotConstants.kAlgaeSetpoint))), new RunCommand(()->elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
+                        c.addRequirements(elevator);
+                        return c;
+                }
         
 
         /**
@@ -580,7 +592,7 @@ public class RobotContainer {
                                 double xStddev = distance / 16.0;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
-                                // drivetrain.publisher3.set(photonPose.toPose2d());
+                                drivetrain.publisher3.set(photonPose.toPose2d());
                                 drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
                                                 VecBuilder.fill(xStddev, yStddev, rotStddev));
                                 drivetrain.addVisionMeasurement(photonPose.toPose2d(),
@@ -608,7 +620,7 @@ public class RobotContainer {
                                 double xStddev = distance / 16.0;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
-                                // drivetrain.publisher3.set(photonPose.toPose2d());
+                                drivetrain.publisher4.set(photonPose.toPose2d());
                                 drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
                                                 VecBuilder.fill(xStddev, yStddev, rotStddev));
                                 drivetrain.addVisionMeasurement(photonPose.toPose2d(),
@@ -616,33 +628,33 @@ public class RobotContainer {
                         }
                 }
 
-                photonPoseOptional = photonVision.getCam2Pose();
+                // photonPoseOptional = photonVision.getCam2Pose();
 
-                if (photonPoseOptional.isPresent()) {
-                Pose3d photonPose = photonPoseOptional.get().estimatedPose;
+                // if (photonPoseOptional.isPresent()) {
+                // Pose3d photonPose = photonPoseOptional.get().estimatedPose;
 
-                if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength &&
-                photonPose.getY()
-                >= 0
-                && photonPose.getY() <= Field.fieldWidth && photonVision.getCam2BestTarget() !=
-                null) {
+                // if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength &&
+                // photonPose.getY()
+                // >= 0
+                // && photonPose.getY() <= Field.fieldWidth && photonVision.getCam2BestTarget() !=
+                // null) {
 
-                Pose2d closestTag = photonVision.at_field
-                .getTagPose(photonVision.getCam2BestTarget().getFiducialId()).get().toPose2d();
-                Translation2d translate =
-                closestTag.minus(photonPose.toPose2d()).getTranslation();
+                // Pose2d closestTag = photonVision.at_field
+                // .getTagPose(photonVision.getCam2BestTarget().getFiducialId()).get().toPose2d();
+                // Translation2d translate =
+                // closestTag.minus(photonPose.toPose2d()).getTranslation();
 
-                double distance = translate.getNorm();
-                double xStddev = distance / 16.0;
-                double yStddev = xStddev;
-                double rotStddev = Units.degreesToRadians(120.0);
-                drivetrain.publisher4.set(photonPose.toPose2d());
-                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev,
-                yStddev,
-                rotStddev));
-                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                photonPoseOptional.get().timestampSeconds);
-                }
-                }
+                // double distance = translate.getNorm();
+                // double xStddev = distance / 16.0;
+                // double yStddev = xStddev;
+                // double rotStddev = Units.degreesToRadians(120.0);
+                // drivetrain.publisher4.set(photonPose.toPose2d());
+                // drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev,
+                // yStddev,
+                // rotStddev));
+                // drivetrain.addVisionMeasurement(photonPose.toPose2d(),
+                // photonPoseOptional.get().timestampSeconds);
+                // }
+                // }
         }
 }

@@ -115,13 +115,12 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   private SUB_Drivetrain() {
-    navx.zeroYaw();
-
     m_poseEstimator = new SwerveDrivePoseEstimator(Constants.Drivetrain.kDriveKinematics,
     Rotation2d.fromDegrees(getAngle()),
     new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(),
         backLeft.getPosition(), backRight.getPosition()},
     new Pose2d(0, 0, new Rotation2d(0)));
+    zeroHeading();
   }
 
   @Override

@@ -192,17 +192,17 @@ public final class Constants {
         public static final class PhotonVision {// Unstable
                 public static final String kCam1Name = "AprilTagCam";
                 public static final Rotation3d cameraRotation = new Rotation3d(
-                                Units.degreesToRadians(180), Units.degreesToRadians(0),
+                                Units.degreesToRadians(0), Units.degreesToRadians(0),
                                 Units.degreesToRadians(-25));
                 public static final Transform3d kRobotToCamera1 = new Transform3d(
-                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 1.5 - 0.75),
+                                Units.inchesToMeters(7.5), Units.inchesToMeters(10.5),
                                 Units.inchesToMeters(11), cameraRotation);
                 
                 public static final String kCam2Name = "AprilTagCam2";
                 public static final Rotation3d cameraRotation2 = new Rotation3d(0,
-                                Units.degreesToRadians(0), Units.degreesToRadians(-25));
+                                Units.degreesToRadians(0), Units.degreesToRadians(25));
                 public static final Transform3d kRobotToCamera2 = new Transform3d(
-                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(-13.5 + 1.5 + 0.75),
+                                Units.inchesToMeters(7.5), Units.inchesToMeters(-10.5),
                                 Units.inchesToMeters(23.5), cameraRotation);
                 // public static final String kCam3Name = "AprilTagHighCam";
                 // public static final Rotation3d cameraRotation3 = new Rotation3d(0,
@@ -219,7 +219,7 @@ public final class Constants {
                                 new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now,
                                                                    // change later
 
-                public static final double kIntakeSetpoint = 330;
+                public static final double kIntakeSetpoint = 326;
                 public static final double kElevatingSetpoint = 280;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 176;
@@ -227,7 +227,7 @@ public final class Constants {
 
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 300;
-                public static final double kL3Setpoint = 300;
+                public static final double kL3Setpoint = 294;
                 public static final double kL4Setpoint = 273;
 
 
@@ -270,7 +270,7 @@ public final class Constants {
                 public static final double kL1Setpoint = 0.1;
                 public static final double kL2Setpoint = 0.259;
                 public static final double kL3Setpoint = 0.48;
-                public static final double kL4Setpoint = 0.83;
+                public static final double kL4Setpoint = 0.80;
                 public static final double kAlgaeSetpoint = 0.508;
         }
 
