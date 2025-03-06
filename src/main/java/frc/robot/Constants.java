@@ -223,7 +223,7 @@ public final class Constants {
                 public static final double kElevatingSetpoint = 280;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 176;
-                public static final double toleranceDegrees = 6.5;
+                public static final double toleranceDegrees = 8.5;
 
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 300;
@@ -244,22 +244,22 @@ public final class Constants {
                 public static final double kTolerance = 0.05;
 
 
-                public static final double kMaxUpVoltage = 3.25;
+                public static final double kMaxUpVoltage = 5.75;
                 public static final double kMaxUpErrorThreshold = 0.25;
-                public static final double kHighUpVoltage = 3.1;
+                public static final double kHighUpVoltage = 4.7;
                 public static final double kHighUpErrorThreshold = 0.15;
-                public static final double kMediumUpVoltage = 2.4;
+                public static final double kMediumUpVoltage = 2.8;
                 public static final double kMediumUpErrorThreshold = 0.06;
                 public static final double kSlowUpVoltage = 1.5;
 
-                public static final double kMaxDownVoltage = -0.95;
+                public static final double kMaxDownVoltage = -1.65;
                 public static final double kMaxDownErrorThreshold = 0.25;
-                public static final double kHighDownVoltage = -0.7;
+                public static final double kHighDownVoltage = -1.2;
                 public static final double kHighDownErrorThreshold = 0.20;
-                public static final double kMediumDownVoltage = -0.4;
+                public static final double kMediumDownVoltage = -0.8;
                 public static final double kMediumDownErrorThreshold = 0.09;
+                public static final double kSlowDownVoltage = -0.55;
                 public static final double kSlowDownThreshold = 0.06;
-                public static final double kSlowDownVoltage = -0.25;
 
                 public static final double kEmptyHoldingVoltage = 0.6;
                 public static final double kEmptyHoldingVoltageTop = 0.69;
