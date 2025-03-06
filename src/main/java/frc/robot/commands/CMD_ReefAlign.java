@@ -107,12 +107,11 @@ public class CMD_ReefAlign extends RunCommand {
     double omegaSpeed = robotAngleController.calculate(
         MathUtil.angleModulus(currentPose.getRotation().getRadians()),
         MathUtil.angleModulus(tagPose.getRotation().getRadians() + Math.PI));
-    Pathfinding.setPathfinder(new LocalADStar());
 
     try{ 
 
     } catch (Error e) {
-      
+
     }
 
     drivetrain.drive(xSpeed, ySpeed, omegaSpeed, true, false);

@@ -122,12 +122,13 @@ public class CMD_PathfindReefAlign extends Command {
     }
 
     PathConstraints constraints = new PathConstraints(
-    3.0, 4.0,
+    3.0, 2.1,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
 
 
     Translation2d translate = selectedMap.get(targetId);
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI/2)));
+    drivetrain.publisher1.set(pose);
     pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
 
     pathfindingCommand.initialize();
