@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 2 to K"
+            "pathName": "Cage 5 to E"
           }
         },
         {
@@ -21,28 +21,28 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "stow"
+                }
+              },
+              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "K Backup"
+                        "pathName": "E Backup"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "K Backup to TopPickup(Right)"
+                        "pathName": "E Backup to BottomPickup(Left)"
                       }
                     }
                   ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "stow"
                 }
               }
             ]
@@ -71,7 +71,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "TopPickup(Right) to L"
+                        "pathName": "BottomPickup(Left) to C"
                       }
                     }
                   ]
@@ -85,11 +85,62 @@
           "data": {
             "name": "scoreL4"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "stow"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C Backup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C Backup to BottomPickup(Left)"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": []
+                }
+              }
+            ]
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Cage 2 (2P)",
+  "folder": "Cage 5 (2P)",
   "choreoAuto": false
 }

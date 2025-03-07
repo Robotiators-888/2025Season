@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 2 to K"
+            "pathName": "(Shortened) Cage 4 to E"
           }
         },
         {
@@ -21,28 +21,28 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "stow"
+                }
+              },
+              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "K Backup"
+                        "pathName": "E Backup"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "K Backup to TopPickup(Right)"
+                        "pathName": "E Backup to BottomPickup(Left)"
                       }
                     }
                   ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "stow"
                 }
               }
             ]
@@ -71,7 +71,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "TopPickup(Right) to L"
+                        "pathName": "BottomPickup(Left) to C"
                       }
                     }
                   ]
@@ -85,11 +85,43 @@
           "data": {
             "name": "scoreL4"
           }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C Backup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C Backup to BottomPickup(Left)"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "stow"
+                }
+              }
+            ]
+          }
         }
       ]
     }
   },
-  "resetOdom": true,
-  "folder": "Cage 2 (2P)",
+  "resetOdom": false,
+  "folder": "Cage 4 (2P)",
   "choreoAuto": false
 }
