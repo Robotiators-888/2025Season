@@ -291,4 +291,11 @@ public final class Constants {
                 public static final int kClimberCanID = 40;
                 public static final double kClimberPercentOutput = 0.2;
         }
+
+        public static class LEDs {
+                public static final int kPWMPort = 9;
+                public static final double kColorGreen = 0.77;
+                public static final double kColorRed = 0.61;
+                public static final double kParty_Palette_Twinkles = -0.53;
+        }
 }

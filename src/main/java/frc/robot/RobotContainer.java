@@ -13,7 +13,6 @@ import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
@@ -42,10 +41,10 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
+import frc.robot.Constants.LEDs;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.utils.AutoGenerator;
@@ -68,6 +67,7 @@ public class RobotContainer {
         public static SUB_Roller roller = SUB_Roller.getInstance();
         public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
         public static SUB_Climber climber = SUB_Climber.getInstance();
+        public static SUB_LEDs leds = SUB_LEDs.getInstance();
         public static PowerDistribution powerDistribution = new PowerDistribution();
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -308,6 +308,7 @@ public class RobotContainer {
                                                                                 .getHID()
                                                                                 .setRumble(RumbleType.kBothRumble,
                                                                                                 1)),
+                                                                new InstantCommand(()-> leds.set(LEDs.kColorGreen)),
                                                                 new RunCommand(() -> roller
                                                                                 .setRollerOutput(
                                                                                                 Roller.kIntakeFinishSpeed),
@@ -326,19 +327,15 @@ public class RobotContainer {
                                                 new InstantCommand(() -> Driver1.getHID().setRumble(
                                                                 RumbleType.kBothRumble, 0)),
                                                 new InstantCommand(() -> Driver2.getHID().setRumble(
-                                                                RumbleType.kBothRumble, 0))))
-                                .onFalse(new ParallelCommandGroup(
-                                                new InstantCommand(() -> Driver1.getHID().setRumble(
-                                                                RumbleType.kBothRumble, 0)),
-                                                new InstantCommand(() -> Driver2.getHID().setRumble(
                                                                 RumbleType.kBothRumble, 0))));
+
 
                 Driver2.rightTrigger().whileTrue(new RunCommand(
                                 () -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
                                                 .until(() -> !roller.getHasCoral())
-                                                .andThen(new InstantCommand(
+                                                .andThen(new SequentialCommandGroup(new InstantCommand(
                                                                 () -> roller.setRollerOutput(0.),
-                                                                roller)))
+                                                                roller), new InstantCommand(()-> leds.setAllianceColor()))))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
                                                 roller));
 
@@ -550,11 +547,17 @@ public class RobotContainer {
                 photonPoseUpdate();
         }
 
+        public void autonomousInit(){
+                leds.set(LEDs.kParty_Palette_Twinkles);
+        }
+
         public void autonomousPeriodic() {
 
         }
 
-
+        public void teleopInit(){
+                leds.setAllianceColor();
+        }
 
         public void teleopPeriodic() {
                 // try {
