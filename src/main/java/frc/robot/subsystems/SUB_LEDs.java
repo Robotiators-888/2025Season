@@ -159,9 +159,9 @@ public class SUB_LEDs extends SubsystemBase {
 
     if (alliance.isPresent()) {
       if (alliance.get() == DriverStation.Alliance.Red) {
-        blinkin.set(0.17);
+        blinkin.set(0.61);
       } else {
-        blinkin.set(0.86);
+        blinkin.set(0.87);
       }
     }
   }
