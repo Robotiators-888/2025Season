@@ -200,7 +200,7 @@ public final class Constants {
                 
                 public static final String kCam2Name = "AprilTagCam2";
                 public static final Rotation3d cameraRotation2 = new Rotation3d(0,
-                                Units.degreesToRadians(0), Units.degreesToRadians(-25));//Adding 180 as a test
+                                Units.degreesToRadians(0), Units.degreesToRadians(-25));//Yaw is around the z axis, but where is the zero
                 public static final Transform3d kRobotToCamera2 = new Transform3d(
                                 Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(13.5-2.75),
                                 Units.inchesToMeters(11), cameraRotation);
