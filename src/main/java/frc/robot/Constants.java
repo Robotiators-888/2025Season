@@ -193,23 +193,23 @@ public final class Constants {
                 public static final String kCam1Name = "AprilTagCam";
                 public static final Rotation3d cameraRotation = new Rotation3d(
                                 Units.degreesToRadians(0), Units.degreesToRadians(0),
-                                Units.degreesToRadians(-25));
+                                Units.degreesToRadians(25));
                 public static final Transform3d kRobotToCamera1 = new Transform3d(
-                                Units.inchesToMeters(7.5), Units.inchesToMeters(10.5),
+                                Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(-13.5+2.75),
                                 Units.inchesToMeters(11), cameraRotation);
                 
                 public static final String kCam2Name = "AprilTagCam2";
                 public static final Rotation3d cameraRotation2 = new Rotation3d(0,
-                                Units.degreesToRadians(0), Units.degreesToRadians(25));
+                                Units.degreesToRadians(0), Units.degreesToRadians(-25));//Adding 180 as a test
                 public static final Transform3d kRobotToCamera2 = new Transform3d(
-                                Units.inchesToMeters(7.5), Units.inchesToMeters(-10.5),
-                                Units.inchesToMeters(23.5), cameraRotation);
-                // public static final String kCam3Name = "AprilTagHighCam";
-                // public static final Rotation3d cameraRotation3 = new Rotation3d(0,
-                //                  Units.degreesToRadians(0), Units.degreesToRadians(-25));
-                // public static final Transform3d kRobotToCamera3 = new Transform3d(
-                //                  Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 3.75),
-                //                  Units.inchesToMeters(23.5), cameraRotation);
+                                Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(13.5-2.75),
+                                Units.inchesToMeters(11), cameraRotation);
+                public static final String kCam3Name = "AprilTagHighCam";
+                public static final Rotation3d cameraRotation3 = new Rotation3d(0,
+                                 Units.degreesToRadians(0), Units.degreesToRadians(8));
+                public static final Transform3d kRobotToCamera3 = new Transform3d(
+                                 Units.inchesToMeters(-7+3.25), Units.inchesToMeters(-10),
+                                 Units.inchesToMeters(23.5), cameraRotation);
         }
 
         public static final class PivotConstants {

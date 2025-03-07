@@ -597,6 +597,7 @@ public class RobotContainer {
                                                 VecBuilder.fill(xStddev, yStddev, rotStddev));
                                 drivetrain.addVisionMeasurement(photonPose.toPose2d(),
                                                 photonPoseOptional.get().timestampSeconds);
+                                drivetrain.publisher3.set(photonPose.toPose2d());
                         }
                 }
 
@@ -625,6 +626,8 @@ public class RobotContainer {
                                                 VecBuilder.fill(xStddev, yStddev, rotStddev));
                                 drivetrain.addVisionMeasurement(photonPose.toPose2d(),
                                                 photonPoseOptional.get().timestampSeconds);
+
+                                drivetrain.publisher4.set(photonPose.toPose2d());
                         }
                 }
 
