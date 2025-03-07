@@ -25,11 +25,11 @@ public class SUB_PhotonVision extends SubsystemBase {
   private static SUB_PhotonVision INSTANCE = null;
 
   private final PhotonCamera cam1 = new PhotonCamera(PhotonVision.kCam1Name);
-  private final PhotonCamera cam2 = new PhotonCamera(PhotonVision.kCam2Name);
+  // private final PhotonCamera cam2 = new PhotonCamera(PhotonVision.kCam2Name);
   private PhotonTrackedTarget cam1BestTarget;
-  private PhotonTrackedTarget cam2BestTarget;
+  // private PhotonTrackedTarget cam2BestTarget;
   private final PhotonPoseEstimator poseEstimator1;
-  private final PhotonPoseEstimator poseEstimator2;
+  // private final PhotonPoseEstimator poseEstimator2;
   public AprilTagFieldLayout at_field;
 
   public static SUB_PhotonVision getInstance() {
@@ -50,10 +50,10 @@ public class SUB_PhotonVision extends SubsystemBase {
 
     poseEstimator1 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         PhotonVision.kRobotToCamera1);
-    poseEstimator2 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-        PhotonVision.kRobotToCamera2);
+    // poseEstimator2 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+    //     PhotonVision.kRobotToCamera2);
     poseEstimator1.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-    poseEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+    // poseEstimator2.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
   }
 
   public Optional<EstimatedRobotPose> getCam1Pose() {
@@ -68,25 +68,25 @@ public class SUB_PhotonVision extends SubsystemBase {
     return finalPose1;
   }
 
-  public Optional<EstimatedRobotPose> getCam2Pose() {
-    List<PhotonPipelineResult> results2 = cam2.getAllUnreadResults();
-    Optional<EstimatedRobotPose> finalPose2 = Optional.empty();
-    for (PhotonPipelineResult result : results2) {
-      if (result.hasTargets()) {
-        cam2BestTarget = result.getBestTarget();
-        finalPose2 = poseEstimator2.update(result);
-      }
-    }
-    return finalPose2;
-  }
+  // public Optional<EstimatedRobotPose> getCam2Pose() {
+  //   List<PhotonPipelineResult> results2 = cam2.getAllUnreadResults();
+  //   Optional<EstimatedRobotPose> finalPose2 = Optional.empty();
+  //   for (PhotonPipelineResult result : results2) {
+  //     if (result.hasTargets()) {
+  //       cam2BestTarget = result.getBestTarget();
+  //       finalPose2 = poseEstimator2.update(result);
+  //     }
+  //   }
+  //   return finalPose2;
+  // }
 
   public PhotonTrackedTarget getCam1BestTarget() {
     return cam1BestTarget;
   }
 
-  public PhotonTrackedTarget getCam2BestTarget() {
-    return cam2BestTarget;
-  }
+  // public PhotonTrackedTarget getCam2BestTarget() {
+  //   return cam2BestTarget;
+  // }
 
   public double getTargetYaw(PhotonTrackedTarget target) {
     return target.getYaw();
