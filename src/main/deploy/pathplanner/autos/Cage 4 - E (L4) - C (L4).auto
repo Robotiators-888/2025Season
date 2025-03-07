@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "(Shortened) Cage 4 to E"
+            "pathName": "Cage 4 to E"
           }
         },
         {
@@ -122,6 +122,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "2 Piece",
+  "folder": "Cage 4 (2P)",
   "choreoAuto": false
 }

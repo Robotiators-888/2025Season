@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.6337499999999994,
-        "y": 1.4022499999999958
+        "x": 0.6790178571428572,
+        "y": 1.389650974025974
       },
       "prevControl": {
-        "x": 1.461921163880933,
-        "y": 1.6432297911504257
+        "x": 1.507189021023791,
+        "y": 1.6306307651764038
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Score to Pickup",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 123.69006752597983
+    "rotation": 122.52033155970035
   },
   "useDefaultConstraints": true
 }
