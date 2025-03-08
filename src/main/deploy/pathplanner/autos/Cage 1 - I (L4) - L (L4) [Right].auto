@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 5 to E"
+            "pathName": "Cage 1 to I"
           }
         },
         {
@@ -33,13 +33,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "E Backup"
+                        "pathName": "I Backup"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "E Backup to BottomPickup(Middle)"
+                        "pathName": "I Backup to TopPickup(Mid)"
                       }
                     }
                   ]
@@ -71,7 +71,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Mid) to C"
+                        "pathName": "TopPickup(Mid) to L"
                       }
                     }
                   ]
@@ -103,13 +103,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "C Backup"
+                        "pathName": "L Backup"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "C Backup to BottomPickup(Mid)"
+                        "pathName": "L Backup to TopPickup(Mid)"
                       }
                     }
                   ]
@@ -135,6 +135,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Cage 5 (2P)",
+  "folder": "Cage 1 (2P)",
   "choreoAuto": false
 }

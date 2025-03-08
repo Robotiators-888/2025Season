@@ -48,7 +48,7 @@
   "folder": "Start to Score",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.99999999998525
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

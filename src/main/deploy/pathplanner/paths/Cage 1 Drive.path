@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.174284410693023,
-        "y": 7.404754008104938
+        "x": 6.182116385841704,
+        "y": 7.231624028541884
       },
       "isLocked": false,
       "linkedName": "CageStart1"
     },
     {
       "anchor": {
-        "x": 5.014285714285714,
-        "y": 5.235836038961038
+        "x": 6.36547131147541,
+        "y": 7.234902597402598
       },
       "prevControl": {
-        "x": 5.192791323015774,
-        "y": 5.410866743844241
+        "x": 6.924354459433745,
+        "y": 7.277718214719187
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "J Score"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.52699999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Start to Score",
+  "folder": "Just Drive Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
