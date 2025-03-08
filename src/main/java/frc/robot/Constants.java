@@ -191,6 +191,7 @@ public final class Constants {
 
         public static final class PhotonVision {// Unstable
                 public static final String kCam1Name = "AprilTagCam2"; // TODO: Change to the correct name(AprilTagCam) and Transform3d and Rotation3d (Make sure to use this Transform3d and Rotation3d for the other camera)
+                public static final Rotation3d cameraRotation = new Rotation3d(
                                 Units.degreesToRadians(0), Units.degreesToRadians(0),
                                 Units.degreesToRadians(25)); // CCW positive yaw with it circling around the z axis, zero is straight forward
                 public static final Transform3d kRobotToCamera1 = new Transform3d(
