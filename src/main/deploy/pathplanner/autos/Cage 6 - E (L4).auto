@@ -31,7 +31,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": "1 Piece",
   "choreoAuto": false
 }

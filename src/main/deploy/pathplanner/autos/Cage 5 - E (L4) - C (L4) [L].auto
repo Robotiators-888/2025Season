@@ -140,7 +140,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": "Cage 5 (2P)",
   "choreoAuto": false
 }
