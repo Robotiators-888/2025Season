@@ -6,7 +6,10 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -33,11 +36,7 @@ public class AutoGenerator extends SubsystemBase {
             ),
             config, // The robot configuration
             () -> {
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
+              return DriverStation.getAlliance().equals(Optional.of(Alliance.Red));
             },
             drivetrain // Reference to this subsystem to set requirements
         );

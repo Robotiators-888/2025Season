@@ -121,7 +121,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": "Cage 4 (2P)",
   "choreoAuto": false
 }

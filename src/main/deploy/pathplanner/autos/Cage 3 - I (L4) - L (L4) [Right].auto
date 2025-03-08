@@ -134,7 +134,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": "Cage 3 (2P)",
   "choreoAuto": false
 }

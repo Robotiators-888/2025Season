@@ -173,8 +173,7 @@ public class SUB_Drivetrain extends SubsystemBase {
    */
   public Pose2d getPose() {
     Pose2d pose =  m_poseEstimator.getEstimatedPosition();
-
-    return new Pose2d(pose.getX(), pose.getY(), Rotation2d.fromDegrees(getAngle()));
+    return pose;
   }
 
   /**
@@ -381,9 +380,9 @@ public class SUB_Drivetrain extends SubsystemBase {
     ChassisSpeeds adjustedSpeeds = new ChassisSpeeds(
       robotRelativeSpeeds.vxMetersPerSecond,
       robotRelativeSpeeds.vyMetersPerSecond,
-      robotRelativeSpeeds.omegaRadiansPerSecond //Unstable
+      robotRelativeSpeeds.omegaRadiansPerSecond //Unstable.
     );
-    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(adjustedSpeeds, 0.02);
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
     SwerveModuleState[] targetStates =
         Drivetrain.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
