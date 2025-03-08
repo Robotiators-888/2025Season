@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 1 to I"
+            "pathName": "Cage 3 to I"
           }
         },
         {
@@ -135,6 +135,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Cage 1 (2P)",
+  "folder": "Cage 3 (2P)",
   "choreoAuto": false
 }

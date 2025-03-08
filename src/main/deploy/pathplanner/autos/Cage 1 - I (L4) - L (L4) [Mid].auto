@@ -39,7 +39,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "I Backup to TopPickup(Right)"
+                        "pathName": "I Backup to TopPickup(Mid)"
                       }
                     }
                   ]
@@ -71,7 +71,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "TopPickup(Right) to L"
+                        "pathName": "TopPickup(Mid) to L"
                       }
                     }
                   ]
@@ -109,7 +109,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "L Backup to TopPickup(Right)"
+                        "pathName": "L Backup to TopPickup(Mid)"
                       }
                     }
                   ]

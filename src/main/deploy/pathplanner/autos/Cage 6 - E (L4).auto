@@ -7,37 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cage 3 to I"
+            "pathName": "Cage 6 to E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreL4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "I Backup"
+            "pathName": "E Backup"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "I Backup to TopPickup(Right)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "TopPickup(Right) to L"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L Backup"
+            "name": "stow"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Cage 3 (2P)",
+  "folder": "1 Piece",
   "choreoAuto": false
 }
