@@ -190,20 +190,20 @@ public final class Constants {
         }
 
         public static final class PhotonVision {// Unstable
-                public static final String kCam1Name = "AprilTagCam";
+                public static final String kCam1Name = "AprilTagCam2"; // TODO: Change to the correct name(AprilTagCam) and Transform3d and Rotation3d (Make sure to use this Transform3d and Rotation3d for the other camera)
                 public static final Rotation3d cameraRotation = new Rotation3d(
-                                Units.degreesToRadians(180), Units.degreesToRadians(0),
-                                Units.degreesToRadians(-25));
-                public static final Transform3d kRobotToCamera1 = new Transform3d(
-                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 1.5),
-                                Units.inchesToMeters(11), cameraRotation);
-                public static final String kCam2Name = "AprilTagCam2"; // TODO: Change to the correct name(AprilTagCam) and Transform3d and Rotation3d (Make sure to use this Transform3d and Rotation3d for the other camera)
-                public static final Rotation3d cameraRotation2 = new Rotation3d(
                                 Units.degreesToRadians(0), Units.degreesToRadians(0),
                                 Units.degreesToRadians(25)); // CCW positive yaw with it circling around the z axis, zero is straight forward
-                public static final Transform3d kRobotToCamera2 = new Transform3d(
+                public static final Transform3d kRobotToCamera1 = new Transform3d(
                                 Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(-13.5+2.75), // X is forward and the camera is in front of the center of the robot, Y positive is left and the camera is on the right of the robot, Z is up from the ground and it is above the ground
                                 Units.inchesToMeters(11), cameraRotation);
+                
+                // public static final String kCam2Name = "AprilTagCam2";
+                // public static final Rotation3d cameraRotation2 = new Rotation3d(0,
+                //                 Units.degreesToRadians(0), Units.degreesToRadians(25));//Yaw is around the z axis, but where is the zero
+                // public static final Transform3d kRobotToCamera2 = new Transform3d(
+                //                 Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(13.5-2.75),
+                //                 Units.inchesToMeters(11), cameraRotation);
                 public static final String kCam3Name = "AprilTagHighCam";
                 public static final Rotation3d cameraRotation3 = new Rotation3d(0,
                                  Units.degreesToRadians(0), Units.degreesToRadians(8));
