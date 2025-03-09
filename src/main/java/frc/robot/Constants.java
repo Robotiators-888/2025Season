@@ -227,7 +227,7 @@ public final class Constants {
 
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 300;
-                public static final double kL3Setpoint = 294;
+                public static final double kL3Setpoint = 290;
                 public static final double kL4Setpoint = 273;
 
 
@@ -279,7 +279,7 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 35; // Amps
                 public static final int kRollerCurrentLimit = 60;
 
-                public static final double kIntakeSpeed = 0.25; // Percent
+                public static final double kIntakeSpeed = 0.40; // Percent
                 public static final double kIntakeFinishSpeed = -0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds
                 public static final double kIntakeFinishTime = 0.06; // Seconds
