@@ -133,6 +133,87 @@ public class SUB_Elevator extends SubsystemBase {
     runElevatorManualVoltage(0);
   }
 
+  public void runElevatorAlgaeSafe(Supplier<Boolean> pivotSafe) {
+    if (getCurrentPosition() >= Elevator.kResetHomingThreshold) {
+      SmartDashboard.putBoolean("EMERGENCY HOMED!!!", false);
+      SmartDashboard.putBoolean("Homed", false);
+    }
+    SmartDashboard.putNumber("Elevator Output Voltage", primary.getAppliedOutput() * primary.getBusVoltage());
+    SmartDashboard.putNumber("EncoderPos", primaryencoder.getPosition());
+    if (!pivotSafe.get() || this.atSetpoint() || primaryencoder.getPosition() > Elevator.kL3Setpoint){
+      if (roller.getHasCoral()) {
+        runElevatorManualVoltage(Elevator.kCoralHoldingVoltage);
+        return;
+      }
+      if (roller.getHasAlgae()) {
+        runElevatorManualVoltage(Elevator.kAlgaeHoldingVoltage);
+        return;
+      }
+      if (primaryencoder.getPosition() > .6) {
+        runElevatorManualVoltage(Elevator.kEmptyHoldingVoltageTop);
+        return;
+      }
+      runElevatorManualVoltage(Elevator.kEmptyHoldingVoltage);
+      return;
+    }
+
+    SmartDashboard.putBoolean("Elevator is Safe", false);
+    if (activesetpoint <= 0 && getCurrentPosition() <= Elevator.kSlowDownThreshold) {
+      HomeElevator();
+      return;
+    }
+
+    if (Math.abs(activesetpoint - primaryencoder.getPosition()) < .02) {
+      if (roller.getHasCoral()) {
+        runElevatorManualVoltage(Elevator.kCoralHoldingVoltage);
+        return;
+      }
+      if (roller.getHasAlgae()) {
+        runElevatorManualVoltage(Elevator.kAlgaeHoldingVoltage);
+        return;
+      }
+      if (primaryencoder.getPosition() > .6) {
+        runElevatorManualVoltage(Elevator.kEmptyHoldingVoltageTop);
+        return;
+      }
+      runElevatorManualVoltage(Elevator.kEmptyHoldingVoltage);
+      return;
+    }
+    if (activesetpoint > getCurrentPosition()) {
+      if (activesetpoint - getCurrentPosition() > Elevator.kMaxUpErrorThreshold) {
+        runElevatorManualVoltage(Elevator.kMaxUpVoltage);
+        return;
+      }
+      if (activesetpoint - getCurrentPosition() > Elevator.kHighUpErrorThreshold) {
+        runElevatorManualVoltage(Elevator.kHighUpVoltage);
+        return;
+      }
+      if (activesetpoint - getCurrentPosition() > Elevator.kMediumUpErrorThreshold) {
+        runElevatorManualVoltage(Elevator.kMediumUpVoltage);
+        return;
+      }
+      runElevatorManualVoltage(Elevator.kSlowUpVoltage);
+      return;
+    }
+    if (activesetpoint < getCurrentPosition()) {
+      if (Math.abs(getCurrentPosition() - activesetpoint) > Elevator.kMaxDownErrorThreshold) {
+        runElevatorManualVoltage(Elevator.kMaxDownVoltage);
+        return;
+      }
+      if (Math.abs(getCurrentPosition() - activesetpoint) > Elevator.kHighDownErrorThreshold) {
+        runElevatorManualVoltage(Elevator.kHighDownVoltage);
+        return;
+      }
+      if (Math.abs(getCurrentPosition() - activesetpoint) > Elevator.kMediumDownErrorThreshold) {
+        runElevatorManualVoltage(Elevator.kMediumDownVoltage);
+        return;
+      }
+      runElevatorManualVoltage(Elevator.kSlowDownThreshold);
+      return;
+    }
+    runElevatorManualVoltage(0);
+  }
+
   public boolean atSetpoint(double setpoint) {
     return Math.abs(primaryencoder.getPosition() - setpoint) < Elevator.kTolerance;
   }
