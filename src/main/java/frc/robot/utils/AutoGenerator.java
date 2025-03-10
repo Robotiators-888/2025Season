@@ -6,7 +6,10 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -28,16 +31,12 @@ public class AutoGenerator extends SubsystemBase {
             drivetrain::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> drivetrain.driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(1.5, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(10, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(7, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
+              return DriverStation.getAlliance().equals(Optional.of(Alliance.Red));
             },
             drivetrain // Reference to this subsystem to set requirements
         );

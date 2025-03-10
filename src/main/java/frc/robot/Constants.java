@@ -4,13 +4,15 @@
 
 package frc.robot;
 
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -26,7 +28,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-        public static class OperatorConstants {
+        public static class Operator {
                 public static final int kDriver1ControllerPort = 0;
                 public static final int kDriver2ControllerPort = 1;
                 public static final double kDriveDeadband = 0.05;
@@ -38,7 +40,8 @@ public final class Constants {
                 // This changes the drive speed of the module (a pinion gear with more teeth
                 // will result in a
                 // robot that drives faster).
-                public static final int kDrivingMotorPinionTeeth = 14;
+                public static final int kDrivingMotorPinionTeeth = 12; // on shreyan soul it is 14
+                                                                       // tooth
 
                 // Invert the turning encoder, since the output shaft rotates in the opposite
                 // direction of
@@ -47,8 +50,8 @@ public final class Constants {
 
                 // Calculations required for driving motor conversion factors and feed forward
                 public static final double kDrivingMotorFreeSpeedRps =
-                                MotorConstants.kVortexFreeSpeedRpm / 60;
-                public static final double kWheelDiameterMeters = Units.inchesToMeters(2.90);
+                                Motor.kVortexFreeSpeedRpm / 60;
+                public static final double kWheelDiameterMeters = Units.inchesToMeters(2.989);
                 // Thrifty tread 2.95in
                 // Orange Tread 2.70
                 // Black Rev 2.95
@@ -134,13 +137,12 @@ public final class Constants {
                                                                       // 100%)
 
                 // Chassis configuration
-                public static final double kTrackWidth = Units.inchesToMeters(24);
-                // 31inches by 24inches
+                public static final double kTrackWidth = Units.inchesToMeters(23.5);
+                // 30.5inches by 27inches
                 // Distance between centers of right and left wheels on robot
-                public static final double kWheelBase = Units.inchesToMeters(31);
+                public static final double kWheelBase = Units.inchesToMeters(27);
 
-                public static final double kTrackRadius =
-                                Units.inchesToMeters(19.6 * Math.sqrt(2) / 2);
+                public static final double kTrackRadius = Units.inchesToMeters(17.8972763);// ((23.5/2)^2+(27/2)^2)^0.5
                 public static final double kMaxModuleSpeed = Units.feetToMeters(15);
                 // Distance between front and back wheels on robot
                 public static final SwerveDriveKinematics kDriveKinematics =
@@ -160,44 +162,55 @@ public final class Constants {
                 public static final boolean kGyroReversed = true;
 
                 public static final double kGyroRotation = 0;
+
+                // Constants for CMD_ReefAlign
+                public static final double kXShiftMagnitude =
+                                Units.inchesToMeters(5+(30.5 / 2)); // Distance away from
+                                                                 
+                                // the April Tag
+                public static final double kYShiftMagnitude = Units.inchesToMeters(6.5); // Distance
+                                                                                         // shifted
+                                                                                         // to the
+                                                                                         // left/right
+                                                                                         // of the
+                                                                                         // April
+                                                                                         // Tag
+
         }
 
         // Motor Constants
-        public static final class MotorConstants {
+        public static final class Motor {
                 public static final double kVortexFreeSpeedRpm = 6784;
                 public static final double kNeoFreeSpeedRpm = 5676;
         }
 
-        public static final class FieldConstants {
-                public static final double fieldLength = Units.inchesToMeters(648);
-                public static final double fieldWidth = Units.inchesToMeters(324);
-
-                public static final Translation2d speakerAimPoint =
-                                new Translation2d(0.240581, 5.547755);
-
-                public static final Pose2d subwooferFront = new Pose2d(
-                                new Translation2d(1.45, 5.55), Rotation2d.fromDegrees(+180));
-                public static final Pose2d subwooferAmp = new Pose2d(new Translation2d(0.71, 6.72),
-                                Rotation2d.fromDegrees(-120));
-                public static final Pose2d subwooferSource = new Pose2d(
-                                new Translation2d(0.71, 4.57), Rotation2d.fromDegrees(+120));
-
-                public static final Pose2d amp = new Pose2d(new Translation2d(1.83, 7.61),
-                                Rotation2d.fromDegrees(-90));
-                public static final Pose2d podium = new Pose2d(new Translation2d(2.76, 4.44),
-                                Rotation2d.fromDegrees(+157.47));
-
-                public static final Pose2d pathfindSpeaker = new Pose2d(
-                                new Translation2d(3.45, 5.55), Rotation2d.fromDegrees(+180));
-                public static final Pose2d pathfindSource = new Pose2d(
-                                new Translation2d(13.41, 1.54), Rotation2d.fromDegrees(+180));
-
-                public static final double podiumToSpeakerDist =
-                                speakerAimPoint.getDistance(podium.getTranslation());
-                public static final double subwooferToSpeakerDist =
-                                speakerAimPoint.getDistance(subwooferFront.getTranslation());
+        public static final class Field {
+                public static final double fieldLength = 1755.0 / 100.0;
+                public static final double fieldWidth = 805.0 / 100.0;
         }
 
+        public static final class PhotonVision {// Unstable
+                public static final String kCam1Name = "AprilTagCam";
+                public static final Rotation3d cameraRotation = new Rotation3d(
+                                Units.degreesToRadians(180), Units.degreesToRadians(0),
+                                Units.degreesToRadians(-25));
+                public static final Transform3d kRobotToCamera1 = new Transform3d(
+                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 1.5),
+                                Units.inchesToMeters(11), cameraRotation);
+                public static final String kCam2Name = "AprilTagCam2"; // TODO: Change to the correct name(AprilTagCam) and Transform3d and Rotation3d (Make sure to use this Transform3d and Rotation3d for the other camera)
+                public static final Rotation3d cameraRotation2 = new Rotation3d(
+                                Units.degreesToRadians(0), Units.degreesToRadians(0),
+                                Units.degreesToRadians(25)); // CCW positive yaw with it circling around the z axis, zero is straight forward
+                public static final Transform3d kRobotToCamera2 = new Transform3d(
+                                Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(-13.5+2.75), // X is forward and the camera is in front of the center of the robot, Y positive is left and the camera is on the right of the robot, Z is up from the ground and it is above the ground
+                                Units.inchesToMeters(11), cameraRotation);
+                public static final String kCam3Name = "AprilTagHighCam";
+                public static final Rotation3d cameraRotation3 = new Rotation3d(0,
+                                 Units.degreesToRadians(0), Units.degreesToRadians(8));
+                public static final Transform3d kRobotToCamera3 = new Transform3d(
+                                 Units.inchesToMeters(-7+3.25), Units.inchesToMeters(-10),
+                                 Units.inchesToMeters(23.5), cameraRotation);
+        }
 
         public static final class PivotConstants {
                 public static final ArmFeedforward noCoralArmFeedforward =
@@ -206,16 +219,16 @@ public final class Constants {
                                 new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now,
                                                                    // change later
 
-                public static final double kIntakeSetpoint = 330;
+                public static final double kIntakeSetpoint = 326;
                 public static final double kElevatingSetpoint = 280;
                 public static final double kCoralSetpoint = 300;
-                public static final double kAlgaeSetpoint = 156;
-                public static final double toleranceDegrees = 6.5;
+                public static final double kAlgaeSetpoint = 176;
+                public static final double toleranceDegrees = 8.5;
 
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 300;
-                public static final double kL3Setpoint = 300;
-                public static final double kL4Setpoint = 283;
+                public static final double kL3Setpoint = 290;
+                public static final double kL4Setpoint = 273;
 
 
                 public static final double kUpperBoundStuckPoint = 340.0;
@@ -227,35 +240,39 @@ public final class Constants {
                 public static final double kResetHomingThreshold = 0.05;
                 public static final double kEncoderNearZero = 0.01;
                 public static final double kHomingEmergencyCurrent = 40;
-                public static final double kHomingVoltage = -0.2;
+                public static final double kHomingVoltage = -0.25;
                 public static final double kTolerance = 0.05;
 
 
-                public static final double kMaxUpVoltage = 3.25;
+                public static final double kMaxUpVoltage = 5.75;
                 public static final double kMaxUpErrorThreshold = 0.25;
-                public static final double kHighUpVoltage = 2.5;
+                public static final double kHighUpVoltage = 4.7;
                 public static final double kHighUpErrorThreshold = 0.15;
-                public static final double kMediumUpVoltage = 2;
-                public static final double kMediumUpErrorThreshold = 0.1;
+                public static final double kMediumUpVoltage = 2.8;
+                public static final double kMediumUpErrorThreshold = 0.06;
                 public static final double kSlowUpVoltage = 1.5;
 
-                public static final double kMaxDownVoltage = -0.75;
+                public static final double kMaxDownVoltage = -1.65;
                 public static final double kMaxDownErrorThreshold = 0.25;
-                public static final double kHighDownVoltage = -0.5;
+                public static final double kHighDownVoltage = -1.2;
                 public static final double kHighDownErrorThreshold = 0.20;
-                public static final double kMediumDownVoltage = -0.2;
-                public static final double kMediumDownErrorThreshold = 0.15;
-                public static final double kSlowDownVoltage = 0.1;
+                public static final double kMediumDownVoltage = -0.8;
+                public static final double kMediumDownErrorThreshold = 0.09;
+                public static final double kSlowDownVoltage = -0.55;
+                public static final double kSlowDownThreshold = 0.06;
 
                 public static final double kEmptyHoldingVoltage = 0.6;
-                public static final double kCoralHoldingVoltage = 0.79;
+                public static final double kEmptyHoldingVoltageTop = 0.69;
+                public static final double kCoralHoldingVoltage = 0.85;
                 public static final double kAlgaeHoldingVoltage = 0.72;
 
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
-                public static final double kL2Setpoint = 0.259;
-                public static final double kL3Setpoint = 0.48;
+                public static final double kL2Setpoint = 0.24;
+                public static final double kL3Setpoint = 0.45;
                 public static final double kL4Setpoint = 0.80;
+                public static final double kAlgaeSetpoint = 0.508;
+                public static final double kProcessorSetpoint = 0.15;
         }
 
         public static class Roller {
@@ -263,10 +280,10 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 35; // Amps
                 public static final int kRollerCurrentLimit = 60;
 
-                public static final double kIntakeSpeed = 0.25; // Percent
-                public static final double kIntakeFinishSpeed = 0.1; // Percent
+                public static final double kIntakeSpeed = 0.2; // Percent
+                public static final double kIntakeFinishSpeed = -0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds
-                public static final double kIntakeFinishTime = 0.1; // Seconds
+                public static final double kIntakeFinishTime = 0.06; // Seconds
 
                 public static final double kEjectSpeed = 0.8; // Percent
                 public static final double kFreeSpinThreshold = 420; // RPM
@@ -274,5 +291,12 @@ public final class Constants {
         public static class Climber {
                 public static final int kClimberCanID = 40;
                 public static final double kClimberPercentOutput = 0.2;
+        }
+
+        public static class LEDs {
+                public static final int kPWMPort = 9;
+                public static final double kColorGreen = 0.77;
+                public static final double kColorRed = 0.61;
+                public static final double kParty_Palette_Twinkles = -0.53;
         }
 }

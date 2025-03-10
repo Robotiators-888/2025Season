@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.175,
+        "y": 7.234902597402598
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.174284410693023,
+        "y": 7.404754008104938
+      },
+      "isLocked": false,
+      "linkedName": "CageStart1"
+    },
+    {
+      "anchor": {
+        "x": 5.014285714285714,
+        "y": 5.235836038961038
+      },
+      "prevControl": {
+        "x": 5.192791323015774,
+        "y": 5.410866743844241
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "J Score"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.2,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -121.52699999999999
+  },
+  "reversed": false,
+  "folder": "Start to Score",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

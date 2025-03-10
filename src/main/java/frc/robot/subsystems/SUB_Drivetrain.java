@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -22,20 +21,39 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.Swerve;
 import frc.robot.utils.*;
 // import org.littletonrobotics.junction.Logger;
 
 public class SUB_Drivetrain extends SubsystemBase {
+
+  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+  .getStructTopic("AdvantageScopeOdometry", Pose2d.struct).publish();
+
+  public StructPublisher<Pose2d> publisher1 = NetworkTableInstance.getDefault()
+  .getStructTopic("debugXPoint", Pose2d.struct).publish(); 
+
+  public StructPublisher<Pose2d> publisher2 = NetworkTableInstance.getDefault()
+  .getStructTopic("debugYPoint", Pose2d.struct).publish(); 
+
+
+  public StructPublisher<Pose2d> publisher3 = NetworkTableInstance.getDefault()
+  .getStructTopic("PhotonCam1Pose", Pose2d.struct).publish(); 
+
+
+  public StructPublisher<Pose2d> publisher4 = NetworkTableInstance.getDefault()
+  .getStructTopic("PhotonCam2Pose", Pose2d.struct).publish(); 
+
   public final Field2d m_field = new Field2d();
   private static SUB_Drivetrain INSTANCE = null;
   /** Creates a new Drivetrain. */
@@ -73,19 +91,6 @@ public class SUB_Drivetrain extends SubsystemBase {
 
   AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
-  public void setGyroRotation(double angleDegrees) {
-    navx.setAngleAdjustment(angleDegrees);
-  }
-
-  public double getAngle() {
-    return -navx.getAngle();
-  }
-
-  public void resetHeading() {
-    navx.reset();
-  }
-
-  // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
   private double m_currentTranslationMag = 0.0;
@@ -95,18 +100,11 @@ public class SUB_Drivetrain extends SubsystemBase {
   private SlewRateLimiter m_rotLimiter =
       new SlewRateLimiter(Constants.Drivetrain.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
-  // public static SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
-  // public static SUB_Limelight limelight = SUB_Limelight.getInstance();
 
   Pose2d pose = new Pose2d();
   // Odometry class for tracking robot pose
 
-  public SwerveDrivePoseEstimator m_poseEstimator =
-      new SwerveDrivePoseEstimator(Constants.Drivetrain.kDriveKinematics,
-          Rotation2d.fromDegrees(getAngle()),
-          new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(),
-              backLeft.getPosition(), backRight.getPosition()},
-          new Pose2d(0, 0, new Rotation2d(0)));
+  public SwerveDrivePoseEstimator m_poseEstimator;
 
   public static SUB_Drivetrain getInstance() {
     if (INSTANCE == null) {
@@ -117,14 +115,13 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   private SUB_Drivetrain() {
-
-    try {
-      at_field = new AprilTagFieldLayout(
-          Filesystem.getDeployDirectory().toPath().resolve("2025_reefscape_apriltags.json"));
-      SmartDashboard.putBoolean("FILE FOUND?", true);
-    } catch (IOException e) {
-      SmartDashboard.putBoolean("FILE FOUND?", false);
-    }
+    m_poseEstimator = new SwerveDrivePoseEstimator(Constants.Drivetrain.kDriveKinematics,
+    Rotation2d.fromDegrees(getAngle()),
+    new SwerveModulePosition[] {frontLeft.getPosition(), frontRight.getPosition(),
+        backLeft.getPosition(), backRight.getPosition()},
+    new Pose2d(0, 0, new Rotation2d(0)));
+    zeroHeading();
+    
   }
 
   @Override
@@ -145,10 +142,12 @@ public class SUB_Drivetrain extends SubsystemBase {
     m_fieldRelAccel = new FieldRelativeAccel(m_fieldRelVel, m_lastFieldRelVel, 0.02);
     m_lastFieldRelVel = m_fieldRelVel;
 
+    publisher.set(m_poseEstimator.getEstimatedPosition());
     SmartDashboard.putNumberArray("Drive/PoseEstimator",
         new double[] {m_poseEstimator.getEstimatedPosition().getX(),
             m_poseEstimator.getEstimatedPosition().getY(),
             m_poseEstimator.getEstimatedPosition().getRotation().getDegrees()});
+
     SmartDashboard.putData("Drive/Field", m_field);
     SmartDashboard.putNumberArray("Odometry",
         new double[] {getPose().getX(), getPose().getY(), getPose().getRotation().getDegrees()});
@@ -164,6 +163,8 @@ public class SUB_Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("FRONT RIGHT MODULE POSITION",
         frontRight.getPosition().distanceMeters);
 
+    SmartDashboard.putNumber("NavX angle", Units.degreesToRadians(getAngle()));
+
   }
 
   /**
@@ -172,7 +173,8 @@ public class SUB_Drivetrain extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_poseEstimator.getEstimatedPosition();
+    Pose2d pose =  m_poseEstimator.getEstimatedPosition();
+    return pose;
   }
 
   /**
@@ -258,10 +260,11 @@ public class SUB_Drivetrain extends SubsystemBase {
     double ySpeedDelivered = ySpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
 
+    // Adjust the heading to be within the range of -180 to 180 degrees
     var swerveModuleStates =
         Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(getAngle()))
+                Rotation2d.fromDegrees(getHeading()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates,
         Constants.Drivetrain.kMaxSpeedMetersPerSecond);
@@ -277,6 +280,13 @@ public class SUB_Drivetrain extends SubsystemBase {
     frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     backLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     backRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+  }
+
+  public void setAngle(double angle) {
+    frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+    frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+    backLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
+    backRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
   }
 
   /**
@@ -303,7 +313,13 @@ public class SUB_Drivetrain extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    navx.reset();
+    navx.zeroYaw();
+    m_poseEstimator.resetRotation(Rotation2d.fromDegrees(navx.getAngle()));
+  }
+
+
+  public double getAngle() {
+    return -navx.getAngle();
   }
 
   /**
@@ -361,6 +377,12 @@ public class SUB_Drivetrain extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+
+    ChassisSpeeds adjustedSpeeds = new ChassisSpeeds(
+      robotRelativeSpeeds.vxMetersPerSecond,
+      robotRelativeSpeeds.vyMetersPerSecond,
+      robotRelativeSpeeds.omegaRadiansPerSecond //Unstable.
+    );
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
     SwerveModuleState[] targetStates =
@@ -384,46 +406,43 @@ public class SUB_Drivetrain extends SubsystemBase {
   public Command pidControlledHeading(Supplier<Optional<Rotation2d>> headingSupplier) {
     var subsystem = this;
     return new Command() {
-      private final PIDController headingPID =
-          new PIDController(Swerve.kDrivingP, Swerve.kDrivingI, Swerve.kDrivingD);
-      {
-        addRequirements(subsystem);
-        setName("PID Controlled Heading");
-        headingPID.enableContinuousInput(-Math.PI, Math.PI); // since gyro angle is not limited to
-                                                             // [-pi, pi]
-        headingPID.setTolerance(Swerve.headingTolerance);
-      }
-      private Rotation2d desiredHeading;
-      private boolean headingSet;
+        private final PIDController headingPID = new PIDController(Swerve.kDrivingP, Swerve.kDrivingI, Swerve.kDrivingD);
+        {
+            addRequirements(subsystem);
+            setName("PID Controlled Heading");
+            headingPID.enableContinuousInput(-Math.PI, Math.PI); // Enable continuous input
+            headingPID.setTolerance(Swerve.headingTolerance);
+        }
+        private Rotation2d desiredHeading;
+        private boolean headingSet;
 
-      @Override
-      public void initialize() {
-        desiredHeading = getPose().getRotation();
-      }
+        @Override
+        public void initialize() {
+            desiredHeading = getPose().getRotation();
+        }
 
-      @Override
-      public void execute() {
-        var heading = headingSupplier.get();
-        headingSet = heading.isPresent();
-        heading.ifPresent((r) -> desiredHeading = r);
-        double turnInput =
-            headingPID.calculate(getPose().getRotation().getRadians(), desiredHeading.getRadians());
-        turnInput = headingPID.atSetpoint() ? 0 : turnInput;
-        turnInput = MathUtil.clamp(turnInput, -0.5, +0.5);
-        driveVelocity(turnInput * Swerve.kMaxRotationalSpeed);
-      }
+        @Override
+        public void execute() {
+            var heading = headingSupplier.get();
+            headingSet = heading.isPresent();
+            heading.ifPresent((r) -> desiredHeading = r);
+            double turnInput = headingPID.calculate(getPose().getRotation().getRadians(), desiredHeading.getRadians());
+            turnInput = headingPID.atSetpoint() ? 0 : turnInput;
+            turnInput = MathUtil.clamp(turnInput, -0.5, +0.5);
+            driveVelocity(turnInput * Swerve.kMaxRotationalSpeed);
+        }
 
-      @Override
-      public void end(boolean interrupted) {
-        stop();
-      }
+        @Override
+        public void end(boolean interrupted) {
+            stop();
+        }
 
-      @Override
-      public boolean isFinished() {
-        return !headingSet && headingPID.atSetpoint();
-      }
+        @Override
+        public boolean isFinished() {
+            return !headingSet && headingPID.atSetpoint();
+        }
     };
-  }
+}
 
   public Command fieldRelative(Supplier<ChassisSpeeds> speeds) {
     var subsystem = this;
@@ -451,10 +470,6 @@ public class SUB_Drivetrain extends SubsystemBase {
       var FORR = pointTo.minus(getPose().getTranslation());
       return new Rotation2d(FORR.getX(), FORR.getY()).minus(forward.get());
     }));
-  }
-
-  public static Translation2d getFORR(Translation2d pos) {
-    return AllianceFlipUtil.apply(FieldConstants.speakerAimPoint).minus(pos);
   }
 
   /**

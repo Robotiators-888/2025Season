@@ -28,9 +28,9 @@ public class SUB_Roller extends SubsystemBase {
   private DigitalInput bannerSensor = new DigitalInput(9);
   private SparkAbsoluteEncoder absoluteEncoder = roller.getAbsoluteEncoder();
 
-  public Boolean hasCoral = false;
   public Boolean hasAlgae = false;
   private Timer timer = new Timer();
+
 
   private SUB_Roller() {
     config.voltageCompensation(12);
@@ -41,15 +41,6 @@ public class SUB_Roller extends SubsystemBase {
 
     roller.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-  }
-
-  public boolean atCurrentThresholdandTimerElapsed() {
-    return roller.getOutputCurrent() > Roller.kIntakeCurrentThreshold
-        && timer.get() > Roller.kIntakeStartingTime;
-  }
-
-  public BooleanSupplier isFreeSpinning() {
-    return () -> encoder.getVelocity() >= Roller.kFreeSpinThreshold;
   }
 
   public void timerInteract(boolean start) {
@@ -71,7 +62,6 @@ public class SUB_Roller extends SubsystemBase {
     return !bannerSensor.get();
   }
 
-
   public boolean getHasAlgae() {
     return hasAlgae;
   }
@@ -79,7 +69,7 @@ public class SUB_Roller extends SubsystemBase {
   public void setHasAlgae(boolean hasAlgae) {
     this.hasAlgae = hasAlgae;
   }
-  
+
   public SparkAbsoluteEncoder getAbsoluteEncoder() {
     return absoluteEncoder;
   }
@@ -92,8 +82,10 @@ public class SUB_Roller extends SubsystemBase {
   }
 
   public void periodic() {
+    SmartDashboard.putBoolean("Banner sensor", bannerSensor.get());
     SmartDashboard.putNumber("Roller RPM", (encoder.getVelocity() / 60));
     SmartDashboard.putNumber("Roller Current", roller.getOutputCurrent());
-    SmartDashboard.putNumber("Roller Output Voltage", roller.getBusVoltage() * roller.getAppliedOutput());
+    SmartDashboard.putNumber("Roller Output Voltage",
+        roller.getBusVoltage() * roller.getAppliedOutput());
   }
 }
