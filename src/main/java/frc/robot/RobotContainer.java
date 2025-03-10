@@ -276,7 +276,7 @@ public class RobotContainer {
 
                 Driver2.povUp().onTrue(getAlgaeSetpointCommand());
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
-                Driver2.povLeft().onTrue(getProcessorSetpointCommand());
+                // Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
                 Driver1.povLeft().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
                 Driver1.povRight().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
@@ -359,18 +359,18 @@ public class RobotContainer {
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
                                                 roller));
 
-                Driver2.leftBumper()
-                                .whileTrue(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed), roller)
-                                                .andThen(Commands.waitSeconds(1)).andThen(new InstantCommand(() -> pivot
-                                                                .changeSetpoint(PivotConstants.kElevatingSetpoint))))
-                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
+                // Driver2.leftBumper()
+                //                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed), roller)
+                //                                 .andThen(Commands.waitSeconds(1)).andThen(new InstantCommand(() -> pivot
+                //                                                 .changeSetpoint(PivotConstants.kElevatingSetpoint))))
+                //                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
 
-                // Driver2.leftBumper().whileTrue(new InstantCommand(() -> pivot
-                //                 .changeSetpoint(PivotConstants.kElevatingSetpoint)).alongWith(
-                //                                 new RunCommand(() -> roller.setRollerOutput(
-                //                                                 -Roller.kIntakeSpeed))))
-                //                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0),
-                //                                 roller));
+                Driver2.leftBumper().whileTrue(new InstantCommand(() -> pivot
+                                .changeSetpoint(PivotConstants.kElevatingSetpoint)).alongWith(
+                                                new RunCommand(() -> roller.setRollerOutput(
+                                                                -Roller.kIntakeSpeed))))
+                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0),
+                                                roller));
 
                 Driver2.leftTrigger().whileTrue(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint))
@@ -404,8 +404,8 @@ public class RobotContainer {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)),
                                 new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kProcessorSetpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kProcessorSetpoint))
+                                                .ChangeSetpoint(0.0)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
                                                 .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint))),
                                 new RunCommand(() -> elevator.runElevatorAlgaeSafe(
                                                 () -> pivot.atSetpoint(PivotConstants.kAlgaeSetpoint))));
