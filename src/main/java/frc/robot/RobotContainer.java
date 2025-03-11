@@ -104,7 +104,7 @@ public class RobotContainer {
                                 () -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
                 roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0), roller));
 
-                Driver1.povDown().whileTrue(new RunCommand(
+                Driver1.rightBumper().whileTrue(new RunCommand(
                                 () -> drivetrain.drive(-MathUtil.applyDeadband(
                                                 Math.copySign(Math.pow(Driver1.getRawAxis(1), 2),
                                                                 Driver1.getRawAxis(1)),
@@ -251,10 +251,6 @@ public class RobotContainer {
                                 () -> climber.setSpeed(-Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
-                Driver1.rightTrigger().whileTrue(
-                                new CMD_PathfindReefAlign(drivetrain, photonVision, true));
-                Driver1.rightBumper().whileTrue(
-                                new CMD_PathfindReefAlign(drivetrain, photonVision, false));
                 Driver1.y().onTrue(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)));
                 Driver1.b().onTrue(new InstantCommand(
@@ -276,7 +272,7 @@ public class RobotContainer {
 
                 Driver2.povUp().onTrue(getAlgaeSetpointCommand());
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
-                // Driver2.povLeft().onTrue(getProcessorSetpointCommand());
+                Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
                 Driver1.povLeft().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
                 Driver1.povRight().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
@@ -373,7 +369,7 @@ public class RobotContainer {
                                                 roller));
 
                 Driver2.leftTrigger().whileTrue(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint))
+                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))
                                 .alongWith(new RunCommand(
                                                 () -> roller.setRollerOutput(0.95),
                                                 roller)))
@@ -402,15 +398,28 @@ public class RobotContainer {
 
         public Command getProcessorSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)),
+                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
                                 new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(0.0)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint))),
-                                new RunCommand(() -> elevator.runElevatorAlgaeSafe(
-                                                () -> pivot.atSetpoint(PivotConstants.kAlgaeSetpoint))));
+                                                .ChangeSetpoint(Elevator.kProcessorSetpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kProcessorSetpoint))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
+                                new RunCommand(() -> elevator.runElevatorAlgae(
+                                                () -> pivot.atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
                 c.addRequirements(elevator);
                 return c;
+        }
+
+        public Command getBargeSetpointCommand() {
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
+                        () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
+                        new InstantCommand(() -> elevator
+                                        .ChangeSetpoint(Elevator.kL4Setpoint)),
+                        Commands.waitUntil(() -> elevator.atSetpoint(0.0))
+                                        .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
+                        new RunCommand(() -> elevator.runElevatorAlgae(
+                                        () -> pivot.atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
+        c.addRequirements(elevator);
+        return c;   
         }
 
         public Command getL4SetpointCommand() {
