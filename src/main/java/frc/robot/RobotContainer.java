@@ -5,14 +5,19 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import org.json.simple.parser.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
@@ -26,6 +31,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -72,6 +78,9 @@ public class RobotContainer {
         public static SUB_Climber climber = SUB_Climber.getInstance();
         public static SUB_LEDs leds = SUB_LEDs.getInstance();
         public static PowerDistribution powerDistribution = new PowerDistribution();
+        private static String autoName = null;
+        private static String newAutoName = null;
+        public static Field2d autoField = new Field2d();
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
         private final CommandXboxController Driver1 = new CommandXboxController(Operator.kDriver1ControllerPort);
@@ -223,7 +232,7 @@ public class RobotContainer {
 
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Chooser", autoChooser);
-
+                SmartDashboard.putData("Active Auto Path", autoField);
         }
 
         /**
@@ -360,10 +369,11 @@ public class RobotContainer {
                                                 roller));
 
                 // Driver2.leftBumper()
-                //                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed), roller)
-                //                                 .andThen(Commands.waitSeconds(1)).andThen(new InstantCommand(() -> pivot
-                //                                                 .changeSetpoint(PivotConstants.kElevatingSetpoint))))
-                //                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
+                // .whileTrue(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed),
+                // roller)
+                // .andThen(Commands.waitSeconds(1)).andThen(new InstantCommand(() -> pivot
+                // .changeSetpoint(PivotConstants.kElevatingSetpoint))))
+                // .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
 
                 Driver2.leftBumper().whileTrue(new InstantCommand(() -> pivot
                                 .changeSetpoint(PivotConstants.kElevatingSetpoint)).alongWith(
@@ -591,6 +601,8 @@ public class RobotContainer {
 
         public void robotPeriodic() {
                 photonPoseUpdate();
+                SmartDashboard.putNumber("Battery Voltage", powerDistribution.getVoltage());
+                SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         }
 
         public void autonomousInit() {
@@ -618,6 +630,36 @@ public class RobotContainer {
                 // SmartDashboard.putNumber("Raw Y Speed",
                 // -MathUtil.applyDeadband(Driver1.getRawAxis(0),
                 // Operator.kDriveDeadband));
+        }
+
+        public void disabledPeriodic() {
+                newAutoName = getAutonomousCommand().getName();
+                if (autoName != newAutoName) {
+                        autoName = newAutoName;
+                        if (AutoBuilder.getAllAutoNames().contains(autoName)) {
+                                System.out.println("Displaying " + autoName);
+                                try {
+                                        List<PathPlannerPath> pathPlannerPaths = PathPlannerAuto
+                                                        .getPathGroupFromAutoFile(autoName);
+                                        List<Pose2d> poses = new ArrayList<>();
+                                        for (PathPlannerPath path : pathPlannerPaths) {
+                                                poses.addAll(path.getAllPathPoints().stream()
+                                                                .map(point -> new Pose2d(point.position.getX(),
+                                                                                point.position.getY(),
+                                                                                new Rotation2d()))
+                                                                .collect(Collectors.toList()));
+                                        }
+                                        autoField.getObject("path").setPoses(poses);
+                                } catch (IOException e) {
+                                        e.printStackTrace();
+                                        return;
+                                } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        return;
+                                }
+                        }
+                }
+                autoField.setRobotPose(drivetrain.getPose());
         }
 
         public static void photonPoseUpdate() {
