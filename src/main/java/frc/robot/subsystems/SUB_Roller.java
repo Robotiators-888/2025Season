@@ -61,6 +61,7 @@ public class SUB_Roller extends SubsystemBase {
     return !bannerSensor.get();
   }
 
+
   public boolean getHasAlgae() {
     return hasAlgae;
   }
@@ -82,6 +83,7 @@ public class SUB_Roller extends SubsystemBase {
 
   public void periodic() {
     SmartDashboard.putBoolean("Banner sensor", bannerSensor.get());
+    SmartDashboard.putBoolean("Has Coral", getHasCoral());
     SmartDashboard.putNumber("Roller RPM", (encoder.getVelocity() / 60));
     SmartDashboard.putNumber("Roller Current", roller.getOutputCurrent());
     SmartDashboard.putNumber("Roller Output Voltage",
