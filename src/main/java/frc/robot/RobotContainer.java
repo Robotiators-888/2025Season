@@ -8,11 +8,19 @@ package frc.robot;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.io.IOException;
+import org.json.simple.parser.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
@@ -26,6 +34,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -48,6 +58,7 @@ import frc.robot.Constants.LEDs;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.utils.AutoGenerator;
+import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
@@ -72,6 +83,10 @@ public class RobotContainer {
         public static SUB_Climber climber = SUB_Climber.getInstance();
         public static SUB_LEDs leds = SUB_LEDs.getInstance();
         public static PowerDistribution powerDistribution = new PowerDistribution();
+        private static String autoName, newAutoName; 
+                Optional<Alliance> lastAlliance;
+                Optional<Alliance> alliance;
+        public static Field2d autoField = new Field2d();
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
         private final CommandXboxController Driver1 = new CommandXboxController(Operator.kDriver1ControllerPort);
@@ -600,9 +615,12 @@ public class RobotContainer {
 
         public void robotPeriodic() {
                 photonPoseUpdate();
+                SmartDashboard.putNumber("Battery Voltage", powerDistribution.getVoltage());
+                SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
         }
 
         public void autonomousInit() {
+                Elastic.selectTab("Autonomous");
                 leds.set(LEDs.kParty_Palette_Twinkles);
         }
 
@@ -612,6 +630,7 @@ public class RobotContainer {
 
         public void teleopInit() {
                 leds.setAllianceColor();
+                Elastic.selectTab("Teleoperated");
         }
 
         public void teleopPeriodic() {
@@ -627,6 +646,47 @@ public class RobotContainer {
                 // SmartDashboard.putNumber("Raw Y Speed",
                 // -MathUtil.applyDeadband(Driver1.getRawAxis(0),
                 // Operator.kDriveDeadband));
+        }
+
+        public void disabledPeriodic() {
+                newAutoName = getAutonomousCommand().getName();
+                alliance = DriverStation.getAlliance();
+                if (autoName != newAutoName || alliance != lastAlliance) {
+                        autoName = newAutoName;
+                        lastAlliance = alliance;
+                        if (AutoBuilder.getAllAutoNames().contains(autoName)) {
+                                try {
+                                        List<PathPlannerPath> pathPlannerPaths = PathPlannerAuto
+                                                        .getPathGroupFromAutoFile(autoName);
+                                        List<Pose2d> poses = new ArrayList<>();
+                                        for (PathPlannerPath path : pathPlannerPaths) {
+                                                
+                                                if(DriverStation.getAlliance().equals(Optional.of(Alliance.Red))){
+                                                        poses.addAll(path.getAllPathPoints().stream()
+                                                                .map(point -> new Pose2d(Field.fieldLength - point.position.getX(),
+                                                                                Field.fieldWidth - point.position.getY(),
+                                                                                new Rotation2d()))
+                                                                .collect(Collectors.toList()));
+                                                }
+                                                else{
+                                                        poses.addAll(path.getAllPathPoints().stream()
+                                                                .map(point -> new Pose2d(point.position.getX(),
+                                                                                point.position.getY(),
+                                                                                new Rotation2d()))
+                                                                .collect(Collectors.toList()));
+                                                }
+                                        }
+                                        autoField.getObject("path").setPoses(poses);
+                                } catch (IOException e) {
+                                        e.printStackTrace();
+                                        return;
+                                } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        return;
+                                }
+                        }
+                }
+                autoField.setRobotPose(drivetrain.getPose());
         }
 
         public static void photonPoseUpdate() {
