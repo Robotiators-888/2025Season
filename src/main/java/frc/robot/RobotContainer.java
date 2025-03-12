@@ -238,6 +238,7 @@ public class RobotContainer {
 
                 autoChooser = AutoBuilder.buildAutoChooser();
                 SmartDashboard.putData("Auto Chooser", autoChooser);
+                SmartDashboard.putData("Active Auto Path", autoField);
 
         }
 
@@ -267,13 +268,9 @@ public class RobotContainer {
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
                 Driver1.y().onTrue(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)));
-                Driver1.b().onTrue(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
-                Driver1.x().onTrue(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
                 Driver1.a().onTrue(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kCoralSetpoint)));
+                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
 
                 // Driver 2
 
@@ -289,8 +286,8 @@ public class RobotContainer {
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
-                Driver1.povLeft().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, true));
-                Driver1.povRight().whileTrue(new CMD_ReefAlign(drivetrain, photonVision, false));
+                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
+                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
 
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
@@ -711,7 +708,7 @@ public class RobotContainer {
                                                 .getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = distance / 16.0;
+                                double xStddev = distance / 10.0;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher3.set(photonPose.toPose2d());
