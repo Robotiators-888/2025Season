@@ -83,9 +83,9 @@ public class RobotContainer {
         public static SUB_Climber climber = SUB_Climber.getInstance();
         public static SUB_LEDs leds = SUB_LEDs.getInstance();
         public static PowerDistribution powerDistribution = new PowerDistribution();
-        private static String autoName, newAutoName; 
-                Optional<Alliance> lastAlliance;
-                Optional<Alliance> alliance;
+        private static String autoName, newAutoName;
+        Optional<Alliance> lastAlliance;
+        Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -371,10 +371,11 @@ public class RobotContainer {
                                                 roller));
 
                 // Driver2.leftBumper()
-                //                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed), roller)
-                //                                 .andThen(Commands.waitSeconds(1)).andThen(new InstantCommand(() -> pivot
-                //                                                 .changeSetpoint(PivotConstants.kElevatingSetpoint))))
-                //                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
+                // .whileTrue(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed),
+                // roller)
+                // .andThen(Commands.waitSeconds(1)).andThen(new InstantCommand(() -> pivot
+                // .changeSetpoint(PivotConstants.kElevatingSetpoint))))
+                // .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
 
                 Driver2.leftBumper().whileTrue(new InstantCommand(() -> pivot
                                 .changeSetpoint(PivotConstants.kElevatingSetpoint)).alongWith(
@@ -417,7 +418,8 @@ public class RobotContainer {
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kProcessorSetpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kProcessorSetpoint))
-                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
+                                                .andThen(() -> pivot
+                                                                .changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
                                 new RunCommand(() -> elevator.runElevatorAlgae(
                                                 () -> pivot.atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
                 c.addRequirements(elevator);
@@ -426,15 +428,16 @@ public class RobotContainer {
 
         public Command getBargeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
-                        () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
-                        new InstantCommand(() -> elevator
-                                        .ChangeSetpoint(Elevator.kL4Setpoint)),
-                        Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-                                        .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
-                        new RunCommand(() -> elevator.runElevatorAlgae(
-                                        () -> pivot.atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
-        c.addRequirements(elevator);
-        return c;   
+                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
+                                                .andThen(() -> pivot
+                                                                .changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
+                                new RunCommand(() -> elevator.runElevatorAlgae(
+                                                () -> pivot.atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
+                c.addRequirements(elevator);
+                return c;
         }
 
         public Command getL4SetpointCommand() {
@@ -660,20 +663,21 @@ public class RobotContainer {
                                                         .getPathGroupFromAutoFile(autoName);
                                         List<Pose2d> poses = new ArrayList<>();
                                         for (PathPlannerPath path : pathPlannerPaths) {
-                                                
-                                                if(DriverStation.getAlliance().equals(Optional.of(Alliance.Red))){
+
+                                                if (DriverStation.getAlliance().equals(Optional.of(Alliance.Red))) {
                                                         poses.addAll(path.getAllPathPoints().stream()
-                                                                .map(point -> new Pose2d(Field.fieldLength - point.position.getX(),
-                                                                                Field.fieldWidth - point.position.getY(),
-                                                                                new Rotation2d()))
-                                                                .collect(Collectors.toList()));
-                                                }
-                                                else{
+                                                                        .map(point -> new Pose2d(Field.fieldLength
+                                                                                        - point.position.getX(),
+                                                                                        Field.fieldWidth - point.position
+                                                                                                        .getY(),
+                                                                                        new Rotation2d()))
+                                                                        .collect(Collectors.toList()));
+                                                } else {
                                                         poses.addAll(path.getAllPathPoints().stream()
-                                                                .map(point -> new Pose2d(point.position.getX(),
-                                                                                point.position.getY(),
-                                                                                new Rotation2d()))
-                                                                .collect(Collectors.toList()));
+                                                                        .map(point -> new Pose2d(point.position.getX(),
+                                                                                        point.position.getY(),
+                                                                                        new Rotation2d()))
+                                                                        .collect(Collectors.toList()));
                                                 }
                                         }
                                         autoField.getObject("path").setPoses(poses);
@@ -721,34 +725,34 @@ public class RobotContainer {
 
                 // TODO: Fix this commented out portion
 
-                // photonPoseOptional = photonVision.getCam2Pose();
+                photonPoseOptional = photonVision.getCam2Pose();
 
-                // if (photonPoseOptional.isPresent()) {
-                // Pose3d photonPose = photonPoseOptional.get().estimatedPose;
+                if (photonPoseOptional.isPresent()) {
+                        Pose3d photonPose = photonPoseOptional.get().estimatedPose;
 
-                // if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
-                // && photonPose.getY() >= 0
-                // && photonPose.getY() <= Field.fieldWidth
-                // && photonVision.getCam2BestTarget() != null) {
+                        if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
+                                        && photonPose.getY() >= 0
+                                        && photonPose.getY() <= Field.fieldWidth
+                                        && photonVision.getCam2BestTarget() != null) {
 
-                // Pose2d closestTag = photonVision.at_field.getTagPose(
-                // photonVision.getCam2BestTarget().getFiducialId())
-                // .get().toPose2d();
-                // Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                // .getTranslation();
+                                Pose2d closestTag = photonVision.at_field.getTagPose(
+                                                photonVision.getCam2BestTarget().getFiducialId())
+                                                .get().toPose2d();
+                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
+                                                .getTranslation();
 
-                // double distance = translate.getNorm();
-                // double xStddev = distance / 16.0;
-                // double yStddev = xStddev;
-                // double rotStddev = Units.degreesToRadians(120.0);
-                // drivetrain.publisher4.set(photonPose.toPose2d());
-                // drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                // VecBuilder.fill(xStddev, yStddev, rotStddev));
-                // drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                // photonPoseOptional.get().timestampSeconds);
+                                double distance = translate.getNorm();
+                                double xStddev = distance / 16.0;
+                                double yStddev = xStddev;
+                                double rotStddev = Units.degreesToRadians(120.0);
+                                drivetrain.publisher4.set(photonPose.toPose2d());
+                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
+                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
+                                                photonPoseOptional.get().timestampSeconds);
 
-                // drivetrain.publisher4.set(photonPose.toPose2d());
-                // }
-                // }
+                                drivetrain.publisher4.set(photonPose.toPose2d());
+                        }
+                }
         }
 }
