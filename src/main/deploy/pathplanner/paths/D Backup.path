@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.9585000000000004,
+        "y": 2.815999999999999
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.824077331091512,
+        "y": 2.5829888268029078
+      },
+      "isLocked": false,
+      "linkedName": "D Score"
+    },
+    {
+      "anchor": {
+        "x": 3.79275,
+        "y": 2.5625
+      },
+      "prevControl": {
+        "x": 3.919248165431774,
+        "y": 2.778134445630552
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "D Backup"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.2,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 57.99499999999999
+  },
+  "reversed": false,
+  "folder": "Reef Backup Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 57.99499999999999
+  },
+  "useDefaultConstraints": true
+}
