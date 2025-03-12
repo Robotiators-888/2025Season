@@ -51,6 +51,18 @@ public class SUB_Elevator extends SubsystemBase {
     primaryencoder.setPosition(0);
   }
 
+  public double getActiveSetpoint(){
+    return activesetpoint;
+  }
+  public RelativeEncoder getPrimaryEncoder(){
+    return primaryencoder;
+  }
+  
+  public SparkMax getPrimary(){
+    return primary;
+  }
+
+
   public void runElevator(Supplier<Boolean> pivotSafe) {
     if (getCurrentPosition() >= Elevator.kResetHomingThreshold) {
       SmartDashboard.putBoolean("EMERGENCY HOMED!!!", false);
@@ -133,14 +145,15 @@ public class SUB_Elevator extends SubsystemBase {
     runElevatorManualVoltage(0);
   }
 
-  public void runElevatorAlgaeSafe(Supplier<Boolean> pivotSafe) {
+  public void runElevatorAlgae(Supplier<Boolean> pivotSafe) {
     if (getCurrentPosition() >= Elevator.kResetHomingThreshold) {
       SmartDashboard.putBoolean("EMERGENCY HOMED!!!", false);
       SmartDashboard.putBoolean("Homed", false);
     }
     SmartDashboard.putNumber("Elevator Output Voltage", primary.getAppliedOutput() * primary.getBusVoltage());
     SmartDashboard.putNumber("EncoderPos", primaryencoder.getPosition());
-    if (!pivotSafe.get() || this.atSetpoint() || primaryencoder.getPosition() > Elevator.kL3Setpoint){
+    if (!pivotSafe.get() && !this.atSetpoint()){
+      SmartDashboard.putBoolean("Elevator is Safe", false);
       if (roller.getHasCoral()) {
         runElevatorManualVoltage(Elevator.kCoralHoldingVoltage);
         return;
@@ -213,6 +226,8 @@ public class SUB_Elevator extends SubsystemBase {
     }
     runElevatorManualVoltage(0);
   }
+
+
 
   public boolean atSetpoint(double setpoint) {
     return Math.abs(primaryencoder.getPosition() - setpoint) < Elevator.kTolerance;

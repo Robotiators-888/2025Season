@@ -219,6 +219,9 @@ public final class Constants {
                                 new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now,
                                                                    // change later
 
+                public static final double kAlgaeSafeSetpoint = 176;
+                public static final double kAlgaeScoringSetpoint = 132;
+
                 public static final double kIntakeSetpoint = 326;
                 public static final double kElevatingSetpoint = 280;
                 public static final double kCoralSetpoint = 300;
@@ -229,7 +232,6 @@ public final class Constants {
                 public static final double kL2Setpoint = 300;
                 public static final double kL3Setpoint = 290;
                 public static final double kL4Setpoint = 273;
-
 
                 public static final double kUpperBoundStuckPoint = 340.0;
                 public static final double kLowerBoundStuckPoint = 327.0;
@@ -272,7 +274,7 @@ public final class Constants {
                 public static final double kL3Setpoint = 0.45;
                 public static final double kL4Setpoint = 0.80;
                 public static final double kAlgaeSetpoint = 0.508;
-                public static final double kProcessorSetpoint = 0.15;
+                public static final double kProcessorSetpoint = 0.104;
         }
 
         public static class Roller {

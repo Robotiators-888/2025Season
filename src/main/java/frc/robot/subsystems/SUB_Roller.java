@@ -61,7 +61,6 @@ public class SUB_Roller extends SubsystemBase {
     return !bannerSensor.get();
   }
 
-
   public boolean getHasAlgae() {
     return hasAlgae;
   }
