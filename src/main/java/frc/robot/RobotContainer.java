@@ -55,6 +55,7 @@ import frc.robot.Constants.LEDs;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.utils.AutoGenerator;
+import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 
@@ -608,6 +609,7 @@ public class RobotContainer {
         }
 
         public void autonomousInit() {
+                Elastic.selectTab("Autonomous");
                 leds.set(LEDs.kParty_Palette_Twinkles);
         }
 
@@ -617,6 +619,7 @@ public class RobotContainer {
 
         public void teleopInit() {
                 leds.setAllianceColor();
+                Elastic.selectTab("Teleoperated");
         }
 
         public void teleopPeriodic() {
