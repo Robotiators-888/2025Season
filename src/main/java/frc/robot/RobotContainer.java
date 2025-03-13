@@ -200,8 +200,6 @@ public class RobotContainer {
                                 new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed),
                                         roller)));
 
-
-
         NamedCommands.registerCommand("ReachedTarget", new InstantCommand(
 
                 () -> autoGenerator.setreachedtarget(true)));

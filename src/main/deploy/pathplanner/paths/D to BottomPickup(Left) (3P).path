@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.214309210526316,
-        "y": 2.533634868421052
+        "x": 3.4436769397540936,
+        "y": 2.5491039291529627
       },
       "isLocked": false,
       "linkedName": "D Score"
@@ -20,8 +20,8 @@
         "y": 1.389650974025974
       },
       "prevControl": {
-        "x": 0.39896202396010677,
-        "y": 1.3498857712180568
+        "x": 1.0995036222531112,
+        "y": 1.5939953434948955
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,7 +29,21 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.24866310160427874,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 1.25,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 180.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
