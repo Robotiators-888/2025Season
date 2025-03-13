@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.20475,
-        "y": 8.5375
+        "x": 3.79275,
+        "y": 2.5625
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.204749999999997,
-        "y": 8.5375
+        "x": 4.3184172542170085,
+        "y": 2.7404840196271034
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "D Backup"
     },
     {
       "anchor": {
-        "x": 0.78,
-        "y": 8.158999999999999
+        "x": 0.6457792207792207,
+        "y": 1.389650974025974
       },
       "prevControl": {
-        "x": -0.21999999999999997,
-        "y": 8.158999999999999
+        "x": 0.39896202396010677,
+        "y": 1.3498857712180568
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Bottom Pickup(Left)"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 2.2,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 53.426969021480694
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Score to Pickup",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 57.99499999999999
   },
   "useDefaultConstraints": true
 }

@@ -617,6 +617,7 @@ public class RobotContainer {
                 photonPoseUpdate();
                 SmartDashboard.putNumber("Battery Voltage", powerDistribution.getVoltage());
                 SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+                autoField.setRobotPose(drivetrain.getPose());
         }
 
         public void autonomousInit() {
@@ -687,7 +688,6 @@ public class RobotContainer {
                                 }
                         }
                 }
-                autoField.setRobotPose(drivetrain.getPose());
         }
 
         public static void photonPoseUpdate() {
@@ -739,7 +739,7 @@ public class RobotContainer {
                                                 .getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = distance / 16.0;
+                                double xStddev = distance / 10.0;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher4.set(photonPose.toPose2d());
