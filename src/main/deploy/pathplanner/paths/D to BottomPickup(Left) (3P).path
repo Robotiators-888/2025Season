@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.79275,
-        "y": 2.5625
+        "x": 3.9585000000000004,
+        "y": 2.815999999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3184172542170085,
-        "y": 2.7404840196271034
+        "x": 4.214309210526316,
+        "y": 2.533634868421052
       },
       "isLocked": false,
-      "linkedName": "D Backup"
+      "linkedName": "D Score"
     },
     {
       "anchor": {
@@ -31,7 +31,41 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "stow",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stow"
+        }
+      }
+    },
+    {
+      "name": "ResetReachedTarget",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetReachedTarget"
+        }
+      }
+    },
+    {
+      "name": "runRoller",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 0.10026737967914445,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runRoller"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.5,
@@ -45,7 +79,7 @@
     "rotation": 53.426969021480694
   },
   "reversed": false,
-  "folder": "Score to Pickup",
+  "folder": "3 Piece (Lower) Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 57.99499999999999

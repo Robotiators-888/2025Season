@@ -17,6 +17,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class AutoGenerator extends SubsystemBase {
     public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
     private static AutoGenerator INSTANCE = null;
+    public static boolean reachedAutoTarget;
     public AutoGenerator() {
         RobotConfig config;
         try {
@@ -51,4 +52,11 @@ public class AutoGenerator extends SubsystemBase {
     
         return INSTANCE;
       }
+      public void setreachedtarget(boolean value){
+        reachedAutoTarget = value;
+    }
+
+    public boolean getreachedtarget(){
+        return reachedAutoTarget;
+    }
 }

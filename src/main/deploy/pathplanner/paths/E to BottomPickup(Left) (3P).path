@@ -1,0 +1,104 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.02125,
+        "y": 2.80625
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.195723684208303,
+        "y": 2.1776315789490615
+      },
+      "isLocked": false,
+      "linkedName": "E ReefScore"
+    },
+    {
+      "anchor": {
+        "x": 4.195065789471461,
+        "y": 2.1776315789490615
+      },
+      "prevControl": {
+        "x": 4.533016773515079,
+        "y": 2.290960803142442
+      },
+      "nextControl": {
+        "x": 3.589657958706967,
+        "y": 1.974612789181956
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.6457792207792207,
+        "y": 1.389650974025974
+      },
+      "prevControl": {
+        "x": 1.523055642651559,
+        "y": 1.7235402093598746
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Bottom Pickup(Left)"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "stow",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stow"
+        }
+      }
+    },
+    {
+      "name": "runRoller",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 0.09893048128342243,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runRoller"
+        }
+      }
+    },
+    {
+      "name": "ResetReachedTarget",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetReachedTarget"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
+    "maxAngularVelocity": 180.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 53.426969021480694
+  },
+  "reversed": false,
+  "folder": "3 Piece (Lower) Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 122.00538320808354
+  },
+  "useDefaultConstraints": true
+}
