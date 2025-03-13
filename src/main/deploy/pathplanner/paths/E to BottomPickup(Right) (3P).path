@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6457792207792207,
-        "y": 1.389650974025974
+        "x": 5.02125,
+        "y": 2.80625
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3909081147893005,
-        "y": 1.7599934447662557
+        "x": 3.4019197993191455,
+        "y": 1.6820006718581353
       },
       "isLocked": false,
-      "linkedName": "Bottom Pickup(Left)"
+      "linkedName": "E ReefScore"
     },
     {
       "anchor": {
-        "x": 3.9585000000000004,
-        "y": 2.815999999999999
+        "x": 1.635690789473684,
+        "y": 0.628536184210526
       },
       "prevControl": {
-        "x": 2.7567524102084393,
-        "y": 2.256635707183998
+        "x": 2.444000390137509,
+        "y": 1.3081490762462868
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "D Score"
+      "linkedName": "Bottom Pickup(Right)"
     }
   ],
   "rotationTargets": [],
@@ -33,15 +33,32 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ReachedTarget",
-      "waypointRelativePos": 0.8027999999999965,
+      "name": "stow",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "ReachedTarget"
+          "name": "stow"
         }
       }
+    },
+    {
+      "name": "ResetReachedTarget",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetReachedTarget"
+        }
+      }
+    },
+    {
+      "name": "runRoller",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.050799999999999484,
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -54,13 +71,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.99499999999999
+    "rotation": 53.426969021480694
   },
   "reversed": false,
   "folder": "3 Piece (Lower) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 53.426969021480694
+    "rotation": 122.00538320808354
   },
   "useDefaultConstraints": true
 }

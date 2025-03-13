@@ -5,59 +5,34 @@
     "data": {
       "commands": [
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Cage 5 to E (WithStart)"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "scoreL4(conditional)"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Cage 5 to E"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL4"
+            "pathName": "E to BottomPickup(Right) (3P)"
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stow"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "E Backup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "E Backup to BottomPickup(Right)"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -65,35 +40,16 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 0.1
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Right) to D"
+                        "pathName": "BottomPickup(Right) to D (3P)"
                       }
                     }
                   ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL4"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stow"
                 }
               },
               {
@@ -101,15 +57,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "D Backup"
+                        "name": "intake"
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "D Backup to BottomPickup(Right)"
+                        "name": "scoreL4(conditional)"
                       }
                     }
                   ]
@@ -119,15 +75,15 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "D to BottomPickup(Right) (3P)"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -135,25 +91,38 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 0.1
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Right) to C"
+                        "pathName": "BottomPickup(Right) to C (3P)"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "scoreL4(conditional)"
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL4"
           }
         },
         {
@@ -167,22 +136,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C Backup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "C Backup to BottomPickup(Right)"
-                      }
-                    }
-                  ]
+                  "pathName": "C Backup"
                 }
               }
             ]
