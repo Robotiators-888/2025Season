@@ -226,7 +226,7 @@ public final class Constants {
                 public static final double kAlgaeSafeSetpoint = 176;
                 public static final double kAlgaeScoringSetpoint = 132;
 
-                public static final double kIntakeSetpoint = 323;
+                public static final double kIntakeSetpoint = 326;
                 public static final double kElevatingSetpoint = 280;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 176;
