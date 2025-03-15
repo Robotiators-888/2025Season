@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "",
+      "name": "ReachedTarget",
       "waypointRelativePos": 0.79679144385027,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": null
+          "name": "ReachedTarget"
         }
       }
     }

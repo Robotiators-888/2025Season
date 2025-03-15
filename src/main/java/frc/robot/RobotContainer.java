@@ -745,7 +745,7 @@ public class RobotContainer {
                                 Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = distance / 10.0;
+                                double xStddev = Math.pow(distance, 2) / 8.0088;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher3.set(photonPose.toPose2d());
@@ -775,7 +775,7 @@ public class RobotContainer {
                                 Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = distance / 10.0;
+                                double xStddev = Math.pow(distance, 2)/ 8.0088;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher4.set(photonPose.toPose2d());
