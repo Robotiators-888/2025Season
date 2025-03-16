@@ -251,7 +251,8 @@ public class RobotContainer {
                                                 () -> roller.setRollerOutput(Roller.kIntakeSpeed), roller)
                                                 .until(() -> roller.getHasCoral())
                                                 .andThen(new InstantCommand(
-                                                                () -> roller.setRollerOutput(0)))));
+                                                                () -> roller.setRollerOutput(0)))))
+                                                                ;
 
                 NamedCommands.registerCommand("stow", new SequentialCommandGroup(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),

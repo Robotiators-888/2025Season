@@ -226,14 +226,14 @@ public final class Constants {
                 public static final double kAlgaeSafeSetpoint = 176;
                 public static final double kAlgaeScoringSetpoint = 132;
 
-                public static final double kIntakeSetpoint = 326;
-                public static final double kElevatingSetpoint = 280;
+                public static final double kIntakeSetpoint = 323;
+                public static final double kElevatingSetpoint = 288;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 176;
                 public static final double toleranceDegrees = 8.5;
 
                 public static final double kL1Setpoint = 300;
-                public static final double kL2Setpoint = 300;
+                public static final double kL2Setpoint = 294;
                 public static final double kL3Setpoint = 290;
                 public static final double kL4Setpoint = 273;
 
@@ -274,8 +274,8 @@ public final class Constants {
 
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
-                public static final double kL2Setpoint = 0.24;
-                public static final double kL3Setpoint = 0.45;
+                public static final double kL2Setpoint = 0.252;
+                public static final double kL3Setpoint = 0.42;
                 public static final double kL4Setpoint = 0.80;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
@@ -287,9 +287,9 @@ public final class Constants {
                 public static final int kRollerCurrentLimit = 60;
 
                 public static final double kIntakeSpeed = 0.2; // Percent
-                public static final double kIntakeFinishSpeed = -0.1; // Percent
+                public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds
-                public static final double kIntakeFinishTime = 0.06; // Seconds
+                public static final double kIntakeFinishTime = 0.12; // Seconds
 
                 public static final double kEjectSpeed = 0.8; // Percent
                 public static final double kFreeSpinThreshold = 420; // RPM

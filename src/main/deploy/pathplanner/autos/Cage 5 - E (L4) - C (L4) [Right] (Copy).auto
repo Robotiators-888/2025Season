@@ -24,32 +24,13 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "E to BottomPickup(Right) (3P)"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.3
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "BottomPickup(Right) to D (3P)"
-                      }
-                    }
-                  ]
+                  "name": "stow"
                 }
               },
               {
@@ -57,66 +38,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "path",
                       "data": {
-                        "name": "intake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "scoreL4(conditional)"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "D to BottomPickup(Right) (3P)"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.3
+                        "pathName": "E Backup"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Right) to C (3P)"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "scoreL4(conditional)"
+                        "pathName": "E Backup to BottomPickup(Right)"
                       }
                     }
                   ]
@@ -132,13 +62,83 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "BottomPickup(Right) to C"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "scoreL4"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
                   "name": "stow"
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "C Backup"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C Backup"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "C Backup to BottomPickup(Right)"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "intake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": []
                 }
               }
             ]
@@ -148,6 +148,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Cage 5 (3P)",
+  "folder": "Cage 5 (2P)",
   "choreoAuto": false
 }
