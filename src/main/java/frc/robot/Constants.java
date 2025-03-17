@@ -291,7 +291,7 @@ public final class Constants {
                 public static final double kIntakeStartingTime = 1.25; // Seconds
                 public static final double kIntakeFinishTime = 0.12; // Seconds
 
-                public static final double kEjectSpeed = 0.8; // Percent
+                public static final double kEjectSpeed = 0.7; // Percent
                 public static final double kFreeSpinThreshold = 420; // RPM
         }
         public static class Climber {
