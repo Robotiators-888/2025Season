@@ -43,6 +43,9 @@ public class SUB_PhotonVision extends SubsystemBase {
   private SUB_PhotonVision() {
     at_field =  AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); // TODO: Change for diff events
 
+    cam1.setPipelineIndex(0);
+    cam2.setPipelineIndex(0);
+
     poseEstimator1 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         PhotonVision.kRobotToCamera1);
     poseEstimator2 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
@@ -53,14 +56,18 @@ public class SUB_PhotonVision extends SubsystemBase {
 
   public Optional<EstimatedRobotPose> getCam1Pose() {
     List<PhotonPipelineResult> results1 = cam1.getAllUnreadResults();
+  
     Optional<EstimatedRobotPose> finalPose1 = Optional.empty();
     for (PhotonPipelineResult result : results1) {
+
+
       if (result.hasTargets()) {
         cam1BestTarget = result.getBestTarget();
         finalPose1 = poseEstimator1.update(result);
       }
     }
     return finalPose1;
+
   }
 
   public Optional<EstimatedRobotPose> getCam2Pose() {

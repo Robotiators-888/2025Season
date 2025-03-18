@@ -189,21 +189,25 @@ public final class Constants {
                 public static final double fieldWidth = 805.0 / 100.0;
         }
 
-        public static final class PhotonVision {// Unstable
-                public static final String kCam1Name = "AprilTagCam";
+        public static final class PhotonVision {
+
+                public static final String kCam1Name = "AprilTagCam1";
                 public static final Rotation3d cameraRotation = new Rotation3d(
-                                Units.degreesToRadians(180), Units.degreesToRadians(0),
+                                Units.degreesToRadians(0), Units.degreesToRadians(0),
                                 Units.degreesToRadians(-25));
                 public static final Transform3d kRobotToCamera1 = new Transform3d(
-                                Units.inchesToMeters(15.25 - 8), Units.inchesToMeters(13.5 - 1.5),
+                                Units.inchesToMeters(15.25 - 7.625), Units.inchesToMeters(13.5 - 2.75),
                                 Units.inchesToMeters(11), cameraRotation);
+
                 public static final String kCam2Name = "AprilTagCam2"; // TODO: Change to the correct name(AprilTagCam) and Transform3d and Rotation3d (Make sure to use this Transform3d and Rotation3d for the other camera)
                 public static final Rotation3d cameraRotation2 = new Rotation3d(
                                 Units.degreesToRadians(0), Units.degreesToRadians(0),
                                 Units.degreesToRadians(25)); // CCW positive yaw with it circling around the z axis, zero is straight forward
                 public static final Transform3d kRobotToCamera2 = new Transform3d(
                                 Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(-13.5+2.75), // X is forward and the camera is in front of the center of the robot, Y positive is left and the camera is on the right of the robot, Z is up from the ground and it is above the ground
-                                Units.inchesToMeters(11), cameraRotation);
+                                Units.inchesToMeters(11), cameraRotation2);
+
+
                 public static final String kCam3Name = "AprilTagHighCam";
                 public static final Rotation3d cameraRotation3 = new Rotation3d(0,
                                  Units.degreesToRadians(0), Units.degreesToRadians(8));
@@ -222,14 +226,14 @@ public final class Constants {
                 public static final double kAlgaeSafeSetpoint = 176;
                 public static final double kAlgaeScoringSetpoint = 132;
 
-                public static final double kIntakeSetpoint = 326;
-                public static final double kElevatingSetpoint = 280;
+                public static final double kIntakeSetpoint = 323;
+                public static final double kElevatingSetpoint = 288;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 176;
                 public static final double toleranceDegrees = 8.5;
 
                 public static final double kL1Setpoint = 300;
-                public static final double kL2Setpoint = 300;
+                public static final double kL2Setpoint = 294;
                 public static final double kL3Setpoint = 290;
                 public static final double kL4Setpoint = 273;
 
@@ -246,19 +250,19 @@ public final class Constants {
                 public static final double kTolerance = 0.05;
 
 
-                public static final double kMaxUpVoltage = 5.75;
+                public static final double kMaxUpVoltage = 6.375;
                 public static final double kMaxUpErrorThreshold = 0.25;
-                public static final double kHighUpVoltage = 4.7;
+                public static final double kHighUpVoltage = 5.1;
                 public static final double kHighUpErrorThreshold = 0.15;
-                public static final double kMediumUpVoltage = 2.8;
+                public static final double kMediumUpVoltage = 3.4;
                 public static final double kMediumUpErrorThreshold = 0.06;
-                public static final double kSlowUpVoltage = 1.5;
+                public static final double kSlowUpVoltage = 1.6;
 
-                public static final double kMaxDownVoltage = -1.65;
+                public static final double kMaxDownVoltage = -2.65;
                 public static final double kMaxDownErrorThreshold = 0.25;
-                public static final double kHighDownVoltage = -1.2;
+                public static final double kHighDownVoltage = -2.1;
                 public static final double kHighDownErrorThreshold = 0.20;
-                public static final double kMediumDownVoltage = -0.8;
+                public static final double kMediumDownVoltage = -1.2;
                 public static final double kMediumDownErrorThreshold = 0.09;
                 public static final double kSlowDownVoltage = -0.55;
                 public static final double kSlowDownThreshold = 0.06;
@@ -270,8 +274,8 @@ public final class Constants {
 
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
-                public static final double kL2Setpoint = 0.24;
-                public static final double kL3Setpoint = 0.45;
+                public static final double kL2Setpoint = 0.252;
+                public static final double kL3Setpoint = 0.42;
                 public static final double kL4Setpoint = 0.80;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
@@ -283,11 +287,11 @@ public final class Constants {
                 public static final int kRollerCurrentLimit = 60;
 
                 public static final double kIntakeSpeed = 0.2; // Percent
-                public static final double kIntakeFinishSpeed = -0.1; // Percent
+                public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds
-                public static final double kIntakeFinishTime = 0.06; // Seconds
+                public static final double kIntakeFinishTime = 0.12; // Seconds
 
-                public static final double kEjectSpeed = 0.8; // Percent
+                public static final double kEjectSpeed = 0.7; // Percent
                 public static final double kFreeSpinThreshold = 420; // RPM
         }
         public static class Climber {

@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "Just Drive Paths",
+    "3 Piece (Lower) Paths",
     "Pickup to Score",
     "Reef Backup Paths",
     "Score to Pickup",
@@ -16,11 +17,9 @@
     "Cage 3 (2P)",
     "Cage 4 (2P)",
     "Cage 5 (2P)",
-    "Cage 6 (2P)",
-<<<<<<< HEAD
-=======
     "Cage 5 (3P)",
->>>>>>> d31277dbe9769f419092aab46ca737dc4e29be7a
+    "Cage 6 (2P)",
+    "Cage 2 (3P)",
     "Simple Autos"
   ],
   "defaultMaxVel": 3.0,

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cage 5 to E (WithStart)"
+                  "pathName": "(Shortened) Cage 4 to E (3P)"
                 }
               },
               {
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "E to BottomPickup(Right) (3P)"
+            "pathName": "E to BottomPickup(Left) (3P)"
           }
         },
         {
@@ -40,13 +40,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.1
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Right) to D (3P)"
+                        "pathName": "BottomPickup(Left) to D (3P)"
                       }
                     }
                   ]
@@ -77,7 +77,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "D to BottomPickup(Right) (3P)"
+            "pathName": "D to BottomPickup(Left) (3P)"
           }
         },
         {
@@ -91,13 +91,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.1
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Right) to C (3P)"
+                        "pathName": "BottomPickup(Left) to C (3P)"
                       }
                     }
                   ]

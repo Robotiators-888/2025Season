@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.485308441558442,
-        "y": 2.6669642857142857
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 2.697272930157779,
-        "y": 1.7797914364530554
-      },
-      "isLocked": false,
-      "linkedName": "C Backup"
-    },
-    {
-      "anchor": {
         "x": 1.635690789473684,
         "y": 0.628536184210526
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1995093127020935,
+        "y": 1.2094672721156563
+      },
+      "isLocked": false,
+      "linkedName": "Bottom Pickup(Right)"
+    },
+    {
+      "anchor": {
+        "x": 3.9585000000000004,
+        "y": 2.815999999999999
+      },
       "prevControl": {
-        "x": 1.8313879067388958,
-        "y": 0.8542551941362235
+        "x": 3.1007576853377006,
+        "y": 1.9415692438025651
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Pickup(Right)"
+      "linkedName": "D Score"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "ReachedTarget",
+      "waypointRelativePos": 0.79679144385027,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ReachedTarget"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 2.2,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 53.426969021480694
+    "rotation": 57.99499999999999
   },
   "reversed": false,
-  "folder": "Score to Pickup",
+  "folder": "3 Piece (Lower) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 57.99499999999999
+    "rotation": 53.426969021480694
   },
   "useDefaultConstraints": true
 }

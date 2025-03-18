@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -53,6 +54,13 @@ public class SUB_Drivetrain extends SubsystemBase {
 
   public StructPublisher<Pose2d> publisher4 = NetworkTableInstance.getDefault()
   .getStructTopic("PhotonCam2Pose", Pose2d.struct).publish(); 
+
+
+  StructArrayPublisher<SwerveModuleState> currentStatePublisher = NetworkTableInstance.getDefault()
+.getStructArrayTopic("Current States", SwerveModuleState.struct).publish();
+
+StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInstance.getDefault()
+.getStructArrayTopic("Desired States", SwerveModuleState.struct).publish();
 
   public final Field2d m_field = new Field2d();
   private static SUB_Drivetrain INSTANCE = null;
@@ -163,6 +171,10 @@ public class SUB_Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("FRONT RIGHT MODULE POSITION",
         frontRight.getPosition().distanceMeters);
 
+
+
+    currentStatePublisher.set(getModuleStates());
+
     SmartDashboard.putNumber("NavX angle", Units.degreesToRadians(getAngle()));
 
   }
@@ -272,6 +284,8 @@ public class SUB_Drivetrain extends SubsystemBase {
     frontRight.setDesiredState(swerveModuleStates[1]);
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
+
+    desiredStatePublisher.set(swerveModuleStates);
   }
 
   /** Sets the wheels into an X formation to prevent movement. */
@@ -351,6 +365,7 @@ public class SUB_Drivetrain extends SubsystemBase {
     }
     return states;
   }
+
 
   public SwerveModulePosition[] getPositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
