@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 7.152226027397259,
-        "y": 4.040025684931507
+        "y": 4.055051369863014
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.397234144280377,
-        "y": 3.6696523083081307
+        "x": 6.266491749168533,
+        "y": 4.138582484270557
       },
       "isLocked": false,
-      "linkedName": "CageStart4"
+      "linkedName": "CageStart3"
     },
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 5.82150974025974,
+        "y": 4.191193181818182
       },
       "prevControl": {
-        "x": 5.781750000000001,
-        "y": 2.669749999999999
+        "x": 6.0841431671311845,
+        "y": 4.155250195426329
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": "H Score"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.00538320808354
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Start to Score",
