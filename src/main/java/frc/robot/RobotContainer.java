@@ -89,7 +89,7 @@ public class RobotContainer {
         Optional<Alliance> lastAlliance;
         Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
-        public boolean povDownPressed = false;
+        public boolean LStickPressed = false;
 
         public int targetId = 7;
 
@@ -304,17 +304,17 @@ public class RobotContainer {
 
                 Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId));
                 Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId));
-                Driver1.povDown().whileTrue(new SequentialCommandGroup(
-                        new InstantCommand(() -> Driver1POVDownPressed(true)),
+                Driver1.leftStick().whileTrue(new SequentialCommandGroup(
+                        new InstantCommand(() -> Driver1LeftStickPressed(true)),
                         new RunCommand( // Unstable
                                 () -> drivetrain.drive(
-                                                0*MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-                                                0*MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                                                MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                                                MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
                                                 0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
                                                 true, true),
                                 drivetrain)))
-                                .onFalse(new InstantCommand(() -> Driver1POVDownPressed(false)));
-                Driver1.leftStick().onTrue(new ConditionalCommand(new InstantCommand(() -> getSelectedReefSide()),Commands.none(),() -> povDownPressed));
+                                .onFalse(new InstantCommand(() -> Driver1LeftStickPressed(false)));
+                Driver1.rightStick().onTrue(new ConditionalCommand(new InstantCommand(() -> getSelectedReefSide()),Commands.none(),() -> LStickPressed));
                 // Driver 2
 
                 Driver2.a().onTrue(getZeroSetpointCommand());
@@ -435,8 +435,8 @@ public class RobotContainer {
 
         public void getSelectedReefSide() {
                 List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
-                double x = Driver1.getRawAxis(1);
-                double y = Driver1.getRawAxis(0);
+                double x = Driver1.getRawAxis(4);
+                double y = Driver1.getRawAxis(5);
                 if (x==0 && y==0) {
                         targetId = targetTagSet.indexOf(0);
                 }
@@ -453,8 +453,8 @@ public class RobotContainer {
                 drivetrain.publisher1.set(pose);
                 targetId = targetTagSet.indexOf(listIndex);
         }
-        public void Driver1POVDownPressed(boolean pressed) {
-                povDownPressed = pressed;
+        public void Driver1LeftStickPressed(boolean pressed) {
+                LStickPressed = pressed;
         }
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
