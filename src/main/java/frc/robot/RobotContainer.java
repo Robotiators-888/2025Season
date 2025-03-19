@@ -11,8 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.json.simple.parser.ParseException;
 import org.photonvision.EstimatedRobotPose;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -20,6 +22,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,7 +39,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -89,7 +91,7 @@ public class RobotContainer {
         Optional<Alliance> lastAlliance;
         Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
-        public boolean LStickPressed = false;
+        public boolean RStickPressed = false;
 
         public int targetId = 7;
 
@@ -304,17 +306,16 @@ public class RobotContainer {
 
                 Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId));
                 Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId));
-                Driver1.leftStick().whileTrue(new SequentialCommandGroup(
-                        new InstantCommand(() -> Driver1LeftStickPressed(true)),
-                        new RunCommand( // Unstable
+                Driver1.rightStick().whileTrue(new RunCommand( // Unstable
                                 () -> drivetrain.drive(
                                                 MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
                                                 MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
                                                 0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
                                                 true, true),
-                                drivetrain)))
-                                .onFalse(new InstantCommand(() -> Driver1LeftStickPressed(false)));
-                Driver1.rightStick().onTrue(new ConditionalCommand(new InstantCommand(() -> getSelectedReefSide()),Commands.none(),() -> LStickPressed));
+                                drivetrain))
+                                .onFalse(new InstantCommand(() -> getSelectedReefSide()));
+
+                // Driver1.rightStick();
                 // Driver 2
 
                 Driver2.a().onTrue(getZeroSetpointCommand());
@@ -453,8 +454,8 @@ public class RobotContainer {
                 drivetrain.publisher1.set(pose);
                 targetId = targetTagSet.indexOf(listIndex);
         }
-        public void Driver1LeftStickPressed(boolean pressed) {
-                LStickPressed = pressed;
+        public void Driver1RightStickPressed(boolean pressed) {
+                RStickPressed = pressed;
         }
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
