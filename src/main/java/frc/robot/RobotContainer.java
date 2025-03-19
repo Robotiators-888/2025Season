@@ -423,13 +423,24 @@ public class RobotContainer {
         }
 
         public void getSelectedReefSide() {
+                List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
                 double x = Driver1.getRawAxis(1);
                 double y = Driver1.getRawAxis(0);
-                double angleRadians = Math.atan2(y, x) + x < 0 ? Math.PI : 0;
-                List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
+                if (x==0 && y==0) {
+                        targetId = targetTagSet.indexOf(0);
+                }
+                double angleRadians = Math.atan2(y, x) + (x < 0 ? Math.PI : 0);
+                double angleDegrees = Math.toDegrees(angleRadians);
+                int reefAngleDegrees = (int)Math.round((angleDegrees-90)/60)*60;
+                int listIndex = Math.floorMod((int)Math.round((angleDegrees-90)/60),6);
+                
                 SmartDashboard.putNumber("Angle", Math.toDegrees(angleRadians));
-                SmartDashboard.putNumber("Reef Align Target ID", targetTagSet.indexOf((int)Math.toDegrees(angleRadians + (Math.PI/2)) / 60));
-                targetId = targetTagSet.indexOf((int)Math.toDegrees(angleRadians + (Math.PI/2)) / 60);
+                SmartDashboard.putNumber("Reef Side Angle", reefAngleDegrees);
+                SmartDashboard.putNumber("Reef Align Target ID", targetTagSet.indexOf(listIndex));
+                
+                Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
+                drivetrain.publisher1.set(pose);
+                targetId = targetTagSet.indexOf(listIndex);
         }
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
