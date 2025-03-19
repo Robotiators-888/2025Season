@@ -5,17 +5,14 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.io.IOException;
-import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.json.simple.parser.ParseException;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -35,34 +32,37 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.Climber;
-import frc.robot.Constants.Elevator;
-import frc.robot.Constants.Operator;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.Roller;
-import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Climber;
+import frc.robot.Constants.Elevator;
 import frc.robot.Constants.Field;
 import frc.robot.Constants.LEDs;
+import frc.robot.Constants.Operator;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.Roller;
 import frc.robot.commands.CMD_PathfindReefAlign;
-import frc.robot.commands.CMD_ReefAlign;
+import frc.robot.subsystems.SUB_Climber;
+import frc.robot.subsystems.SUB_Drivetrain;
+import frc.robot.subsystems.SUB_Elevator;
+import frc.robot.subsystems.SUB_LEDs;
+import frc.robot.subsystems.SUB_PhotonVision;
+import frc.robot.subsystems.SUB_Pivot;
+import frc.robot.subsystems.SUB_Roller;
 import frc.robot.utils.AutoGenerator;
 import frc.robot.utils.Elastic;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.PowerDistribution;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -89,6 +89,8 @@ public class RobotContainer {
         Optional<Alliance> lastAlliance;
         Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
+
+        public int targetId = 7;
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
         private final CommandXboxController Driver1 = new CommandXboxController(Operator.kDriver1ControllerPort);
@@ -299,6 +301,9 @@ public class RobotContainer {
                 Driver1.a().onTrue(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
 
+                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId));
+                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId));
+                Driver1.povDown().onTrue(new InstantCommand((() -> getSelectedReefSide())));
                 // Driver 2
 
                 Driver2.a().onTrue(getZeroSetpointCommand());
@@ -313,9 +318,7 @@ public class RobotContainer {
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
-                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
-                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
-
+                
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
                 // Driver2.povUp().onTrue(new InstantCommand(() -> pivot.changeVoltage(0.02)));
@@ -419,6 +422,15 @@ public class RobotContainer {
                 powerDistribution.setSwitchableChannel(true);
         }
 
+        public void getSelectedReefSide() {
+                double x = Driver1.getRawAxis(1);
+                double y = Driver1.getRawAxis(0);
+                double angleRadians = Math.atan2(y, x) + x < 0 ? Math.PI : 0;
+                List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
+                SmartDashboard.putNumber("Angle", Math.toDegrees(angleRadians));
+                SmartDashboard.putNumber("Reef Align Target ID", targetTagSet.indexOf((int)Math.toDegrees(angleRadians + (Math.PI/2)) / 60));
+                targetId = targetTagSet.indexOf((int)Math.toDegrees(angleRadians + (Math.PI/2)) / 60);
+        }
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
                 try {
