@@ -11,10 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.json.simple.parser.ParseException;
 import org.photonvision.EstimatedRobotPose;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -22,7 +20,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -39,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -63,6 +61,8 @@ import frc.robot.subsystems.SUB_Pivot;
 import frc.robot.subsystems.SUB_Roller;
 import frc.robot.utils.AutoGenerator;
 import frc.robot.utils.Elastic;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -89,6 +89,7 @@ public class RobotContainer {
         Optional<Alliance> lastAlliance;
         Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
+        public boolean povDownPressed = false;
 
         public int targetId = 7;
 
@@ -303,7 +304,17 @@ public class RobotContainer {
 
                 Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId));
                 Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId));
-                Driver1.povDown().onTrue(new InstantCommand((() -> getSelectedReefSide())));
+                Driver1.povDown().whileTrue(new SequentialCommandGroup(
+                        new InstantCommand(() -> Driver1POVDownPressed(true)),
+                        new RunCommand( // Unstable
+                                () -> drivetrain.drive(
+                                                0*MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                                                0*MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                                                0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
+                                                true, true),
+                                drivetrain)))
+                                .onFalse(new InstantCommand(() -> Driver1POVDownPressed(false)));
+                Driver1.leftStick().onTrue(new ConditionalCommand(new InstantCommand(() -> getSelectedReefSide()),Commands.none(),() -> povDownPressed));
                 // Driver 2
 
                 Driver2.a().onTrue(getZeroSetpointCommand());
@@ -441,6 +452,9 @@ public class RobotContainer {
                 Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
                 drivetrain.publisher1.set(pose);
                 targetId = targetTagSet.indexOf(listIndex);
+        }
+        public void Driver1POVDownPressed(boolean pressed) {
+                povDownPressed = pressed;
         }
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
