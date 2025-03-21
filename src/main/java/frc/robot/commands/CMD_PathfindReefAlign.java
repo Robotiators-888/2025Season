@@ -125,7 +125,7 @@ public class CMD_PathfindReefAlign extends Command {
     }
 
     PathConstraints constraints = new PathConstraints(
-    3.0, 2.1,
+    3.0, 3.5,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
 
 
