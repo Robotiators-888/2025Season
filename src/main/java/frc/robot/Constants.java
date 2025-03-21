@@ -287,7 +287,7 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 35; // Amps
                 public static final int kRollerCurrentLimit = 60;
                 public static final int kHelperCurrentLimit = 20;
-
+                public static final double kRollerHelperSpeed = 0.4;
                 public static final double kIntakeSpeed = 0.2; // Percent
                 public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds

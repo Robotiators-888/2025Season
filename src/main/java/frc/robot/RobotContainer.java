@@ -248,7 +248,7 @@ public class RobotContainer {
 
                                                 .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)))
                                 .andThen(new RunCommand(
-                                                () -> roller.setRollerOutput(Roller.kIntakeSpeed,0.1), roller)
+                                                () -> roller.setRollerOutput(Roller.kIntakeSpeed,Roller.kRollerHelperSpeed), roller)
                                                 .until(() -> roller.getHasCoral())
                                                 .andThen(new InstantCommand(
                                                                 () -> roller.setRollerOutput(0,0)))))
@@ -351,7 +351,7 @@ public class RobotContainer {
                 // roller));
 
                 Driver2.rightBumper()
-                                .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed,0.1), roller)
+                                .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed,Roller.kRollerHelperSpeed), roller)
                                                 .until(() -> roller.getHasCoral())
 
                                                 .andThen(new ParallelCommandGroup(new InstantCommand(
