@@ -473,7 +473,7 @@ public class RobotContainer {
                 
                 SmartDashboard.putNumber("Angle", angleDegrees);
                 SmartDashboard.putNumber("Reef Side Angle", reefAngleDegrees);
-                SmartDashboard.putNumber("Reef Align Target ID", listIndex);
+                SmartDashboard.putNumber("Reef Align Target ID", targetTagSet.indexOf(listIndex));
                 
                 Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
                 drivetrain.publisher1.set(pose);
