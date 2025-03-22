@@ -200,17 +200,7 @@ public class RobotContainer {
                                                                                                 .setRollerOutput(0.),
                                                                                                 roller))));
 
-                NamedCommands.registerCommand("scoreL4", new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint)))
-                                .andThen(
-                                                new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed),
-                                                                roller).until(() -> !roller.getHasCoral()).andThen(
-                                                                                new InstantCommand(() -> roller
-                                                                                                .setRollerOutput(0.),
-                                                                                                roller))));
+                NamedCommands.registerCommand("scoreL4", getAutoL4Command());
 
                 NamedCommands.registerCommand("scoreL4(nostop)", new SequentialCommandGroup(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
@@ -257,11 +247,7 @@ public class RobotContainer {
                                                                 () -> roller.setRollerOutput(0)))))
                                                                 ;
 
-                NamedCommands.registerCommand("stow", new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint))));
+                NamedCommands.registerCommand("stow", getAutoStowCommand());
 
                 NamedCommands.registerCommand("L2AlgaeIntake", getL2AlgaeSetpointCommand());
 
@@ -445,6 +431,24 @@ public class RobotContainer {
                 powerDistribution.setSwitchableChannel(true);
         }
 
+        public Command getAutoL4Command() {
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(
+                        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                        new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
+                        Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
+                                        .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint)))
+                        .andThen(
+                                        new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed),
+                                                        roller).until(() -> !roller.getHasCoral()).andThen(
+                                                                        new InstantCommand(() -> roller
+                                                                                        .setRollerOutput(0.),
+                                                                                        roller))),  new RunCommand(() -> elevator
+                                                                                        .runElevator(() -> pivot
+                                                                                                        .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
+                return c;
+        }
+
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
                 try {
@@ -561,6 +565,17 @@ public class RobotContainer {
                 return c;
         }
 
+        public Command getAutoStowCommand() {
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint))), new RunCommand(() -> elevator
+                                                .runElevator(() -> pivot
+                                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
+                return c;
+        }
         public Command getAlgaeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),

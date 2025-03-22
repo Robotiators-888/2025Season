@@ -80,7 +80,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": "1 Piece Algae",
   "choreoAuto": false
 }
