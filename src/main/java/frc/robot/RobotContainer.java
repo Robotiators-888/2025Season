@@ -117,7 +117,7 @@ public class RobotContainer {
                                 elevator));
                 pivot.setDefaultCommand(
                                 new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
-                roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0), roller));
+                roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0,0.0), roller));
 
                 Driver1.rightBumper()
                                 .whileTrue(
@@ -248,10 +248,10 @@ public class RobotContainer {
 
                                                 .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)))
                                 .andThen(new RunCommand(
-                                                () -> roller.setRollerOutput(Roller.kIntakeSpeed), roller)
+                                                () -> roller.setRollerOutput(Roller.kIntakeSpeed,Roller.kRollerHelperSpeed), roller)
                                                 .until(() -> roller.getHasCoral())
                                                 .andThen(new InstantCommand(
-                                                                () -> roller.setRollerOutput(0)))))
+                                                                () -> roller.setRollerOutput(0,0)))))
                                                                 ;
 
                 NamedCommands.registerCommand("stow", new SequentialCommandGroup(
@@ -351,7 +351,7 @@ public class RobotContainer {
                 // roller));
 
                 Driver2.rightBumper()
-                                .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed), roller)
+                                .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed,Roller.kRollerHelperSpeed), roller)
                                                 .until(() -> roller.getHasCoral())
 
                                                 .andThen(new ParallelCommandGroup(new InstantCommand(
@@ -362,7 +362,7 @@ public class RobotContainer {
                                                                 new InstantCommand(() -> leds.set(LEDs.kColorGreen)),
                                                                 new RunCommand(
                                                                                 () -> roller.setRollerOutput(
-                                                                                                Roller.kIntakeFinishSpeed),
+                                                                                                Roller.kIntakeFinishSpeed,0),
                                                                                 roller))
                                                                 .withTimeout(Roller.kIntakeFinishTime)
                                                                 .andThen(new ParallelCommandGroup(

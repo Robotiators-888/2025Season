@@ -22,6 +22,7 @@ import frc.robot.Constants.Roller;
 public class SUB_Roller extends SubsystemBase {
   private static SUB_Roller INSTANCE = null;
   private SparkMax roller = new SparkMax(Roller.kRollerCanID, MotorType.kBrushless);
+  private SparkMax helper = new SparkMax(Roller.kHelperCanID, MotorType.kBrushless);
   private SparkMaxConfig config = new SparkMaxConfig();
   private RelativeEncoder encoder = roller.getEncoder();
   private DigitalInput bannerSensor = new DigitalInput(9);
@@ -40,6 +41,12 @@ public class SUB_Roller extends SubsystemBase {
 
     roller.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    config.smartCurrentLimit(Roller.kHelperCurrentLimit);
+    config.inverted(false);
+    helper.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+
   }
 
   public void timerInteract(boolean start) {
@@ -55,6 +62,11 @@ public class SUB_Roller extends SubsystemBase {
 
   public void setRollerOutput(double percent) {
     roller.set(percent);
+  }
+
+  public void setRollerOutput(double percent,double helperPercent) {
+    roller.set(percent);
+    helper.set(helperPercent);
   }
 
   public boolean getHasCoral() {
