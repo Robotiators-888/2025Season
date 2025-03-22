@@ -3,33 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 3.65625,
+        "y": 2.9524999999999992
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4019197993191455,
-        "y": 1.6820006718581353
+        "x": 3.1414269397540933,
+        "y": 2.685603929152963
       },
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": "C ReefScore"
     },
     {
       "anchor": {
-        "x": 1.635690789473684,
-        "y": 0.628536184210526
+        "x": 0.6457792207792207,
+        "y": 1.389650974025974
       },
       "prevControl": {
-        "x": 2.444000390137509,
-        "y": 1.3081490762462868
+        "x": 1.0995036222531112,
+        "y": 1.5939953434948955
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Pickup(Right)"
+      "linkedName": "Bottom Pickup(Left)"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.24866310160427874,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 1.25,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 180.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -56,9 +70,14 @@
     },
     {
       "name": "runRoller",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.050799999999999484,
-      "command": null
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 0.10026737967914445,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runRoller"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -77,7 +96,7 @@
   "folder": "3 Piece (Lower) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

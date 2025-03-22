@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 2.2,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "folder": "Reef Backup Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 57.99499999999999
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

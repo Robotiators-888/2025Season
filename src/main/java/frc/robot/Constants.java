@@ -226,7 +226,7 @@ public final class Constants {
                 public static final double kAlgaeSafeSetpoint = 176;
                 public static final double kAlgaeScoringSetpoint = 132;
 
-                public static final double kIntakeSetpoint = 323;
+                public static final double kIntakeSetpoint = 326;
                 public static final double kElevatingSetpoint = 288;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 176;
@@ -287,7 +287,7 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 35; // Amps
                 public static final int kRollerCurrentLimit = 60;
                 public static final int kHelperCurrentLimit = 20;
-                public static final double kRollerHelperSpeed = 0.4;
+                public static final double kRollerHelperSpeed = 0.7;
                 public static final double kIntakeSpeed = 0.2; // Percent
                 public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds

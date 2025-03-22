@@ -25,7 +25,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
-
+import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -235,11 +235,11 @@ public class RobotContainer {
                                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
                                                 new InstantCommand(() -> pivot.changeSetpoint(
                                                                                 PivotConstants.kL4Setpoint)),
-                                                new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed),roller)
+                                                new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed - 0.2),roller)
                                                 .withTimeout(.15)));
 
                 NamedCommands.registerCommand("runRoller",
-                                new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller));
+                                new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed, Roller.kRollerHelperSpeed), roller));
 
                 NamedCommands.registerCommand("intake", new SequentialCommandGroup(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
@@ -662,6 +662,17 @@ public class RobotContainer {
         public void autonomousInit() {
                 Elastic.selectTab("Autonomous");
                 leds.set(LEDs.kParty_Palette_Twinkles);
+                PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
+                        
+                        Pose2d currentPose = drivetrain.getPose();
+                        
+                        SmartDashboard.putNumber("X Error", pose.getX() - currentPose.getX());
+                        SmartDashboard.putNumber("Y Error", pose.getY() - currentPose.getY());
+                        SmartDashboard.putNumber("Theta Error", pose.getRotation().getRadians() - currentPose.getRotation().getRadians());
+                        SmartDashboard.putNumber("Desired Theta", pose.getRotation().getRadians());
+                        SmartDashboard.putNumber("Actual Theta", currentPose.getRotation().getRadians());
+                        
+                        });
         }
 
         public void autonomousPeriodic() {
@@ -746,7 +757,7 @@ public class RobotContainer {
                                 Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 2) / 8.0088;
+                                double xStddev = Math.pow(distance, 2) / (8.0088 * 0.5);
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher3.set(photonPose.toPose2d());
