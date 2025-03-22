@@ -298,9 +298,10 @@ public final class Constants {
         }
         public static class GroundIntake {
                 public static final int kGroundIntakeCanID = 35;
-                public static final int kGroundIntakePivotCanID = 36;
         }
-
+        public static class GroundPivot {
+                public static final int kGroundPivotCanID = 36;     
+        }
         public static class Climber {
                 public static final int kClimberCanID = 40;
                 public static final double kClimberPercentOutput = 0.2;

@@ -85,6 +85,7 @@ public class RobotContainer {
         public static SUB_Climber climber = SUB_Climber.getInstance();
         public static SUB_LEDs leds = SUB_LEDs.getInstance();
         public static SUB_GroundIntake groundIntake = SUB_GroundIntake.getInstance();
+        public static SUB_GroundPivot groundPivot = SUB_GroundPivot.getInstance();
         public static PowerDistribution powerDistribution = new PowerDistribution();
         private static String autoName, newAutoName;
         Optional<Alliance> lastAlliance;
@@ -119,6 +120,12 @@ public class RobotContainer {
                 pivot.setDefaultCommand(
                                 new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
                 roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0,0.0), roller));
+                groundIntake.setDefaultCommand(
+                        new RunCommand(() -> groundIntake.setGroundIntake(0), groundIntake)
+                );
+                groundPivot.setDefaultCommand(
+                        new RunCommand(() -> groundPivot.setGroundPivot(0), groundPivot)
+                );
 
                 Driver1.rightBumper()
                                 .whileTrue(
@@ -413,11 +420,9 @@ public class RobotContainer {
                                                 .alongWith(new RunCommand(() -> roller.setRollerOutput(0.95), roller)))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.0), roller));
                 Driver2.leftStick().onTrue(
-                        new SequentialCommandGroup(new RunCommand (() -> groundIntake.setGroundIntakePivotOutput(0.15), groundIntake),
-                        new WaitCommand(0.1), new RunCommand(() -> groundIntake.setGroundIntakePivotOutput(0), groundIntake),
-                        new RunCommand(() -> groundIntake.setGroundIntakeOutput(.15), groundIntake)))
-                        .onFalse(new RunCommand(() -> groundIntake.setGroundIntakeOutput(0)));
-
+                        new SequentialCommandGroup(new InstantCommand (() -> groundPivot.setGroundPivot(0.15), groundPivot),
+                        new WaitCommand(0.1), new InstantCommand(() -> groundPivot.setGroundPivot(0), groundPivot)))
+                        .whileTrue(new RunCommand(() -> groundIntake.setGroundIntake(.15), groundIntake));
         }
 
         public void robotInit() {
