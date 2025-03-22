@@ -459,7 +459,7 @@ public class RobotContainer {
         public void getSelectedReefSide() {
                 double x = Driver1.getRawAxis(4);
                 double y = -Driver1.getRawAxis(5);
-                List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
+                int[] targetTagSet = DriverStation.getAlliance().equals(Optional.of(Alliance.Red)) ? new int[]{10,11,6,7,8,9} : new int[]{18, 17, 22,21, 20, 19};
                 double angleRadians;
                 if (x==0 && y==0) {
                         angleRadians = 0.0;
@@ -473,11 +473,11 @@ public class RobotContainer {
                 
                 SmartDashboard.putNumber("Angle", angleDegrees);
                 SmartDashboard.putNumber("Reef Side Angle", reefAngleDegrees);
-                SmartDashboard.putNumber("Reef Align Target ID", targetTagSet.indexOf(listIndex));
+                SmartDashboard.putNumber("Reef Align Target ID", targetTagSet[listIndex]);
                 
                 Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
                 drivetrain.publisher1.set(pose);
-                targetId = targetTagSet.indexOf(listIndex);
+                targetId = targetTagSet[listIndex];
         }
         public void Driver1RightStickPressed(boolean pressed) {
                 RStickPressed = pressed;
