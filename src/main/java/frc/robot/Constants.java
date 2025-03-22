@@ -296,6 +296,11 @@ public final class Constants {
                 public static final double kEjectSpeed = 0.7; // Percent
                 public static final double kFreeSpinThreshold = 420; // RPM
         }
+        public static class GroundIntake {
+                public static final int kGroundIntakeCanID = 35;
+                public static final int kGroundIntakePivotCanID = 36;
+        }
+
         public static class Climber {
                 public static final int kClimberCanID = 40;
                 public static final double kClimberPercentOutput = 0.2;
