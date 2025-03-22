@@ -92,9 +92,6 @@ public class RobotContainer {
         Optional<Alliance> lastAlliance;
         Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
-        public boolean RStickPressed = false;
-
-        public int targetId = 7;
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
         private final CommandXboxController Driver1 = new CommandXboxController(Operator.kDriver1ControllerPort);
@@ -287,7 +284,7 @@ public class RobotContainer {
                         new RunCommand(() -> roller.setRollerOutput(-Roller.kEjectSpeed), roller).withTimeout(1.0)
                 ));
 
-                //Who used ChatGPT bro???: NamedCommands.registerCommand("BargeIntake", getBargeSetpointCommand());
+                
                 // Configure the trigger bindings
                 configureBindings();
 
@@ -327,18 +324,9 @@ public class RobotContainer {
                 Driver1.a().onTrue(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
 
-                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId));
-                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId));
-                Driver1.rightStick().whileTrue(new RunCommand( // Unstable
-                                () -> drivetrain.drive(
-                                                MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-                                                MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-                                                0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
-                                                true, true),
-                                drivetrain))
-                                .onFalse(new InstantCommand(() -> getSelectedReefSide()));
-
-                // Driver1.rightStick();
+                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
+                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
+                
                 // Driver 2
 
                 Driver2.a().onTrue(getZeroSetpointCommand());
@@ -457,29 +445,6 @@ public class RobotContainer {
                 powerDistribution.setSwitchableChannel(true);
         }
 
-        public void getSelectedReefSide() {
-                List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
-                double x = Driver1.getRawAxis(4);
-                double y = Driver1.getRawAxis(5);
-                if (x==0 && y==0) {
-                        targetId = targetTagSet.indexOf(0);
-                }
-                double angleRadians = Math.atan2(y, x) + (x < 0 ? Math.PI : 0);
-                double angleDegrees = Math.toDegrees(angleRadians);
-                int reefAngleDegrees = (int)Math.round((angleDegrees-90)/60)*60;
-                int listIndex = Math.floorMod((int)Math.round((angleDegrees-90)/60),6);
-                
-                SmartDashboard.putNumber("Angle", Math.toDegrees(angleRadians));
-                SmartDashboard.putNumber("Reef Side Angle", reefAngleDegrees);
-                SmartDashboard.putNumber("Reef Align Target ID", targetTagSet.indexOf(listIndex));
-                
-                Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
-                drivetrain.publisher1.set(pose);
-                targetId = targetTagSet.indexOf(listIndex);
-        }
-        public void Driver1RightStickPressed(boolean pressed) {
-                RStickPressed = pressed;
-        }
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
                 try {

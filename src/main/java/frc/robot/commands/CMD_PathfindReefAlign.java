@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
@@ -34,7 +33,6 @@ public class CMD_PathfindReefAlign extends Command {
   boolean isLeftAlign = false;
   SUB_PhotonVision photonVision;
   SUB_Drivetrain drivetrain;
-  int targetId;
 
   HashMap<Integer, Translation2d> redLeft = new HashMap<>();
   HashMap<Integer, Translation2d> redRight = new HashMap<>();
@@ -43,11 +41,11 @@ public class CMD_PathfindReefAlign extends Command {
 
   /** Creates a new CMD_PathfindReefAlign. */
   public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
-      boolean isLeftAlign, int targetId) {
+      boolean isLeftAlign) {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
     this.isLeftAlign = isLeftAlign;
-    this.targetId = targetId;
+
     redRight.put(7, new Translation2d(14.341348, 4.2116375));
     redLeft.put(7, new Translation2d(14.341348, 3.8401625));
     redRight.put(8, new Translation2d(13.539017606564588, 5.228798303296214));
@@ -83,11 +81,17 @@ public class CMD_PathfindReefAlign extends Command {
   @Override
   public void initialize() {
     Pose2d tagPose = new Pose2d();
+    Integer targetId = 7;
 
 
+    List<Integer> targetTagSet;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     HashMap<Integer, Translation2d> selectedMap;
     if (alliance.isPresent()) {
+      targetTagSet =
+          alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
+              : Arrays.asList(21, 20, 19, 18, 17, 22);
+
       if (isLeftAlign) {
         if (alliance.get() == DriverStation.Alliance.Red) {
           selectedMap = redLeft;
@@ -105,7 +109,20 @@ public class CMD_PathfindReefAlign extends Command {
       return;
     }
 
-    tagPose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
+
+    double minDistance = Double.MAX_VALUE;
+    for (int tag : targetTagSet) {
+      Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
+      Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
+      double distance = translate.getNorm();
+
+      if (distance < minDistance) {
+        tagPose = pose;
+        targetId = tag;
+        minDistance = distance;
+      }
+    }
+
     PathConstraints constraints = new PathConstraints(
     3.0, 2.1,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
