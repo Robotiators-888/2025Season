@@ -8,10 +8,6 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.pathfinding.LocalADStar;
-import com.pathplanner.lib.pathfinding.Pathfinding;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0052258391137174,
-        "y": 6.525326968838032
+        "x": 2.2628874705685904,
+        "y": 6.68401244244448
       },
       "isLocked": false,
       "linkedName": "TopPickup(Right)"
@@ -20,8 +20,8 @@
         "y": 5.10725
       },
       "prevControl": {
-        "x": 3.5154907161433,
-        "y": 5.299127465945685
+        "x": 3.4932436620520737,
+        "y": 5.3429367780316595
       },
       "nextControl": null,
       "isLocked": false,
