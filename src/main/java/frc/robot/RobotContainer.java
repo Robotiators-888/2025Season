@@ -56,6 +56,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
+import frc.robot.Constants.GroundPivot;
 import frc.robot.Constants.LEDs;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_ReefAlign;
@@ -124,7 +125,7 @@ public class RobotContainer {
                         new RunCommand(() -> groundIntake.setGroundIntake(0), groundIntake)
                 );
                 groundPivot.setDefaultCommand(
-                        new RunCommand(() -> groundPivot.setGroundPivot(0), groundPivot)
+                        new RunCommand(() -> groundPivot.setGroundPivotAngleToGhost(), groundPivot)
                 );
 
                 Driver1.rightBumper()
@@ -419,10 +420,14 @@ public class RobotContainer {
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))
                                                 .alongWith(new RunCommand(() -> roller.setRollerOutput(0.95), roller)))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.0), roller));
-                Driver2.leftStick().onTrue(
-                        new SequentialCommandGroup(new InstantCommand (() -> groundPivot.setGroundPivot(0.15), groundPivot),
-                        new WaitCommand(0.1), new InstantCommand(() -> groundPivot.setGroundPivot(0), groundPivot)))
-                        .whileTrue(new RunCommand(() -> groundIntake.setGroundIntake(.15), groundIntake));
+                Driver2.leftStick().whileTrue(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> groundPivot.changeGroundPivotAngleGhost(GroundPivot.kGroundPivotSetPointLow), groundPivot),
+                                new RunCommand(() -> groundIntake.setGroundIntake(.15), groundIntake)));
+                Driver2.rightStick().whileTrue(
+                        new SequentialCommandGroup(
+                                new InstantCommand(() -> groundPivot.changeGroundPivotAngleGhost(GroundPivot.kGroundPivotSetPointHigh), groundPivot),
+                                new RunCommand(() -> groundIntake.setGroundIntake(-.15), groundIntake)));
         }
 
         public void robotInit() {
