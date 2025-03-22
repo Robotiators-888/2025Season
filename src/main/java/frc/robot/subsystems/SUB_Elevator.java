@@ -23,8 +23,8 @@ import frc.robot.Constants.Elevator;
 public class SUB_Elevator extends SubsystemBase {
   private static SUB_Elevator INSTANCE = null;
   private static double activesetpoint = 0;
-  private SparkMax primary = new SparkMax(35, MotorType.kBrushless);
-  private SparkMax secondary = new SparkMax(36, MotorType.kBrushless);
+  private SparkMax primary = new SparkMax(Elevator.kElevatorPrimaryCanID, MotorType.kBrushless);
+  private SparkMax secondary = new SparkMax(Elevator.kElevatorSecondaryCanID, MotorType.kBrushless);
   private SparkMaxConfig config = new SparkMaxConfig();
   private RelativeEncoder primaryencoder = primary.getEncoder();
   private SparkLimitSwitch lowerLimitSwitch = primary.getReverseLimitSwitch();

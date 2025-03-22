@@ -242,6 +242,9 @@ public final class Constants {
         }
 
         public static final class Elevator {
+                public static final int kElevatorPrimaryCanID = 35;
+                public static final int kElevatorSecondaryCanID = 36;
+
                 public static final double kHomingEncoderLocation = 0;
                 public static final double kResetHomingThreshold = 0.05;
                 public static final double kEncoderNearZero = 0.01;
@@ -297,10 +300,11 @@ public final class Constants {
                 public static final double kFreeSpinThreshold = 420; // RPM
         }
         public static class GroundIntake {
-                public static final int kGroundIntakeCanID = 35;
+                public static final int kGroundIntakeCanID = 38;
+                public static final double kGroundIntakeSpeed = -.40;
         }
         public static class GroundPivot {
-                public static final int kGroundPivotCanID = 36;
+                public static final int kGroundPivotCanID = 37;
                 public static final double kGroundPivotSetPointLow = 0; // Change this value
                 public static final double kGroundPivotSetPointHigh = 15; // Change this value
         }

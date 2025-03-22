@@ -56,6 +56,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
+import frc.robot.Constants.GroundIntake;
 import frc.robot.Constants.GroundPivot;
 import frc.robot.Constants.LEDs;
 import frc.robot.commands.CMD_PathfindReefAlign;
@@ -423,11 +424,11 @@ public class RobotContainer {
                 Driver2.leftStick().whileTrue(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> groundPivot.changeGroundPivotAngleGhost(GroundPivot.kGroundPivotSetPointLow), groundPivot),
-                                new RunCommand(() -> groundIntake.setGroundIntake(.15), groundIntake)));
+                                new RunCommand(() -> groundIntake.setGroundIntake(GroundIntake.kGroundIntakeSpeed), groundIntake)));
                 Driver2.rightStick().whileTrue(
                         new SequentialCommandGroup(
                                 new InstantCommand(() -> groundPivot.changeGroundPivotAngleGhost(GroundPivot.kGroundPivotSetPointHigh), groundPivot),
-                                new RunCommand(() -> groundIntake.setGroundIntake(-.15), groundIntake)));
+                                new RunCommand(() -> groundIntake.setGroundIntake(-GroundIntake.kGroundIntakeSpeed), groundIntake)));
         }
 
         public void robotInit() {
