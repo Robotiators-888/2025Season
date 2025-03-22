@@ -33,8 +33,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.Constants.Swerve;
-import frc.robot.utils.*;
 // import org.littletonrobotics.junction.Logger;
+import frc.robot.utils.FieldRelativeAccel;
+import frc.robot.utils.FieldRelativeSpeed;
+import frc.robot.utils.SwerveUtils;
 
 public class SUB_Drivetrain extends SubsystemBase {
 
@@ -334,6 +336,7 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
 
   public double getAngle() {
     return -navx.getAngle();
+
   }
 
   /**
@@ -362,6 +365,13 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     SwerveModuleState[] states = new SwerveModuleState[modules.length];
     for (int i = 0; i < modules.length; i++) {
       states[i] = modules[i].getState();
+    }
+    return states;
+  }
+  public double[] getModuleRadians() {
+    double[] states = new double[modules.length];
+    for (int i = 0; i < modules.length; i++) {
+      states[i] = modules[i].getState().angle.getRadians();
     }
     return states;
   }

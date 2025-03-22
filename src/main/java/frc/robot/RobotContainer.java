@@ -5,17 +5,17 @@
 
 package frc.robot;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.io.IOException;
-import org.json.simple.parser.ParseException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.json.simple.parser.ParseException;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -28,6 +28,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,34 +36,38 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.Climber;
-import frc.robot.Constants.Elevator;
-import frc.robot.Constants.Operator;
-import frc.robot.Constants.PivotConstants;
-import frc.robot.Constants.Roller;
-import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Climber;
+import frc.robot.Constants.Drivetrain;
+import frc.robot.Constants.Elevator;
 import frc.robot.Constants.Field;
 import frc.robot.Constants.LEDs;
+import frc.robot.Constants.Operator;
+import frc.robot.Constants.PivotConstants;
+import frc.robot.Constants.Roller;
 import frc.robot.commands.CMD_PathfindReefAlign;
-import frc.robot.commands.CMD_ReefAlign;
+import frc.robot.subsystems.SUB_Climber;
+import frc.robot.subsystems.SUB_Drivetrain;
+import frc.robot.subsystems.SUB_Elevator;
+import frc.robot.subsystems.SUB_LEDs;
+import frc.robot.subsystems.SUB_PhotonVision;
+import frc.robot.subsystems.SUB_Pivot;
+import frc.robot.subsystems.SUB_Roller;
 import frc.robot.utils.AutoGenerator;
 import frc.robot.utils.Elastic;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.PowerDistribution;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -565,6 +570,92 @@ public class RobotContainer {
                 c.addRequirements(elevator);
                 return c;
         }
+
+        /** Measures the robot's wheel radius by spinning in a circle. */
+  public static Command wheelRadiusCharacterization(SUB_Drivetrain drivetrain) {
+    SlewRateLimiter limiter = new SlewRateLimiter(Drivetrain.WHEEL_RADIUS_RAMP_RATE);
+    WheelRadiusCharacterizationState state = new WheelRadiusCharacterizationState();
+
+    Command c = Commands.parallel(
+        // Drive control sequence
+        Commands.sequence(
+            // Reset acceleration limiter
+            Commands.runOnce(() -> limiter.reset(0.0)),
+
+            // Turn in place, accelerating up to full speed
+            Commands.run(
+                () -> {
+                  double speed = limiter.calculate(Drivetrain.WHEEL_RADIUS_MAX_VELOCITY);
+                  drivetrain.drive(0.0, 0.0, speed,false,false);
+                }),
+
+        // Measurement sequence
+        Commands.sequence(
+            // Wait for modules to fully orient before starting measurement
+            Commands.waitSeconds(1.0),
+
+            // Record starting measurement
+            Commands.runOnce(
+                () -> {
+                  state.positions = drivetrain.getModuleRadians();
+                  state.lastAngle = drivetrain.getRotation2d();
+                  state.gyroDelta = 0.0;
+                }),
+
+            // Update gyro delta
+            Commands.run(
+                    () -> {
+                      var rotation = drivetrain.getRotation2d();
+                      state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
+                      state.lastAngle = rotation;
+
+                      double[] positions = drivetrain.getModuleRadians();
+                      double wheelDelta = 0.0;
+                      for (int i = 0; i < 4; i++) {
+                        wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
+                      }
+                      double wheelRadius =
+                          (state.gyroDelta * Constants.Drivetrain.kTrackRadius) / wheelDelta;
+
+                      SmartDashboard.putNumber("Drive/WheelDelta", wheelDelta);
+                      SmartDashboard.putNumber("Drive/WheelRadius", wheelRadius);
+                    })
+
+                // When cancelled, calculate and print results
+                .finallyDo(
+                    () -> {
+                      double[] positions = drivetrain.getModuleRadians();
+                      double wheelDelta = 0.0;
+                      for (int i = 0; i < 4; i++) {
+                        wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
+                      }
+                      double wheelRadius =
+                          (state.gyroDelta * Constants.Drivetrain.kTrackRadius) / wheelDelta;
+
+                      NumberFormat formatter = new DecimalFormat("#0.000000000000000000000000000");
+                      System.out.println(
+                          "********** Wheel Radius Characterization Results **********");
+                      System.out.println(
+                          "\tWheel Delta: " + formatter.format(wheelDelta) + " radians");
+                      System.out.println(
+                          "\tGyro Delta: " + formatter.format(state.gyroDelta) + " radians");
+                      System.out.println(
+                          "\tWheel Radius: "
+                              + formatter.format(wheelRadius)
+                              + " meters, "
+                              + formatter.format(Units.metersToInches(wheelRadius))
+                              + " inches");
+                    }))));
+
+    c.addRequirements(drivetrain);
+    return c;
+  }
+
+  private static class WheelRadiusCharacterizationState {
+    double[] positions = new double[4];
+    Rotation2d lastAngle = Rotation2d.kZero;
+    double gyroDelta = 0.0;
+  }
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
