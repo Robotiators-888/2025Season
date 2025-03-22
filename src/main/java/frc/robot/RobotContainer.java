@@ -458,13 +458,15 @@ public class RobotContainer {
         }
 
         public void getSelectedReefSide() {
-                List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
                 double x = Driver1.getRawAxis(4);
                 double y = Driver1.getRawAxis(5);
+                List<Integer> targetTagSet = alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6) : Arrays.asList(21, 20, 19, 18, 17, 22);
+                double angleRadians;
                 if (x==0 && y==0) {
-                        targetId = targetTagSet.indexOf(0);
+                        angleRadians = 0.0;
+                } else {
+                        angleRadians = Math.atan2(y, x) + (x < 0 ? Math.PI : 0);
                 }
-                double angleRadians = Math.atan2(y, x) + (x < 0 ? Math.PI : 0);
                 double angleDegrees = Math.toDegrees(angleRadians);
                 int reefAngleDegrees = (int)Math.round((angleDegrees-90)/60)*60;
                 int listIndex = Math.floorMod((int)Math.round((angleDegrees-90)/60),6);
