@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Climber;
@@ -265,6 +266,28 @@ public class RobotContainer {
                                 Commands.waitUntil(() -> elevator.atSetpoint(0.0))
                                                 .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint))));
 
+                NamedCommands.registerCommand("L2AlgaeIntake", getL2AlgaeSetpointCommand());
+
+                NamedCommands.registerCommand("grabAlgae",  new ParallelRaceGroup(new InstantCommand(
+                                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))
+                                                .alongWith(
+                                                                new RunCommand(() -> roller.setRollerOutput(
+                                                                                -Roller.kIntakeSpeed))),
+                                                new WaitCommand(1.0)));
+                
+                
+                NamedCommands.registerCommand("moveElevatorToZero", new SequentialCommandGroup(
+                        new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
+                        Commands.waitUntil(() -> elevator.atSetpoint(0.0))
+                ));
+                NamedCommands.registerCommand("moveElevatorToProcessorAndScoreAlgae", new SequentialCommandGroup(
+                        new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kProcessorSetpoint)),
+                        Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kProcessorSetpoint)),
+                        new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint)),
+                        new RunCommand(() -> roller.setRollerOutput(-Roller.kEjectSpeed), roller).withTimeout(1.0)
+                ));
+
+                //Who used ChatGPT bro???: NamedCommands.registerCommand("BargeIntake", getBargeSetpointCommand());
                 // Configure the trigger bindings
                 configureBindings();
 
