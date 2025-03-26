@@ -22,7 +22,7 @@
     "Cage 2 (3P)",
     "Simple Autos"
   ],
-  "defaultMaxVel": 3.0,
+  "defaultMaxVel": 4.0,
   "defaultMaxAccel": 2.5,
   "defaultMaxAngVel": 180.0,
   "defaultMaxAngAccel": 180.0,

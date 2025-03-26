@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9585000000000004,
-        "y": 2.815999999999999
+        "x": 3.65625,
+        "y": 2.9524999999999992
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.397723193998072,
-        "y": 2.2446958588993646
+        "x": 3.193934758008196,
+        "y": 2.325050018881311
       },
       "isLocked": false,
-      "linkedName": "D Score"
+      "linkedName": "C ReefScore"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 0.628536184210526
       },
       "prevControl": {
-        "x": 3.5255116969091604,
-        "y": 2.334376223315513
+        "x": 2.647276113709525,
+        "y": 1.7453251112351014
       },
       "nextControl": null,
       "isLocked": false,
@@ -36,7 +36,7 @@
       "maxWaypointRelativePos": 0.24866310160427874,
       "constraints": {
         "maxVelocity": 3.0,
-        "maxAcceleration": 1.75,
+        "maxAcceleration": 1.25,
         "maxAngularVelocity": 180.0,
         "maxAngularAcceleration": 180.0,
         "nominalVoltage": 12.0,

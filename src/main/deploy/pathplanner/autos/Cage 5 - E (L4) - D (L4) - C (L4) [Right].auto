@@ -130,15 +130,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "stow"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "C Backup"
+                  "pathName": "C to BottomPickup(Right) (3P)"
                 }
               }
             ]
