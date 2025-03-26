@@ -57,6 +57,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
 import frc.robot.Constants.LEDs;
+import frc.robot.commands.CMD_PathfindAlgaeAlign;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.utils.AutoGenerator;
@@ -294,10 +295,9 @@ public class RobotContainer {
                                 .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
-                Driver1.y().onTrue(
-                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
+                Driver1.y().whileTrue(new CMD_PathfindAlgaeAlign(drivetrain, photonVision));
                 Driver1.a().onTrue(
-                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)));
 
                 // Driver 2
 

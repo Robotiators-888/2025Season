@@ -28,10 +28,9 @@ import frc.robot.subsystems.SUB_PhotonVision;
  * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#
  * defining-commands
  */
-public class CMD_PathfindReefAlign extends Command {
+public class CMD_PathfindAlgaeAlign extends Command {
 
   Command pathfindingCommand;
-  boolean isLeftAlign = false;
   SUB_PhotonVision photonVision;
   SUB_Drivetrain drivetrain;
 
@@ -41,36 +40,34 @@ public class CMD_PathfindReefAlign extends Command {
   HashMap<Integer, Translation2d> blueRight = new HashMap<>();
 
   /** Creates a new CMD_PathfindReefAlign. */
-  public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
-      boolean isLeftAlign) {
+  public CMD_PathfindAlgaeAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision) {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
-    this.isLeftAlign = isLeftAlign;
 
-    redRight.put(7, new Translation2d(14.341348, 4.2116375));
-    redLeft.put(7, new Translation2d(14.341348, 3.8401625));
-    redRight.put(8, new Translation2d(13.539017606564588, 5.228798303296214));
-    redLeft.put(8, new Translation2d(13.860724393435412, 5.043060803296214));
-    redRight.put(9, new Translation2d(12.257079606564588, 5.043060803296214));
-    redLeft.put(9, new Translation2d(12.578786393435411, 5.228798303296214));
-    redRight.put(10, new Translation2d(11.776455999999998, 3.8401625));
-    redLeft.put(10, new Translation2d(11.776455999999998, 4.2116375));
-    redRight.put(11, new Translation2d(12.578786393435411, 2.8230016967037854));
-    redLeft.put(11, new Translation2d(12.257079606564588, 3.0087391967037855));
-    redRight.put(6, new Translation2d(13.860724393435412, 3.0087391967037855));
-    redLeft.put(6, new Translation2d(13.539017606564588, 2.8230016967037854));
-    blueRight.put(21, new Translation2d(5.771896, 4.2116375));
-    blueLeft.put(21, new Translation2d(5.771896, 3.8401625));
-    blueRight.put(20, new Translation2d(4.969311606564587, 5.228798303296214));
-    blueLeft.put(20, new Translation2d(5.2910183934354125, 5.043060803296214));
-    blueRight.put(19, new Translation2d(3.687627606564587, 5.043060803296214));
-    blueLeft.put(19, new Translation2d(4.009334393435411, 5.228798303296214));
-    blueRight.put(18, new Translation2d(3.20675, 3.8401625));
-    blueLeft.put(18, new Translation2d(3.20675, 4.2116375));
-    blueRight.put(17, new Translation2d(4.00933439343541, 2.8230016967037854));
-    blueLeft.put(17, new Translation2d(3.6876276065645865, 3.0087391967037855));
-    blueRight.put(22, new Translation2d(5.2910183934354125, 3.0087391967037855));
-    blueLeft.put(22, new Translation2d(4.969311606564588, 2.8230016967037854));
+    redRight.put(7, new Translation2d(14.341348, 4.0208200000000005));
+    redLeft.put(7, new Translation2d(14.341348, 4.0208200000000005));
+    redRight.put(8, new Translation2d(13.699871, 5.130849553296214));
+    redLeft.put(8, new Translation2d(13.699871, 5.130849553296214));
+    redRight.put(9, new Translation2d(12.417933, 5.130849553296214));
+    redLeft.put(9, new Translation2d(12.417933, 5.130849553296214));
+    redRight.put(10, new Translation2d(11.776455999999998, 4.0208200000000005));
+    redLeft.put(10, new Translation2d(11.776455999999998, 4.0208200000000005));
+    redRight.put(11, new Translation2d(12.417933, 2.9107904467037855));
+    redLeft.put(11, new Translation2d(12.417933, 2.9107904467037855));
+    redRight.put(6, new Translation2d(13.699871, 2.9107904467037855));
+    redLeft.put(6, new Translation2d(13.699871, 2.9107904467037855));
+    blueRight.put(21, new Translation2d(5.771896, 4.0208200000000005));
+    blueLeft.put(21, new Translation2d(5.771896, 4.0208200000000005));
+    blueRight.put(20, new Translation2d(5.130165, 5.130849553296214));
+    blueLeft.put(20, new Translation2d(5.130165, 5.130849553296214));
+    blueRight.put(19, new Translation2d(3.848480999999999, 5.130849553296214));
+    blueLeft.put(19, new Translation2d(3.848480999999999, 5.130849553296214));
+    blueRight.put(18, new Translation2d(3.20675, 4.0208200000000005));
+    blueLeft.put(18, new Translation2d(3.20675, 4.0208200000000005));
+    blueRight.put(17, new Translation2d(3.8484809999999987, 2.9107904467037855));
+    blueLeft.put(17, new Translation2d(3.8484809999999987, 2.9107904467037855));
+    blueRight.put(22, new Translation2d(5.130165, 2.9107904467037855));
+    blueLeft.put(22, new Translation2d(5.130165, 2.9107904467037855));
     
     
 
@@ -93,19 +90,11 @@ public class CMD_PathfindReefAlign extends Command {
           alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
               : Arrays.asList(21, 20, 19, 18, 17, 22);
 
-      if (isLeftAlign) {
         if (alliance.get() == DriverStation.Alliance.Red) {
           selectedMap = redLeft;
         } else {
           selectedMap = blueLeft;
         }
-      } else {
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redRight;
-        } else {
-          selectedMap = blueRight;
-        }
-      }
     } else {
       return;
     }
@@ -125,7 +114,7 @@ public class CMD_PathfindReefAlign extends Command {
     }
 
     PathConstraints constraints = new PathConstraints(
-    3.0, 2.5,
+    3.0, 2.1,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
 
 
