@@ -66,6 +66,7 @@ import frc.robot.subsystems.SUB_LEDs;
 import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.subsystems.SUB_Pivot;
 import frc.robot.subsystems.SUB_Roller;
+import frc.robot.subsystems.SwerveModuleConfigs;
 import frc.robot.utils.AutoGenerator;
 import frc.robot.utils.Elastic;
 
@@ -289,8 +290,8 @@ public class RobotContainer {
          * joysticks}.
          */
         private void configureBindings() {
-
-                Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
+                Driver1.leftStick().onTrue(wheelRadiusCharacterization(drivetrain));
+                //Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
                 Driver1.leftTrigger()
                                 .whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput)))
@@ -587,17 +588,18 @@ public class RobotContainer {
                 () -> {
                   double speed = limiter.calculate(Drivetrain.WHEEL_RADIUS_MAX_VELOCITY);
                   drivetrain.drive(0.0, 0.0, speed,false,false);
-                }),
+                })),
 
         // Measurement sequence
         Commands.sequence(
             // Wait for modules to fully orient before starting measurement
-            Commands.waitSeconds(1.0),
+            Commands.waitSeconds(5.0),
 
             // Record starting measurement
             Commands.runOnce(
+
                 () -> {
-                  state.positions = drivetrain.getModuleRadians();
+                  state.positions = drivetrain.getModulePosition();
                   state.lastAngle = drivetrain.getRotation2d();
                   state.gyroDelta = 0.0;
                 }),
@@ -609,7 +611,7 @@ public class RobotContainer {
                       state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
                       state.lastAngle = rotation;
 
-                      double[] positions = drivetrain.getModuleRadians();
+                      double[] positions = drivetrain.getModulePosition();
                       double wheelDelta = 0.0;
                       for (int i = 0; i < 4; i++) {
                         wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
@@ -624,7 +626,7 @@ public class RobotContainer {
                 // When cancelled, calculate and print results
                 .finallyDo(
                     () -> {
-                      double[] positions = drivetrain.getModuleRadians();
+                      double[] positions = drivetrain.getModulePosition();
                       double wheelDelta = 0.0;
                       for (int i = 0; i < 4; i++) {
                         wheelDelta += Math.abs(positions[i] - state.positions[i]) / 4.0;
@@ -645,7 +647,7 @@ public class RobotContainer {
                               + " meters, "
                               + formatter.format(Units.metersToInches(wheelRadius))
                               + " inches");
-                    }))));
+                    })));
 
     c.addRequirements(drivetrain);
     return c;

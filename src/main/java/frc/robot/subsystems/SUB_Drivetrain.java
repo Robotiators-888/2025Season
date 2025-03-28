@@ -368,10 +368,11 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     }
     return states;
   }
-  public double[] getModuleRadians() {
+  public double[] getModulePosition() {
     double[] states = new double[modules.length];
     for (int i = 0; i < modules.length; i++) {
-      states[i] = modules[i].getState().angle.getRadians();
+      states[i] = 2*Math.PI*modules[i].getWheelCharacterizationPosition()/(Swerve.kWheelDiameterMeters * Math.PI
+      / Swerve.kDrivingMotorReduction);
     }
     return states;
   }
