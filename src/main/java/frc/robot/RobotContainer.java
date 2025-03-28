@@ -1,4 +1,3 @@
-// MONKEY
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -206,19 +205,6 @@ public class RobotContainer {
                                                                                                                 Roller.kEjectSpeed),
                                                                                                 roller).until(() -> !roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
 
-                NamedCommands.registerCommand("scoreL4(nostop)", new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL4Setpoint)))
-                                                                                .andThen(new RunCommand(
-                                                                                                () -> roller.setRollerOutput(
-                                                                                                                Roller.kEjectSpeed),
-                                                                                                roller)));
-
                 NamedCommands.registerCommand("ReachedTarget", new InstantCommand(
 
                                 () -> autoGenerator.setreachedtarget(true)));
@@ -235,8 +221,9 @@ public class RobotContainer {
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
                                 new InstantCommand(() -> pivot
                                                 .changeSetpoint(PivotConstants.kL4Setpoint)),
+                                Commands.waitUntil(()-> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
                                 new RunCommand(() -> roller
-                                                .setRollerOutput(Roller.kEjectSpeed - 0.2), roller)
+                                                .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
                                                                 .withTimeout(.15)));
 
                 NamedCommands.registerCommand(

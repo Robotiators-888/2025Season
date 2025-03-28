@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.175,
-        "y": 1.8359983766233767
+        "x": 0.6457792207792207,
+        "y": 1.389650974025974
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.184792091529598,
-        "y": 1.648540260001696
+        "x": 1.1768202185861227,
+        "y": 2.197070244202565
       },
       "isLocked": false,
-      "linkedName": "CageStart5"
+      "linkedName": "Bottom Pickup(Left)"
     },
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 3.1492500000000003,
+        "y": 3.8592499999999994
       },
       "prevControl": {
-        "x": 5.1838725412325894,
-        "y": 2.6163713306264897
+        "x": 2.4888299799527016,
+        "y": 3.3244859405701686
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": "B Score"
     }
   ],
   "rotationTargets": [],
@@ -34,14 +34,9 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.6606822262118486,
+      "waypointRelativePos": 0.6923999999999987,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ReachedTarget"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -54,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "3 Piece (Lower) Paths",
+  "folder": "3 Piece (Crazy) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 53.426969021480694
   },
   "useDefaultConstraints": true
 }

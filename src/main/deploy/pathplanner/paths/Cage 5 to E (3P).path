@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.156116808055341,
-        "y": 1.7825098349376736
+        "x": 6.146861612083314,
+        "y": 1.7455521943068217
       },
       "isLocked": false,
       "linkedName": "CageStart5"
@@ -20,8 +20,8 @@
         "y": 2.80625
       },
       "prevControl": {
-        "x": 5.216421440101213,
-        "y": 2.6500190524613676
+        "x": 5.229667951588753,
+        "y": 2.6681849520858067
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.66,
+      "waypointRelativePos": 0.538800000000004,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
