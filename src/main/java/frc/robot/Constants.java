@@ -301,7 +301,7 @@ public final class Constants {
         }
         public static class GroundIntake {
                 public static final int kGroundIntakeCanID = 38;
-                public static final double kGroundIntakeSpeed = -.40;
+                public static final double kGroundIntakeSpeed = -.4;
         }
         public static class GroundPivot {
                 public static final int kGroundPivotCanID = 37;
