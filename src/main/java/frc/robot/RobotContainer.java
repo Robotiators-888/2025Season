@@ -6,16 +6,15 @@
 package frc.robot;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
 
 import org.json.simple.parser.ParseException;
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -66,7 +65,6 @@ import frc.robot.subsystems.SUB_LEDs;
 import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.subsystems.SUB_Pivot;
 import frc.robot.subsystems.SUB_Roller;
-import frc.robot.subsystems.SwerveModuleConfigs;
 import frc.robot.utils.AutoGenerator;
 import frc.robot.utils.Elastic;
 
@@ -582,7 +580,6 @@ public class RobotContainer {
         Commands.sequence(
             // Reset acceleration limiter
             Commands.runOnce(() -> limiter.reset(0.0)),
-
             // Turn in place, accelerating up to full speed
             Commands.run(
                 () -> {
