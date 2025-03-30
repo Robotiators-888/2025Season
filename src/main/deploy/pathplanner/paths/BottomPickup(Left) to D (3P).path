@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.6911217437533298,
+      "waypointRelativePos": 0.33801498127340823,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
