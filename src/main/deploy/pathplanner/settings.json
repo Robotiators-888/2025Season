@@ -19,11 +19,12 @@
     "Cage 2 (3P)",
     "Cage 3 (2P)",
     "Cage 4 (2P)",
+    "Cage 4 (3P)",
     "Cage 5 (2P)",
     "Cage 5 (3P)",
     "Cage 6 (2P)",
-    "Cage 4 (3P)",
-    "Simple Autos"
+    "Simple Autos",
+    "Mr Lange Autos"
   ],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 2.5,
