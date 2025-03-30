@@ -275,7 +275,7 @@ public final class Constants {
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
                 public static final double kL2Setpoint = 0.252;
-                public static final double kL3Setpoint = 0.42;
+                public static final double kL3Setpoint = 0.43;
                 public static final double kL4Setpoint = 0.80;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
