@@ -92,7 +92,7 @@ public class RobotContainer {
         Optional<Alliance> lastAlliance;
         Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
-        public boolean RStickPressed = false;
+        public int listIndex = 0;
 
         public int targetId = 7;
 
@@ -287,7 +287,6 @@ public class RobotContainer {
                         new RunCommand(() -> roller.setRollerOutput(-Roller.kEjectSpeed), roller).withTimeout(1.0)
                 ));
 
-                //Who used ChatGPT bro???: NamedCommands.registerCommand("BargeIntake", getBargeSetpointCommand());
                 // Configure the trigger bindings
                 configureBindings();
 
@@ -327,8 +326,8 @@ public class RobotContainer {
                 Driver1.a().onTrue(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
 
-                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId));
-                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId));
+                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId,listIndex));
+                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId,listIndex));
                 Driver1.rightStick().onTrue(Commands.none())
                                 .onFalse(new InstantCommand(() -> getSelectedReefSide()));
                 Driver1.povDown().whileTrue(new RunCommand(() -> drivetrain.drive(
@@ -468,7 +467,7 @@ public class RobotContainer {
                 }
                 double angleDegrees = angleRadians*180/Math.PI;
                 int reefAngleDegrees = (int)Math.round((angleDegrees)/60)*60;
-                int listIndex = Math.floorMod((int)Math.round((angleDegrees)/60),6);
+                listIndex = Math.floorMod((int)Math.round((angleDegrees)/60),6);
                 //long listIndex = Math.round((angleDegrees)/60);
                 
                 SmartDashboard.putNumber("Angle", angleDegrees);
@@ -479,9 +478,7 @@ public class RobotContainer {
                 drivetrain.publisher1.set(pose);
                 targetId = targetTagSet[listIndex];
         }
-        public void Driver1RightStickPressed(boolean pressed) {
-                RStickPressed = pressed;
-        }
+
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
                 try {
@@ -635,7 +632,7 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return autoChooser.getSelected();
+                // return autoChooser.getSelected();
                 // Pathfinding.setPathfinder(new LocalADStar());
 
                 // try{
@@ -657,8 +654,8 @@ public class RobotContainer {
 
                 // PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
                 // return auto;
-
-                // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
+                //drivetrain.resetPose(new Pose2d(2.0, 3.0, new Rotation2d(Math.toRadians(90))));
+                return new CMD_PathfindReefAlign(drivetrain, photonVision, false, 6, 2);
 
                 // RobotConfig robotConfig = RobotConfig.fromGUISettings();
                 // PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
@@ -668,9 +665,10 @@ public class RobotContainer {
                 // );
                 // return AutoBuilder.followPath(path);
                 // } catch (Exception e) {
-                // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                // return Commands.none();
+                //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+                //         return Commands.none();
                 // }
+                
         }
 
         public Command constructAligningCommand(boolean isLeftAlign) {

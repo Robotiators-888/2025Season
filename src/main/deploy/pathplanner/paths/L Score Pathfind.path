@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4007711038961037,
-        "y": 7.182670454545454
+        "x": 3.5724105395191397,
+        "y": 5.267702391600698
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6401272179212558,
-        "y": 6.977782894900705
+        "x": 3.6974105395191397,
+        "y": 5.051196040654589
       },
       "isLocked": false,
-      "linkedName": "TopPickup(Mid)"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 5.10725
       },
       "prevControl": {
-        "x": 3.2292465973254822,
-        "y": 5.507127172525991
+        "x": 3.5386216541271502,
+        "y": 5.3162854437844835
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "Pickup to Score",
+  "folder": "Smart Align Paths",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -54.207249243337166
+    "velocity": 0.0,
+    "rotation": -59.99999999999999
   },
   "useDefaultConstraints": true
 }

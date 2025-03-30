@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -35,6 +36,7 @@ public class CMD_PathfindReefAlign extends Command {
   SUB_PhotonVision photonVision;
   SUB_Drivetrain drivetrain;
   int targetId;
+  int pathId;
 
   HashMap<Integer, Translation2d> redLeft = new HashMap<>();
   HashMap<Integer, Translation2d> redRight = new HashMap<>();
@@ -43,11 +45,12 @@ public class CMD_PathfindReefAlign extends Command {
 
   /** Creates a new CMD_PathfindReefAlign. */
   public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
-      boolean isLeftAlign, int targetId) {
+      boolean isLeftAlign, int targetId,int pathId) {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
     this.isLeftAlign = isLeftAlign;
     this.targetId = targetId;
+    this.pathId = pathId;
     redRight.put(7, new Translation2d(14.341348, 4.2116375));
     redLeft.put(7, new Translation2d(14.341348, 3.8401625));
     redRight.put(8, new Translation2d(13.539017606564588, 5.228798303296214));
@@ -109,13 +112,26 @@ public class CMD_PathfindReefAlign extends Command {
     PathConstraints constraints = new PathConstraints(
     3.0, 2.1,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
-
-
     Translation2d translate = selectedMap.get(targetId);
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
     drivetrain.publisher1.set(pose);
-    pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
+    List<List<String>> characterLists = Arrays.asList(
+      Arrays.asList("G", "H"),
+      Arrays.asList("I", "J"),
+      Arrays.asList("K", "L"),
+      Arrays.asList("A", "B"),
+      Arrays.asList("C", "D"),
+      Arrays.asList("E", "F")
+    );
 
+    String selectedCharacter = characterLists.get(pathId).get(isLeftAlign ? 0 : 1);
+    try {
+      PathPlannerPath path = PathPlannerPath.fromPathFile(selectedCharacter + " Score Pathfind");
+      pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
+    } catch (Exception e) {
+      System.out.println("Path not found, switching to pathfindToPose. Error: " + e);
+      pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
+    }
     pathfindingCommand.initialize();
   }
 
