@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.IntegerArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -35,8 +37,8 @@ public class CMD_PathfindReefAlign extends Command {
   boolean isLeftAlign = false;
   SUB_PhotonVision photonVision;
   SUB_Drivetrain drivetrain;
-  int targetId;
-  int pathId;
+  Supplier<Integer> targetId;
+  Supplier<Integer> pathId;
 
   HashMap<Integer, Translation2d> redLeft = new HashMap<>();
   HashMap<Integer, Translation2d> redRight = new HashMap<>();
@@ -45,12 +47,13 @@ public class CMD_PathfindReefAlign extends Command {
 
   /** Creates a new CMD_PathfindReefAlign. */
   public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
-      boolean isLeftAlign, int targetId,int pathId) {
+      boolean isLeftAlign, Supplier<Integer> targetId,Supplier<Integer> pathId) {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
     this.isLeftAlign = isLeftAlign;
     this.targetId = targetId;
     this.pathId = pathId;
+    
     redRight.put(7, new Translation2d(14.341348, 4.2116375));
     redLeft.put(7, new Translation2d(14.341348, 3.8401625));
     redRight.put(8, new Translation2d(13.539017606564588, 5.228798303296214));
@@ -87,7 +90,8 @@ public class CMD_PathfindReefAlign extends Command {
   public void initialize() {
     Pose2d tagPose = new Pose2d();
 
-
+    int target = targetId.get();
+    int path = pathId.get();
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     HashMap<Integer, Translation2d> selectedMap;
     if (alliance.isPresent()) {
@@ -108,11 +112,11 @@ public class CMD_PathfindReefAlign extends Command {
       return;
     }
 
-    tagPose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
+    tagPose = photonVision.at_field.getTagPose(target).orElse(new Pose3d()).toPose2d();
     PathConstraints constraints = new PathConstraints(
     3.0, 2.1,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
-    Translation2d translate = selectedMap.get(targetId);
+    Translation2d translate = selectedMap.get(target);
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
     drivetrain.publisher1.set(pose);
     List<List<String>> characterLists = Arrays.asList(
@@ -124,10 +128,10 @@ public class CMD_PathfindReefAlign extends Command {
       Arrays.asList("E", "F")
     );
 
-    String selectedCharacter = characterLists.get(pathId).get(isLeftAlign ? 0 : 1);
+    String selectedCharacter = characterLists.get(path).get(isLeftAlign ? 0 : 1);
     try {
-      PathPlannerPath path = PathPlannerPath.fromPathFile(selectedCharacter + " Score Pathfind");
-      pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
+      PathPlannerPath paths = PathPlannerPath.fromPathFile(selectedCharacter + " Score Pathfind");
+      pathfindingCommand = AutoBuilder.pathfindThenFollowPath(paths, constraints);
     } catch (Exception e) {
       System.out.println("Path not found, switching to pathfindToPose. Error: " + e);
       pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);

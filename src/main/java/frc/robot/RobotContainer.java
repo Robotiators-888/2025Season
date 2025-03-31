@@ -93,7 +93,6 @@ public class RobotContainer {
         Optional<Alliance> alliance;
         public static Field2d autoField = new Field2d();
         public int listIndex = 0;
-
         public int targetId = 7;
 
         // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -326,8 +325,8 @@ public class RobotContainer {
                 Driver1.a().onTrue(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
 
-                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, targetId,listIndex));
-                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, targetId,listIndex));
+                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, ()->targetId,()->listIndex));
+                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, ()->targetId,()->listIndex));
                 Driver1.rightStick().onTrue(Commands.none())
                                 .onFalse(new InstantCommand(() -> getSelectedReefSide()));
                 Driver1.povDown().whileTrue(new RunCommand(() -> drivetrain.drive(
@@ -477,6 +476,7 @@ public class RobotContainer {
                 Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
                 drivetrain.publisher1.set(pose);
                 targetId = targetTagSet[listIndex];
+
         }
 
         public Command getPathCommand(String pathName) {
@@ -655,7 +655,7 @@ public class RobotContainer {
                 // PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
                 // return auto;
                 //drivetrain.resetPose(new Pose2d(2.0, 3.0, new Rotation2d(Math.toRadians(90))));
-                return new CMD_PathfindReefAlign(drivetrain, photonVision, false, 6, 2);
+                //return new CMD_PathfindReefAlign(drivetrain, photonVision, false, 6, 2);
 
                 // RobotConfig robotConfig = RobotConfig.fromGUISettings();
                 // PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
@@ -668,6 +668,7 @@ public class RobotContainer {
                 //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
                 //         return Commands.none();
                 // }
+                return Commands.none();
                 
         }
 
