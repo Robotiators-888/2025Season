@@ -135,6 +135,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Cage 1 (2P)",
+  "folder": null,
   "choreoAuto": false
 }

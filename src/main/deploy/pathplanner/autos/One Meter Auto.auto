@@ -5,9 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 16.0
+            "pathName": "One Meter Path"
           }
         }
       ]
