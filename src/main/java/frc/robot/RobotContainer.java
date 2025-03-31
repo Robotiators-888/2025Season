@@ -10,9 +10,6 @@ import java.util.Optional;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.photonvision.EstimatedRobotPose;
@@ -50,14 +47,11 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
 import frc.robot.Constants.LEDs;
 import frc.robot.commands.CMD_PathfindReefAlign;
-import frc.robot.commands.CMD_ReefAlign;
 import frc.robot.utils.AutoGenerator;
 import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -212,6 +206,21 @@ public class RobotContainer {
                 NamedCommands.registerCommand("ResetReachedTarget",
                                 new InstantCommand(() -> autoGenerator.setreachedtarget(false)));
 
+                NamedCommands.registerCommand("scoreL2(conditional)", new SequentialCommandGroup(
+                                Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
+                                new InstantCommand(() -> pivot
+                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint)),
+                                new InstantCommand(() -> pivot
+                                                .changeSetpoint(PivotConstants.kL2Setpoint)),
+                                Commands.waitUntil(
+                                                () -> pivot.atSetpoint(PivotConstants.kL2Setpoint)),
+                                new RunCommand(() -> roller
+                                                .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
+                                                                .withTimeout(.15)));
+                                                                
                 NamedCommands.registerCommand("scoreL4(conditional)", new SequentialCommandGroup(
                                 Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
                                 new InstantCommand(() -> pivot
@@ -221,7 +230,8 @@ public class RobotContainer {
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
                                 new InstantCommand(() -> pivot
                                                 .changeSetpoint(PivotConstants.kL4Setpoint)),
-                                Commands.waitUntil(()-> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
+                                Commands.waitUntil(
+                                                () -> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
                                 new RunCommand(() -> roller
                                                 .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
                                                                 .withTimeout(.15)));
