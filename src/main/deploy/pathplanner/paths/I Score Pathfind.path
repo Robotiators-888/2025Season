@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.404275456360195,
-        "y": 5.253510489923493
+        "x": 5.472822824077758,
+        "y": 5.350638825597787
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.310781734394979,
-        "y": 5.021650782442674
+        "x": 5.379329102112542,
+        "y": 5.118779118116968
       },
       "isLocked": false,
       "linkedName": null
@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "Smart Align Paths",
   "idealStartingState": {
-    "velocity": 0.0,
+    "velocity": 1.0,
     "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
