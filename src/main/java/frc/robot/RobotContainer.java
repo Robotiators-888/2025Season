@@ -632,7 +632,7 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                // return autoChooser.getSelected();
+                return autoChooser.getSelected();
                 // Pathfinding.setPathfinder(new LocalADStar());
 
                 // try{
@@ -668,7 +668,6 @@ public class RobotContainer {
                 //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
                 //         return Commands.none();
                 // }
-                return Commands.none();
                 
         }
 
