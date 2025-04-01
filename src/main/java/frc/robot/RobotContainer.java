@@ -325,11 +325,11 @@ public class RobotContainer {
                 Driver1.a().onTrue(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
 
-                Driver1.rightTrigger().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, ()->targetId,()->listIndex));
-                Driver1.rightBumper().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, ()->targetId,()->listIndex));
+                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, ()->targetId,()->listIndex));
+                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, ()->targetId,()->listIndex));
                 Driver1.rightStick().onTrue(Commands.none())
                                 .onFalse(new InstantCommand(() -> getSelectedReefSide()));
-                Driver1.povDown().whileTrue(new RunCommand(() -> drivetrain.drive(
+                Driver1.leftBumper().whileTrue(new RunCommand(() -> drivetrain.drive(
                                 MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
                                 MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
                                 0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
