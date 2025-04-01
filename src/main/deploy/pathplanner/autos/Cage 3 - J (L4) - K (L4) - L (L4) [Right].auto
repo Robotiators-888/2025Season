@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cage 6 to B [C]"
+                  "pathName": "Cage 3 to J (3P)"
                 }
               },
               {
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "B to BottomPickup(Left) [C]"
+            "pathName": "J to TopPickup(Right) (3P)"
           }
         },
         {
@@ -46,7 +46,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Left) to A [C]"
+                        "pathName": "TopPickup(Right) to K (3P)"
                       }
                     }
                   ]
@@ -77,7 +77,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "A to BottomPickup(Left) [C]"
+            "pathName": "K to TopPickup(Right) (3P)"
           }
         },
         {
@@ -97,7 +97,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Left) to B [C]"
+                        "pathName": "TopPickup(Right) to L (3P)"
                       }
                     }
                   ]
@@ -116,10 +116,23 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "scoreL2(conditional)"
+                        "name": "scoreL4(conditional)"
                       }
                     }
                   ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L to TopPickup(Right) (3P)"
                 }
               }
             ]
@@ -129,6 +142,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Mr Lange Autos",
+  "folder": "Cage 2 (3P)",
   "choreoAuto": false
 }
