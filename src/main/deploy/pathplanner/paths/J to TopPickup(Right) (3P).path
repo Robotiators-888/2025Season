@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.014285714285714,
-        "y": 5.235836038961038
+        "x": 5.00478896103896,
+        "y": 5.250081168831168
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.506209415584415,
-        "y": 5.672686688311687
+        "x": 4.496712662337661,
+        "y": 5.686931818181818
       },
       "isLocked": false,
       "linkedName": "J Score"
@@ -96,7 +96,7 @@
   "folder": "3 Piece (Upper) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -121.52699999999999
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": false
 }

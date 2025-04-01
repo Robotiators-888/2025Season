@@ -23,8 +23,9 @@
     "Cage 5 (2P)",
     "Cage 5 (3P)",
     "Cage 6 (2P)",
-    "Simple Autos",
-    "Mr Lange Autos"
+    "Mr Lange Autos",
+    "Cage 3 (3P)",
+    "Simple Autos"
   ],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 2.5,
