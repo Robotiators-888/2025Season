@@ -4,59 +4,34 @@
     {
       "anchor": {
         "x": 3.1492500000000003,
-        "y": 4.1907499999999995
+        "y": 3.8592499999999994
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3302499999999995,
-        "y": 3.7714999999999996
+        "x": 2.4304148070215694,
+        "y": 4.498683727142782
       },
       "isLocked": false,
-      "linkedName": "A Score"
+      "linkedName": "B Score"
     },
     {
       "anchor": {
-        "x": 0.6457792207792207,
-        "y": 1.389650974025974
+        "x": 0.6532499999999999,
+        "y": 6.68675
       },
       "prevControl": {
-        "x": 0.8872499999999997,
-        "y": 1.7629999999999995
+        "x": 1.2598151966045061,
+        "y": 5.834512337066042
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Pickup(Left)"
+      "linkedName": "TopPickup(Left)"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.12440191387559853,
-      "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 1.75,
-        "maxAngularVelocity": 180.0,
-        "maxAngularAcceleration": 180.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
-    {
-      "name": "ResetReachedTarget",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ResetReachedTarget"
-        }
-      }
-    },
     {
       "name": "stow",
       "waypointRelativePos": 0,
@@ -69,9 +44,20 @@
       }
     },
     {
+      "name": "ResetReachedTarget",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetReachedTarget"
+        }
+      }
+    },
+    {
       "name": "runRoller",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.050799999999999255,
+      "endWaypointRelativePos": 0.0780000000000014,
       "command": {
         "type": "named",
         "data": {
@@ -82,7 +68,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 2.7,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -90,7 +76,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 53.426969021480694
+    "rotation": -54.207249243337166
   },
   "reversed": false,
   "folder": "3 Piece (Crazy) Paths",
@@ -98,5 +84,5 @@
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
