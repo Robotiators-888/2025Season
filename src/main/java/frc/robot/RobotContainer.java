@@ -118,6 +118,7 @@ public class RobotContainer {
                 pivot.setDefaultCommand(
                                 new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
                 roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0,0.0), roller));
+                leds.setDefaultCommand(new RunCommand(() -> leds.set(.91), leds));
 
                 Driver1.rightBumper()
                                 .whileTrue(
@@ -313,8 +314,8 @@ public class RobotContainer {
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
-                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
-                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
+                Driver1.x().whileTrue(new SequentialCommandGroup(new CMD_PathfindReefAlign(drivetrain, photonVision, true), new RunCommand(() -> leds.set(.61), leds)));
+                Driver1.b().whileTrue(new ParallelCommandGroup(new CMD_PathfindReefAlign(drivetrain, photonVision, false), new RunCommand(() -> leds.set(.87), leds)));
 
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
@@ -359,7 +360,7 @@ public class RobotContainer {
                                                                                 1)),
                                                                 new InstantCommand(() -> Driver2.getHID()
                                                                                 .setRumble(RumbleType.kBothRumble, 1)),
-                                                                new InstantCommand(() -> leds.set(LEDs.kColorGreen)),
+                                                                //new InstantCommand(() -> leds.set(LEDs.kColorGreen)),
                                                                 new RunCommand(
                                                                                 () -> roller.setRollerOutput(
                                                                                                 Roller.kIntakeFinishSpeed,0),
@@ -388,8 +389,8 @@ public class RobotContainer {
                                                 .until(() -> !roller.getHasCoral())
                                                 .andThen(new SequentialCommandGroup(
                                                                 new InstantCommand(() -> roller.setRollerOutput(0.),
-                                                                                roller),
-                                                                new InstantCommand(() -> leds.setAllianceColor()))))
+                                                                                roller))))
+                                                                //,new InstantCommand(() -> leds.setAllianceColor()))))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.), roller));
 
                 // Driver2.leftBumper()
@@ -661,7 +662,7 @@ public class RobotContainer {
 
         public void autonomousInit() {
                 Elastic.selectTab("Autonomous");
-                leds.set(LEDs.kParty_Palette_Twinkles);
+                //leds.set(LEDs.kParty_Palette_Twinkles);
         }
 
         public void autonomousPeriodic() {
@@ -669,7 +670,7 @@ public class RobotContainer {
         }
 
         public void teleopInit() {
-                leds.setAllianceColor();
+                //leds.setAllianceColor();
                 Elastic.selectTab("Teleoperated");
         }
 
