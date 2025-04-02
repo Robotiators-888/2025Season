@@ -671,7 +671,7 @@ public class RobotContainer {
         }
 
         public void teleopInit() {
-                //leds.setAllianceColor();
+                leds.set(.91);
                 Elastic.selectTab("Teleoperated");
         }
 
