@@ -118,7 +118,6 @@ public class RobotContainer {
                 pivot.setDefaultCommand(
                                 new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
                 roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0,0.0), roller));
-                leds.setDefaultCommand(new RunCommand(() -> leds.set(.91), leds));
 
                 Driver1.rightBumper()
                                 .whileTrue(
@@ -314,8 +313,10 @@ public class RobotContainer {
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
-                Driver1.x().whileTrue(new SequentialCommandGroup(new CMD_PathfindReefAlign(drivetrain, photonVision, true), new RunCommand(() -> leds.set(.61), leds)));
-                Driver1.b().whileTrue(new ParallelCommandGroup(new CMD_PathfindReefAlign(drivetrain, photonVision, false), new RunCommand(() -> leds.set(.87), leds)));
+                Driver1.x().whileTrue(new ParallelCommandGroup(new CMD_PathfindReefAlign(drivetrain, photonVision, true), new InstantCommand(() -> leds.set(.61))))
+                                .onFalse(new InstantCommand(() -> leds.set(.91)));
+                Driver1.b().whileTrue(new ParallelCommandGroup(new CMD_PathfindReefAlign(drivetrain, photonVision, false), new InstantCommand(() -> leds.set(.87))))
+                                .onFalse(new InstantCommand(() -> leds.set(.91)));;
 
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
@@ -662,7 +663,7 @@ public class RobotContainer {
 
         public void autonomousInit() {
                 Elastic.selectTab("Autonomous");
-                //leds.set(LEDs.kParty_Palette_Twinkles);
+                leds.set(LEDs.kParty_Palette_Twinkles);
         }
 
         public void autonomousPeriodic() {
