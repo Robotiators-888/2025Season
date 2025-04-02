@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "(Shortened) Cage 4 to E (3P)"
+                  "pathName": "Cage 5 to E (3P)"
                 }
               },
               {
@@ -40,7 +40,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.1
+                        "waitTime": 0.01
                       }
                     },
                     {
@@ -91,7 +91,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.1
+                        "waitTime": 0.01
                       }
                     },
                     {
@@ -130,15 +130,9 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "stow"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "C Backup"
+                  "pathName": "C to BottomPickup(Left) (3P)"
                 }
               }
             ]

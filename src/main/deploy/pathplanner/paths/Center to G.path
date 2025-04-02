@@ -4,48 +4,36 @@
     {
       "anchor": {
         "x": 7.175,
-        "y": 1.8359983766233767
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.156116808055341,
-        "y": 1.7825098349376736
+        "x": 6.923817111879542,
+        "y": 3.9740458281782485
       },
       "isLocked": false,
-      "linkedName": "CageStart5"
+      "linkedName": "Center Start"
     },
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 5.812012987012987,
+        "y": 3.8588068181818174
       },
       "prevControl": {
-        "x": 5.216421440101213,
-        "y": 2.6500190524613676
+        "x": 6.989752577768559,
+        "y": 3.9806843369189933
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": "G Score"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "ReachedTarget",
-      "waypointRelativePos": 0.66,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ReachedTarget"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 2.2,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
@@ -54,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.00538320808354
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "3 Piece (Lower) Paths",
+  "folder": "Start to Score",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

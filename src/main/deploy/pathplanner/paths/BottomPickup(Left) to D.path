@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3909081147893005,
+        "x": 1.3909081147893003,
         "y": 1.7599934447662557
       },
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.99499999999999
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "Pickup to Score",
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 53.426969021480694
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
