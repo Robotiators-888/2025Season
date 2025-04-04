@@ -52,6 +52,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.commands.CMD_OldPathfindReefAlign;
 import frc.robot.commands.CMD_PathfindReefAlign;
+import frc.robot.commands.CMD_PathfindAlgaeAlign;
 import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_Elevator;
@@ -319,17 +320,16 @@ public class RobotContainer {
 
                 Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
-                Driver1.povUp()
+                Driver1.povLeft()
                                 .whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
-                Driver1.povDown()
+                Driver1.povRight()
                                 .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
-                Driver1.y().onTrue(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
-                Driver1.a().onTrue(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
+                Driver1.y().whileTrue(new CMD_PathfindAlgaeAlign(drivetrain, photonVision));
+                Driver1.a().onTrue(
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)));
 
                 Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, ()->targetId,()->listIndex));
                 Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, ()->targetId,()->listIndex));
@@ -339,7 +339,8 @@ public class RobotContainer {
 
                 Driver1.rightStick().onTrue(Commands.none())
                                 .onFalse(new InstantCommand(() -> getSelectedReefSide()));
-                Driver1.povLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
+
+                Driver1.povDown().whileTrue(new RunCommand(() -> drivetrain.drive(
                                 MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
                                 MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
                                 0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
