@@ -50,6 +50,7 @@ import frc.robot.Constants.LEDs;
 import frc.robot.Constants.Operator;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Roller;
+import frc.robot.commands.CMD_OldPathfindReefAlign;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
@@ -332,6 +333,10 @@ public class RobotContainer {
 
                 Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, ()->targetId,()->listIndex));
                 Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, ()->targetId,()->listIndex));
+
+                Driver1.leftBumper().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, true)); // Right
+                Driver1.leftTrigger().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, false)); // Left
+
                 Driver1.rightStick().onTrue(Commands.none())
                                 .onFalse(new InstantCommand(() -> getSelectedReefSide()));
                 Driver1.povLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
