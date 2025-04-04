@@ -8,7 +8,6 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.Elevator;
-import frc.robot.Constants.PivotConstants;
 import frc.robot.subsystems.*;
 
 public class ElevatorManager {

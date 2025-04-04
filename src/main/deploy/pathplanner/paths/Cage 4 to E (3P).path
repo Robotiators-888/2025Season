@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.298500000000001,
-        "y": 1.8507499999999992
+        "x": 7.175,
+        "y": 3.013595779220779
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.056145310957557,
-        "y": 1.9121031148283496
+        "x": 6.15864448051948,
+        "y": 2.6432224025974027
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CageStart4"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 2.80625
       },
       "prevControl": {
-        "x": 5.1024367259819075,
-        "y": 2.569799760997501
+        "x": 5.356168831168831,
+        "y": 2.719196428571428
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.7404000000000024,
+      "waypointRelativePos": 0.1577287066246068,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.2,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.00538320808354
+    "rotation": 119.99999999999999
   },
   "reversed": false,
   "folder": "3 Piece (Lower) Paths",

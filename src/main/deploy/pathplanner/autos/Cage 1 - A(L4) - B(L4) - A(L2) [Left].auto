@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cage 5 to E (WithStart)"
+                  "pathName": "Cage 1 to A [C]"
                 }
               },
               {
@@ -24,47 +24,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stow"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "E Backup"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "E Backup to BottomPickup(Right)"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "A to TopPickup(Left) [C]"
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
@@ -72,35 +40,16 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 0.1
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomPickup(Right) to C"
+                        "pathName": "TopPickup(Left) to B [C]"
                       }
                     }
                   ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreL4"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stow"
                 }
               },
               {
@@ -108,15 +57,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "C Backup"
+                        "name": "intake"
                       }
                     },
                     {
-                      "type": "path",
+                      "type": "named",
                       "data": {
-                        "pathName": "C Backup to BottomPickup(Right)"
+                        "name": "scoreL4(conditional)"
                       }
                     }
                   ]
@@ -126,19 +75,51 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "B to TopPickup(Left) [C]"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intake"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "TopPickup(Left) to A [C]"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "sequential",
                 "data": {
-                  "commands": []
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "scoreL2(conditional)"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -148,6 +129,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Cage 5 (2P)",
+  "folder": "Mr Lange Autos",
   "choreoAuto": false
 }

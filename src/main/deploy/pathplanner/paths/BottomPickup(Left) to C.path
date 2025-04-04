@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.994616791916464
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "Pickup to Score",
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 53.426969021480694
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

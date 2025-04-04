@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.152226027397259,
-        "y": 4.055051369863014
+        "x": 7.175,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.266491749168533,
-        "y": 4.138582484270557
+        "x": 7.678935572666138,
+        "y": 3.9216942397108263
       },
       "isLocked": false,
-      "linkedName": "CageStart3"
+      "linkedName": "Center Start"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 4.191193181818182
       },
       "prevControl": {
-        "x": 6.0841431671311845,
-        "y": 4.155250195426329
+        "x": 5.545724680052453,
+        "y": 4.235560976691638
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.2,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
