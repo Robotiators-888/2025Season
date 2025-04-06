@@ -462,14 +462,14 @@ public class RobotContainer {
                                                 .ChangeSetpoint(Elevator.kL4Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
                                 new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kIntakeSetpoint)),
+                                                .changeSetpoint(250)), // 250 Is close to when the bottom of the manuipulator collides with the top of the elevator.
                                 new ParallelRaceGroup(new SequentialCommandGroup(
-                                                Commands.waitUntil(() -> pivot.atSetpoint(250)),// Here 250 Is used as a kind of default value, will have to be tested. 
+                                                Commands.waitUntil(() -> pivot.atSetpoint(220)),// Here 250 Is used as a kind of default value, will have to be tested. 
                                                 new RunCommand(() -> roller.setRollerOutput(
                                                                 -Roller.kIntakeSpeed))),
                                                 new SequentialCommandGroup(Commands
                                                                 .waitUntil(() -> pivot.atSetpoint(
-                                                                                PivotConstants.kIntakeSetpoint)),
+                                                                                250)),
                                                                 new WaitCommand(.2)),
                                                 new InstantCommand(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kElevatingSetpoint)),
