@@ -47,6 +47,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Field;
@@ -220,7 +221,7 @@ public class RobotContainer {
                                 new RunCommand(() -> roller
                                                 .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
                                                                 .withTimeout(.15)));
-                                                                
+
                 NamedCommands.registerCommand("scoreL4(conditional)", new SequentialCommandGroup(
                                 Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
                                 new InstantCommand(() -> pivot
@@ -282,7 +283,7 @@ public class RobotContainer {
          * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
          */
         private void configureBindings() {
-                
+
                 Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
                 Driver1.leftTrigger().whileTrue(new RunCommand(
@@ -298,7 +299,7 @@ public class RobotContainer {
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
                 Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
                 Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
-                
+
                 // Driver 2
 
                 Driver2.a().onTrue(getZeroSetpointCommand());
@@ -314,7 +315,7 @@ public class RobotContainer {
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
                 Driver2.povRight().onTrue(getBargeScoringCommand());
-                
+
 
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
@@ -453,27 +454,30 @@ public class RobotContainer {
                 c.addRequirements(elevator);
                 return c;
         }
+
         public Command getBargeScoringCommand() {
-                Command c = new SequentialCommandGroup(
-                        new InstantCommand(() -> pivot
-                                .changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
-                        new InstantCommand(() -> elevator
-                                .ChangeSetpoint(Elevator.kL4Setpoint)),
-                        Commands.waitUntil(() -> elevator
-                                .atSetpoint(Elevator.kL4Setpoint)),
-                        new InstantCommand(() -> pivot
-                                .changeSetpoint(PivotConstants.kIntakeSetpoint)),
-                        Commands.waitUntil(() -> pivot
-                                .atSetpoint(PivotConstants.kIntakeSetpoint)),
-                        Commands.waitSeconds(1),
-                        new InstantCommand(() -> pivot
-                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                        new InstantCommand(() -> elevator.ChangeSetpoint(0.0)));
+                Command c = new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
+                                new InstantCommand(() -> pivot
+                                                .changeSetpoint(PivotConstants.kIntakeSetpoint)),
+                                new ParallelRaceGroup(new RunCommand(
+                                                () -> roller.setRollerOutput(-Roller.kIntakeSpeed)),
+                                                new SequentialCommandGroup(Commands
+                                                                .waitUntil(() -> pivot.atSetpoint(
+                                                                                PivotConstants.kIntakeSetpoint)),
+                                                                new WaitCommand(.2)),
+                                                new InstantCommand(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kElevatingSetpoint)),
+                                                new InstantCommand(() -> elevator
+                                                                .ChangeSetpoint(0.0))));
                 c.addRequirements(elevator);
                 return c;
         }
 
-        
+
 
         public Command getBargeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
@@ -580,41 +584,6 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 return autoChooser.getSelected();
-                // Pathfinding.setPathfinder(new LocalADStar());
-
-                // try{
-                // // Load the path we want to pathfind to and follow
-                // PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
-                // drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
-                // // // Create the constraints to use while pathfinding. The constraints
-                // defined in the path will only be used for the path.
-                // PathConstraints constraints = new PathConstraints(
-                // 0.5, 0.5,
-                // Units.degreesToRadians(180), Units.degreesToRadians(180));
-
-                // // Since AutoBuilder is configured, we can use it to build pathfinding
-                // commands
-                // return AutoBuilder.pathfindThenFollowPath(
-                // path,
-                // constraints);
-                // return AutoBuilder.followPath(path);
-
-                // PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
-                // return auto;
-
-                // PathPlannerPath path = PathPlannerPath.fromPathFile("Angle Path");
-
-                // RobotConfig robotConfig = RobotConfig.fromGUISettings();
-                // PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
-
-                // drivetrain.resetPose(
-                // AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
-                // );
-                // return AutoBuilder.followPath(path);
-                // } catch (Exception e) {
-                // DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                // return Commands.none();
-                // }
         }
 
         public Command constructAligningCommand(boolean isLeftAlign) {
