@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Climber;
@@ -121,7 +122,7 @@ public class RobotContainer {
                 // c.onTrue(new RunCommand(() -> elevator.runElevator(), elevator);
 
                 elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(
-                                () -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint)),
+                                () -> pivot.atElevatingSetpoint()),
                                 elevator));
                 pivot.setDefaultCommand(new RunCommand(
                                 () -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
@@ -235,7 +236,7 @@ public class RobotContainer {
                                                 .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
                                                                 .withTimeout(.15)));
                                                                 
-                NamedCommands.registerCommand("scoreL4(conditional)", new SequentialCommandGroup(
+                NamedCommands.registerCommand("scoreL4(conditional)", new ParallelRaceGroup(new SequentialCommandGroup(
                                 Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
                                 new InstantCommand(() -> pivot
                                                 .changeSetpoint(PivotConstants.kElevatingSetpoint)),
@@ -248,7 +249,7 @@ public class RobotContainer {
                                                 () -> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
                                 new RunCommand(() -> roller
                                                 .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
-                                                                .withTimeout(.15)));
+                                                                .withTimeout(.15)).withTimeout(4),Commands.waitUntil(()->!autoGenerator.getintakecomplete())));
 
                 NamedCommands.registerCommand(
                                 "runRoller", new RunCommand(
@@ -256,7 +257,9 @@ public class RobotContainer {
                                                                 Roller.kRollerHelperSpeed),
                                                 roller));
 
-                NamedCommands.registerCommand("intake", new SequentialCommandGroup(
+                NamedCommands.registerCommand("intake",
+                new ParallelRaceGroup(
+                new SequentialCommandGroup(
                                 new InstantCommand(() -> pivot
                                                 .changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
@@ -268,7 +271,10 @@ public class RobotContainer {
                                                                                                 () -> roller.setRollerOutput(
                                                                                                                 Roller.kIntakeSpeed,
                                                                                                                 Roller.kRollerHelperSpeed),
-                                                                                                roller).until(() -> roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0, 0)))));
+                                                                                                roller).until(() -> roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0, 0)).andThen(new InstantCommand(()->autoGenerator.setintakecomplete(true))))),
+                                new SequentialCommandGroup(new WaitCommand(4), new InstantCommand(()->autoGenerator.setintakecomplete(false)))
+                                )
+                                                                                                );
 
                 NamedCommands.registerCommand("stow", new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
@@ -320,10 +326,10 @@ public class RobotContainer {
 
                 Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
-                Driver1.povLeft()
+                Driver1.povUp()
                                 .whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
-                Driver1.povRight()
+                Driver1.povDown()
                                 .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
                                 .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
@@ -338,9 +344,9 @@ public class RobotContainer {
                 Driver1.leftTrigger().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, false)); // Left
 
                 Driver1.rightStick().onTrue(Commands.none())
-                                .onFalse(new InstantCommand(() -> getSelectedReefSide()));
+                                .onFalse(new InstantCommand(() -> getSelectedReefSide())); 
 
-                Driver1.povDown().whileTrue(new RunCommand(() -> drivetrain.drive(
+                Driver1.povLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
                                 MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
                                 MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
                                 0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
@@ -356,10 +362,17 @@ public class RobotContainer {
                 Driver2.x().onTrue(getL3SetpointCommand());
 
                 Driver2.y().onTrue(getL4SetpointCommand());
+                // Driver2.a().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
+                // Driver2.b().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kL2Setpoint)));
+                // Driver2.x().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kL3Setpoint)));
+                // Driver2.y().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kL4Setpoint)));
+
 
                 Driver2.povUp().onTrue(getAlgaeSetpointCommand());
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
+                Driver2.povRight().onTrue(getDealgaeSetpointCommand());
+                Driver2.leftBumper().whileTrue(new RunCommand(()->roller.setRollerOutput(-Roller.kIntakeSpeed, -Roller.kRollerHelperSpeed))).onFalse(new InstantCommand(()->roller.setRollerOutput(0.0, 0.0)));
 
                 
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
@@ -450,12 +463,12 @@ public class RobotContainer {
                 // .changeSetpoint(PivotConstants.kElevatingSetpoint))))
                 // .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
 
-                Driver2.leftBumper().whileTrue(new InstantCommand(() -> pivot
-                                .changeSetpoint(PivotConstants.kElevatingSetpoint)).alongWith(
-                                                new RunCommand(() -> roller.setRollerOutput(
-                                                                -Roller.kIntakeSpeed))))
-                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0),
-                                                roller));
+                // Driver2.leftBumper().whileTrue(new InstantCommand(() -> pivot
+                //                 .changeSetpoint(PivotConstants.kElevatingSetpoint)).alongWith(
+                //                                 new RunCommand(() -> roller.setRollerOutput(
+                //                                                 -Roller.kIntakeSpeed))))
+                //                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0),
+                //                                 roller));
 
                 Driver2.leftTrigger().whileTrue(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))
@@ -520,7 +533,7 @@ public class RobotContainer {
                                                 .andThen(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kAlgaeScoringSetpoint))),
                                 new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot
-                                                .atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
+                                                .atSetpointAlgae(PivotConstants.kAlgaeSafeSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
@@ -548,7 +561,7 @@ public class RobotContainer {
                                                 .andThen(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kL4Setpoint))),
                                 new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                                                .atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
@@ -562,7 +575,7 @@ public class RobotContainer {
                                                 .andThen(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kL3Setpoint))),
                                 new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                                                .atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
@@ -576,7 +589,7 @@ public class RobotContainer {
                                                 .andThen(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kL2Setpoint))),
                                 new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                                                .atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
@@ -589,12 +602,28 @@ public class RobotContainer {
                                                 .andThen(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kIntakeSetpoint))),
                                 new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                                                .atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
 
         public Command getAlgaeSetpointCommand() {
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kAlgaeSetpoint + 0.05)),
+                                Commands.waitUntil(
+                                                () -> elevator.atSetpoint(Elevator.kAlgaeSetpoint + 0.05))
+                                                .andThen(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kAlgaeSetpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot
+                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                c.addRequirements(elevator);
+                return c;
+        }
+
+        
+        public Command getDealgaeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
@@ -613,8 +642,8 @@ public class RobotContainer {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
+                                                .ChangeSetpoint(Elevator.kL2Setpoint + 0.1)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint + 0.1))
                                                 .andThen(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kAlgaeSetpoint))),
                                 new RunCommand(() -> elevator.runElevator(() -> pivot

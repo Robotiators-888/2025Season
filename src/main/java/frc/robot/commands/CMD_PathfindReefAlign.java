@@ -133,7 +133,7 @@ public class CMD_PathfindReefAlign extends Command {
       PathPlannerPath paths = PathPlannerPath.fromPathFile(selectedCharacter + " Score Pathfind");
       pathfindingCommand = AutoBuilder.pathfindThenFollowPath(paths, constraints);
     } catch (Exception e) {
-      System.out.println("Path not found, switching to pathfindToPose. Error: " + e);
+      //System.out.println("Path not found, switching to pathfindToPose. Error: " + e);
       pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
     }
     pathfindingCommand.initialize();
