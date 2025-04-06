@@ -282,7 +282,7 @@ public class RobotContainer {
          * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
          */
         private void configureBindings() {
-
+                
                 Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
                 Driver1.leftTrigger().whileTrue(new RunCommand(
@@ -296,7 +296,9 @@ public class RobotContainer {
                                 () -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
                 Driver1.a().onTrue(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint)));
-
+                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
+                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
+                
                 // Driver 2
 
                 Driver2.a().onTrue(getZeroSetpointCommand());
@@ -311,8 +313,8 @@ public class RobotContainer {
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
 
-                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true));
-                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false));
+                Driver2.povRight().onTrue(getBargeScoringCommand());
+                
 
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
@@ -451,6 +453,27 @@ public class RobotContainer {
                 c.addRequirements(elevator);
                 return c;
         }
+        public Command getBargeScoringCommand() {
+                Command c = new SequentialCommandGroup(
+                        new InstantCommand(() -> pivot
+                                .changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
+                        new InstantCommand(() -> elevator
+                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                        Commands.waitUntil(() -> elevator
+                                .atSetpoint(Elevator.kL4Setpoint)),
+                        new InstantCommand(() -> pivot
+                                .changeSetpoint(PivotConstants.kIntakeSetpoint)),
+                        Commands.waitUntil(() -> pivot
+                                .atSetpoint(PivotConstants.kIntakeSetpoint)),
+                        Commands.waitSeconds(1),
+                        new InstantCommand(() -> pivot
+                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                        new InstantCommand(() -> elevator.ChangeSetpoint(0.0)));
+                c.addRequirements(elevator);
+                return c;
+        }
+
+        
 
         public Command getBargeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
