@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
+import frc.robot.utils.ScoringSetpoint;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -279,6 +281,16 @@ public final class Constants {
                 public static final double kL4Setpoint = 0.80;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
+        }
+
+        public static class CollisionAvoidance {
+                public static final ScoringSetpoint l4Setpoint = null;
+                public static final ScoringSetpoint l3Setpoint = null;
+                public static final ScoringSetpoint l2Setpoint = null;
+                public static final ScoringSetpoint bargeSetpoint = null;
+                public static final ScoringSetpoint processorSetpoint = null;
+                public static final ScoringSetpoint l1AlgaeSetpoint = null;
+                public static final ScoringSetpoint l2AlgaeSetpoint = null;
         }
 
         public static class Roller {
