@@ -463,8 +463,10 @@ public class RobotContainer {
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
                                 new InstantCommand(() -> pivot
                                                 .changeSetpoint(PivotConstants.kIntakeSetpoint)),
-                                new ParallelRaceGroup(new RunCommand(
-                                                () -> roller.setRollerOutput(-Roller.kIntakeSpeed)),
+                                new ParallelRaceGroup(new SequentialCommandGroup(
+                                                Commands.waitUntil(() -> pivot.atSetpoint(250)),// Here 250 Is used as a kind of default value, will have to be tested. 
+                                                new RunCommand(() -> roller.setRollerOutput(
+                                                                -Roller.kIntakeSpeed))),
                                                 new SequentialCommandGroup(Commands
                                                                 .waitUntil(() -> pivot.atSetpoint(
                                                                                 PivotConstants.kIntakeSetpoint)),
