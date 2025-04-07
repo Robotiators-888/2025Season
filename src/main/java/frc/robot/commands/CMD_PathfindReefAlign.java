@@ -118,7 +118,8 @@ public class CMD_PathfindReefAlign extends Command {
     Units.degreesToRadians(540), Units.degreesToRadians(720));
     Translation2d translate = selectedMap.get(target);
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
-    drivetrain.publisher1.set(pose);
+    drivetrain.selectPosePublisher.set(pose);
+    
     List<List<String>> characterLists = Arrays.asList(
       Arrays.asList("G", "H"),
       Arrays.asList("I", "J"),
