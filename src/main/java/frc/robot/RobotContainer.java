@@ -19,6 +19,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -52,8 +53,8 @@ import frc.robot.Constants.Operator;
 import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.commands.CMD_OldPathfindReefAlign;
-import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_PathfindAlgaeAlign;
+import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_Elevator;
@@ -247,6 +248,7 @@ public class RobotContainer {
                                                 .changeSetpoint(PivotConstants.kL4Setpoint)),
                                 Commands.waitUntil(
                                                 () -> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
+                                new WaitCommand(.1),
                                 new RunCommand(() -> roller
                                                 .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
                                                                 .withTimeout(.15)).withTimeout(4),Commands.waitUntil(()->!autoGenerator.getintakecomplete())));
@@ -351,6 +353,16 @@ public class RobotContainer {
                                 MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
                                 0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
                                 true, true), drivetrain));
+                Driver1.povUpLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
+                        MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                        MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                        0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
+                        true, true), drivetrain));
+                Driver1.povDownLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
+                        MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                        MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                        0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
+                        true, true), drivetrain));
 
                 // Driver1.rightStick();
                 // Driver 2
@@ -371,7 +383,7 @@ public class RobotContainer {
                 Driver2.povUp().onTrue(getAlgaeSetpointCommand());
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
-                Driver2.povRight().onTrue(getDealgaeSetpointCommand());
+                Driver2.povRight().onTrue(getBargeScoringCommand());
                 Driver2.leftBumper().whileTrue(new RunCommand(()->roller.setRollerOutput(-Roller.kIntakeSpeed, -Roller.kRollerHelperSpeed))).onFalse(new InstantCommand(()->roller.setRollerOutput(0.0, 0.0)));
 
                 
@@ -488,7 +500,7 @@ public class RobotContainer {
         public void getSelectedReefSide() {
                 double x = Driver1.getRawAxis(4);
                 double y = -Driver1.getRawAxis(5);
-                int[] targetTagSet = DriverStation.getAlliance().equals(Optional.of(Alliance.Red)) ? new int[]{10,11,6,7,8,9} : new int[]{18, 17, 22,21, 20, 19};
+                int[] targetTagSet = DriverStation.getAlliance().equals(Optional.of(Alliance.Red)) ? new int[]{10,11,6,7,8,9} : new int[]{21, 20, 19,18, 17, 22};
                 double angleRadians;
                 if (x==0 && y==0) {
                         angleRadians = 0.0;
@@ -590,6 +602,33 @@ public class RobotContainer {
                                                                 PivotConstants.kL2Setpoint))),
                                 new RunCommand(() -> elevator.runElevator(() -> pivot
                                                 .atElevatingSetpoint())));
+                c.addRequirements(elevator);
+                return c;
+        }
+
+        public Command getBargeScoringCommand() {
+                Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
+                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
+                                new InstantCommand(() -> elevator
+                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                Commands.waitUntil(()->elevator.getCurrentPosition() > Elevator.kL2Setpoint),
+                                new InstantCommand(()->pivot.changeSetpoint(103)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(.69)),
+                                new InstantCommand(() -> pivot
+                                                .changeSetpoint(240)), // 250 Is close to when the bottom of the manuipulator collides with the top of the elevator.
+                                new ParallelRaceGroup(new SequentialCommandGroup(
+                                                Commands.waitUntil(() -> pivot.atSetpoint(231.5)),// Here 250 Is used as a kind of default value, will have to be tested. 
+                                                new RunCommand(() -> roller.setRollerOutput(
+                                                                -Roller.kIntakeSpeed))),
+                                                new SequentialCommandGroup(Commands
+                                                                .waitUntil(() -> pivot.atSetpoint(
+                                                                                240)),
+                                                                new WaitCommand(.2)),
+                                                new InstantCommand(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kAlgaeSafeSetpoint)),
+                                                new InstantCommand(() -> elevator
+                                                                .ChangeSetpoint(0.0)))), new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot
+                                                                .atSetpointAlgae(PivotConstants.kAlgaeSafeSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
