@@ -287,6 +287,7 @@ public final class Constants {
                 public static final ScoringSetpoint l4Setpoint = null;
                 public static final ScoringSetpoint l3Setpoint = null;
                 public static final ScoringSetpoint l2Setpoint = null;
+                public static final ScoringSetpoint l1Setpoint = null;
                 public static final ScoringSetpoint bargeSetpoint = null;
                 public static final ScoringSetpoint processorSetpoint = null;
                 public static final ScoringSetpoint l1AlgaeSetpoint = null;

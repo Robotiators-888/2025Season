@@ -180,6 +180,9 @@ public class SUB_Pivot extends SubsystemBase {
     return INSTANCE;
   }
 
+  public double getCurrentPosition() {
+    return absoluteEncoder.getPosition();
+  }
 
   public void periodic() {
     SmartDashboard.putNumber("ABSEncoder", absoluteEncoder.getPosition());
