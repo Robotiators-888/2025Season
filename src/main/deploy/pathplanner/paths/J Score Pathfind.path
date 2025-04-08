@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.152226027397259,
-        "y": 4.055051369863014
+        "x": 5.179101119246602,
+        "y": 5.515921860692431
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.700927326098558,
-        "y": 4.306715330901975
+        "x": 5.055494074783776,
+        "y": 5.26324980448637
       },
       "isLocked": false,
-      "linkedName": "CageStart3"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 5.250081168831168
       },
       "prevControl": {
-        "x": 5.451136363636362,
-        "y": 5.188352272727273
+        "x": 5.104314018863007,
+        "y": 5.479416649873942
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Start to Score",
+  "folder": "Smart Align Paths",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 1.0,
+    "rotation": -119.99999999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

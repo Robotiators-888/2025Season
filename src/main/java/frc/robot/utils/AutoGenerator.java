@@ -19,6 +19,7 @@ public class AutoGenerator extends SubsystemBase {
     public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
     private static AutoGenerator INSTANCE = null;
     public static boolean reachedAutoTarget;
+    public static boolean intakecomplete = true;
 
     public AutoGenerator() {
         RobotConfig config;
@@ -71,6 +72,14 @@ public class AutoGenerator extends SubsystemBase {
 
     public boolean getreachedtarget() {
         return reachedAutoTarget;
+    }
+
+    public void setintakecomplete(boolean value) {
+        intakecomplete = value;
+    }
+
+    public boolean getintakecomplete() {
+        return intakecomplete;
     }
 
     public void periodic() {

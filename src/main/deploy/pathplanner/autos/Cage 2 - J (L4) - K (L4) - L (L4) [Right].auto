@@ -126,16 +126,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "L to TopPickup(Right) (3P)"
-                }
-              }
-            ]
+            "pathName": "L to TopPickup(Right) (3P)"
           }
         }
       ]

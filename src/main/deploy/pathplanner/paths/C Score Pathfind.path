@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.152226027397259,
-        "y": 4.055051369863014
+        "x": 3.5032618609474473,
+        "y": 2.6947437971981594
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.700927326098558,
-        "y": 4.306715330901975
+        "x": 3.6237415483904862,
+        "y": 2.913797774367321
       },
       "isLocked": false,
-      "linkedName": "CageStart3"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.00478896103896,
-        "y": 5.250081168831168
+        "x": 3.65625,
+        "y": 2.9524999999999992
       },
       "prevControl": {
-        "x": 5.451136363636362,
-        "y": 5.188352272727273
+        "x": 3.517527065155992,
+        "y": 2.744519358236721
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "J Score"
+      "linkedName": "C ReefScore"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -119.99999999999999
+    "velocity": 0.0,
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": "Start to Score",
+  "folder": "Smart Align Paths",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 1.0,
+    "rotation": 59.99999999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

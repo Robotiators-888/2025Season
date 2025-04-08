@@ -4,8 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "3 Piece (Lower) Paths",
-    "3 Piece (Upper) Paths",
+    "Algae Paths",
     "Just Drive Paths",
+    "Smart Align Paths",
+    "3 Piece (Upper) Paths",
     "3 Piece (Crazy) Paths",
     "Pickup to Score",
     "Reef Backup Paths",
@@ -23,6 +25,7 @@
     "Cage 5 (2P)",
     "Cage 5 (3P)",
     "Cage 6 (2P)",
+    "1 Piece Algae",
     "Mr Lange Autos",
     "Cage 3 (3P)",
     "Simple Autos"

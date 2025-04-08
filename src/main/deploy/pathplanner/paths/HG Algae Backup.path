@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.152226027397259,
-        "y": 4.055051369863014
+        "x": 5.860017123287671,
+        "y": 4.009974315068493
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.700927326098558,
-        "y": 4.306715330901975
+        "x": 6.324558164952222,
+        "y": 4.003522265952424
       },
       "isLocked": false,
-      "linkedName": "CageStart3"
+      "linkedName": "HG Algae"
     },
     {
       "anchor": {
-        "x": 5.00478896103896,
-        "y": 5.250081168831168
+        "x": 6.36,
+        "y": 4.01
       },
       "prevControl": {
-        "x": 5.451136363636362,
-        "y": 5.188352272727273
+        "x": 5.799681831464979,
+        "y": 4.007163118781673
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "J Score"
+      "linkedName": "HG Algae Backup"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Start to Score",
+  "folder": "Algae Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
