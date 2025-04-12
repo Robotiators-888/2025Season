@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.65625,
-        "y": 2.9524999999999992
+        "x": 3.668,
+        "y": 2.951
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3539999999999996,
-        "y": 2.5429999999999997
+        "x": 3.36575,
+        "y": 2.5415000000000005
       },
       "isLocked": false,
       "linkedName": "C ReefScore"

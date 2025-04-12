@@ -896,8 +896,6 @@ public class RobotContainer {
                         }
                 }
 
-                // TODO: Fix this commented out portion
-
                 photonPoseOptional = photonVision.getCam2Pose();
 
                 if (photonPoseOptional.isPresent()) {
@@ -959,8 +957,6 @@ public class RobotContainer {
                         }
                 }
 
-                // TODO: Fix this commented out portion
-
                 photonPoseOptional = photonVision.getCam2Pose();
 
                 if (photonPoseOptional.isPresent()) {
@@ -978,7 +974,7 @@ public class RobotContainer {
                                                 .getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 2) / 8.0088;
+                                double xStddev = Math.pow(distance, 2) * 1.2;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher4.set(photonPose.toPose2d());
