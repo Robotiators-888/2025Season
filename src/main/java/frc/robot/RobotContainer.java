@@ -811,6 +811,8 @@ public class RobotContainer {
         public void teleopInit() {
                 leds.setAllianceColor();
                 Elastic.selectTab("Teleoperated");
+                Elastic.Notification notification = new Elastic.Notification(Elastic.Notification.NotificationLevel.INFO, "I AM STEVE", "CHICKEN JOCKEY!!!!!");
+                Elastic.sendNotification(notification);
         }
 
         public void teleopPeriodic() {

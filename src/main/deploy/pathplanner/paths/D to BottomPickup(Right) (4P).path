@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.578438142549389,
-        "y": 2.4353641944609197
+        "x": 3.518942157682341,
+        "y": 2.408258786566537
       },
       "isLocked": false,
       "linkedName": "D Score"
@@ -20,8 +20,8 @@
         "y": 0.628536184210526
       },
       "prevControl": {
-        "x": 2.0318694576646883,
-        "y": 0.9985566570386564
+        "x": 1.9496221583123896,
+        "y": 0.9238244182696191
       },
       "nextControl": null,
       "isLocked": false,
@@ -82,20 +82,20 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.92,
-    "maxAcceleration": 4.5,
+    "maxAcceleration": 6.4,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 53.426969021480694
   },
   "reversed": false,
   "folder": "4 Piece (Lower) Paths",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 59.99999999999999
   },
   "useDefaultConstraints": false
