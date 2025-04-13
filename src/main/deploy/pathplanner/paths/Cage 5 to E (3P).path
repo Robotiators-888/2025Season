@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 5.005,
+        "y": 2.796
       },
       "prevControl": {
-        "x": 5.229667951588753,
-        "y": 2.6681849520858067
+        "x": 5.213417951588752,
+        "y": 2.6579349520858067
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.15199750312109855,
+      "waypointRelativePos": 0.5611999999999985,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

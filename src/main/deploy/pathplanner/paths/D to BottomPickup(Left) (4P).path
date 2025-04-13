@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9585000000000004,
-        "y": 2.815999999999999
+        "x": 3.969,
+        "y": 2.815
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.53925,
-        "y": 2.4065
+        "x": 3.5497499999999995,
+        "y": 2.405500000000001
       },
       "isLocked": false,
       "linkedName": "D Score"

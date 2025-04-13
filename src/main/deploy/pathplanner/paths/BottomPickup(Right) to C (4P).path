@@ -48,9 +48,14 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.31319999999999876,
+      "waypointRelativePos": 0.6812000000000015,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ReachedTarget"
+        }
+      }
     }
   ],
   "globalConstraints": {

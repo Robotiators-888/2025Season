@@ -787,6 +787,8 @@ public class RobotContainer {
         }
 
         public void autonomousInit() {
+                autoGenerator.setintakecomplete(true);
+                autoGenerator.setreachedtarget(false);
                 Elastic.selectTab("Autonomous");
                 leds.set(LEDs.kParty_Palette_Twinkles);
                 PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
@@ -947,7 +949,7 @@ public class RobotContainer {
                                                 .getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 2) * 1.2;
+                                double xStddev = Math.pow(distance, 1.75) * (3.5 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher3.set(photonPose.toPose2d());
@@ -976,7 +978,7 @@ public class RobotContainer {
                                                 .getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 2) * 1.2;
+                                double xStddev = Math.pow(distance, 1.75) * (3.5 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher4.set(photonPose.toPose2d());
