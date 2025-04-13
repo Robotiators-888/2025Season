@@ -155,7 +155,7 @@ public class SUB_Pivot extends SubsystemBase {
   }
 
   public boolean atElevatingSetpoint(){
-    if (absoluteEncoder.getPosition() < 297 && absoluteEncoder.getPosition() > 285){
+    if (absoluteEncoder.getPosition() < 309){
       return true;
     }
     return false;

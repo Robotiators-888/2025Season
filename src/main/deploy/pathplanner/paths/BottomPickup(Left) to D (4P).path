@@ -28,7 +28,12 @@
       "linkedName": "D Score"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5592400690846258,
+      "rotationDegrees": 42.60117506677032
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -48,7 +53,7 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.7068000000000008,
+      "waypointRelativePos": 0.3500000000000017,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

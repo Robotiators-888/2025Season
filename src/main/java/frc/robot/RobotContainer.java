@@ -245,10 +245,10 @@ public class RobotContainer {
                                                 .changeSetpoint(PivotConstants.kL4Setpoint)),
                                 Commands.waitUntil(
                                                 () -> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
-                                new WaitCommand(.1),
+                                new WaitCommand(.05),
                                 new RunCommand(() -> roller
                                                 .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
-                                                                .withTimeout(.15)).withTimeout(4),Commands.waitUntil(()->!autoGenerator.getintakecomplete())));
+                                                                .withTimeout(.1)).withTimeout(4),Commands.waitUntil(()->!autoGenerator.getintakecomplete())));
 
                 NamedCommands.registerCommand(
                                 "runRoller", new RunCommand(
@@ -949,7 +949,7 @@ public class RobotContainer {
                                                 .getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 1.75) * (3.5 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
+                                double xStddev = Math.pow(distance, 1.75) * (3 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher3.set(photonPose.toPose2d());
@@ -978,7 +978,7 @@ public class RobotContainer {
                                                 .getTranslation();
 
                                 double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 1.75) * (3.5 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
+                                double xStddev = Math.pow(distance, 1.75) * (3 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher4.set(photonPose.toPose2d());

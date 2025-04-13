@@ -28,11 +28,16 @@
       "linkedName": "E ReefScore"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4998272884283281,
+      "rotationDegrees": 133.66021066487525
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.9467999999999984,
+      "minWaypointRelativePos": 0.8972000000000012,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 4.0,
@@ -48,7 +53,7 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.5771999999999909,
+      "waypointRelativePos": 0.20919999999999764,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
