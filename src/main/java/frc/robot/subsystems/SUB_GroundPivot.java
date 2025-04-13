@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.GroundPivot;
 
 public class SUB_GroundPivot extends SubsystemBase{
@@ -17,7 +18,7 @@ public class SUB_GroundPivot extends SubsystemBase{
     private SparkMax groundPivot = new SparkMax(GroundPivot.kGroundPivotCanID, MotorType.kBrushless);
     private SparkAbsoluteEncoder groundPivotAbsoluteEncoder = groundPivot.getAbsoluteEncoder();
     private PIDController voltagePID = new PIDController(0.035, 0, 0.0035); // TODO: Change
-    public double pivotAngleGhost = 0.0;
+    public double pivotAngleGhost = Constants.GroundPivot.kGroundPivotSetPointHigh;
 
     public SUB_GroundPivot() {
       
