@@ -33,10 +33,10 @@ public class SUB_Elevator extends SubsystemBase {
 
   private SUB_Elevator() {
     config.follow(primary);
-    config.inverted(false);
+    config.inverted(true);
     config.idleMode(IdleMode.kBrake);
     secondary.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    config.inverted(true);
+    config.inverted(false);
     config.disableFollowerMode();
     config.encoder.positionConversionFactor((0.2 * Units.inchesToMeters(1.92 * Math.PI)));
     config.encoder.velocityConversionFactor((0.2 * Units.inchesToMeters(1.92 * Math.PI)) / 60);
@@ -194,18 +194,18 @@ public class SUB_Elevator extends SubsystemBase {
     }
     if (activesetpoint > getCurrentPosition()) {
       if (activesetpoint - getCurrentPosition() > Elevator.kMaxUpErrorThreshold) {
-        runElevatorManualVoltage(Elevator.kMaxUpVoltage);
+        runElevatorManualVoltage(Elevator.kMaxUpVoltage + 2);
         return;
       }
       if (activesetpoint - getCurrentPosition() > Elevator.kHighUpErrorThreshold) {
-        runElevatorManualVoltage(Elevator.kHighUpVoltage);
+        runElevatorManualVoltage(Elevator.kHighUpVoltage + 2);
         return;
       }
       if (activesetpoint - getCurrentPosition() > Elevator.kMediumUpErrorThreshold) {
-        runElevatorManualVoltage(Elevator.kMediumUpVoltage);
+        runElevatorManualVoltage(Elevator.kMediumUpVoltage + 2);
         return;
       }
-      runElevatorManualVoltage(Elevator.kSlowUpVoltage);
+      runElevatorManualVoltage(Elevator.kSlowUpVoltage + 1);
       return;
     }
     if (activesetpoint < getCurrentPosition()) {

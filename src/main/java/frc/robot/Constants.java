@@ -267,16 +267,16 @@ public final class Constants {
                 public static final double kSlowDownVoltage = -0.55;
                 public static final double kSlowDownThreshold = 0.06;
 
-                public static final double kEmptyHoldingVoltage = 0.6;
-                public static final double kEmptyHoldingVoltageTop = 0.69;
-                public static final double kCoralHoldingVoltage = 0.85;
-                public static final double kAlgaeHoldingVoltage = 0.72;
+                public static final double kEmptyHoldingVoltage = 0.66;
+                public static final double kEmptyHoldingVoltageTop = 0.72;
+                public static final double kCoralHoldingVoltage = 0.86;
+                public static final double kAlgaeHoldingVoltage = 0.78;
 
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
                 public static final double kL2Setpoint = 0.252;
                 public static final double kL3Setpoint = 0.43;
-                public static final double kL4Setpoint = 0.80;
+                public static final double kL4Setpoint = 0.70;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
         }

@@ -28,8 +28,8 @@ public class SUB_Pivot extends SubsystemBase {
   public double outputvoltage = 0;
   // public double outputvoltage2 = 0;
 
-  private double setpoint = PivotConstants.kIntakeSetpoint;// TODO: Change
-  private PIDController voltagePID = new PIDController(0.035, 0, 0.0035); // TODO: Change
+  private double setpoint = PivotConstants.kIntakeSetpoint;
+  private PIDController voltagePID = new PIDController(2 * 0.035, 0, 0.0035);
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();
@@ -96,12 +96,16 @@ public class SUB_Pivot extends SubsystemBase {
     outputvoltage = MathUtil.clamp(outputvoltage, -3, 6);
   }
 
+  public void setPGain(double P){
+    voltagePID = new PIDController(P, 0, 0.0035);
+  }
+
 
 
   public void runPivot(Supplier<Boolean> hasCoral) {
     currentPosition = absoluteEncoder.getPosition();
     double error = setpoint - currentPosition;
-    double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -3, 3);
+    double outputVoltage = MathUtil.clamp(voltagePID.calculate(currentPosition, setpoint), -12, 12);
     // if (setpoint == PivotConstants.kIntakeSetpoint && absoluteEncoder.getPosition() > 334.5){
     // outputVoltage -= 0.2;
     // SmartDashboard.putBoolean("Has Triggered", true);
@@ -176,6 +180,7 @@ public class SUB_Pivot extends SubsystemBase {
     // } else {
     // previousPosition = currentPosition;
     // }
+    SmartDashboard.putNumber("Pivot P", voltagePID.getP());
     SmartDashboard.putNumber("Pivot Current", armPrimary.getOutputCurrent());
   }
 }

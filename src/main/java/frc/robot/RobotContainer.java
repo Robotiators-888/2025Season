@@ -460,17 +460,20 @@ public class RobotContainer {
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
                                 new InstantCommand(() -> elevator
                                                 .ChangeSetpoint(Elevator.kL4Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
+                                new ParallelRaceGroup(new RunCommand(()->elevator.runElevatorAlgae(()->pivot.atSetpoint(PivotConstants.kAlgaeSafeSetpoint))),
+                                Commands.waitUntil(() -> elevator.atSetpoint(.72))),
+                                new InstantCommand(()->pivot.setPGain(.035 * 10)),
                                 new InstantCommand(() -> pivot
-                                                .changeSetpoint(250)), // 250 Is close to when the bottom of the manuipulator collides with the top of the elevator.
+                                                .changeSetpoint(320)), // 250 Is close to when the bottom of the manuipulator collides with the top of the elevator.
                                 new ParallelRaceGroup(new SequentialCommandGroup(
-                                                Commands.waitUntil(() -> pivot.atSetpoint(220)),// Here 250 Is used as a kind of default value, will have to be tested. 
+                                                Commands.waitUntil(() -> pivot.atSetpoint(260)),// Here 250 Is used as a kind of default value, will have to be tested. 
                                                 new RunCommand(() -> roller.setRollerOutput(
-                                                                -Roller.kIntakeSpeed))),
+                                                                -1))),
                                                 new SequentialCommandGroup(Commands
                                                                 .waitUntil(() -> pivot.atSetpoint(
-                                                                                250)),
+                                                                                310)),
                                                                 new WaitCommand(.2)),
+                                                new InstantCommand(()->pivot.setPGain(.035 * 2)),
                                                 new InstantCommand(() -> pivot.changeSetpoint(
                                                                 PivotConstants.kElevatingSetpoint)),
                                                 new InstantCommand(() -> elevator
