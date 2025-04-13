@@ -93,6 +93,9 @@ public class RobotContainer {
 
         private final CommandXboxController Driver2 = new CommandXboxController(Operator.kDriver2ControllerPort);
 
+        private final CommandXboxController Driver3 = new CommandXboxController(2);
+
+
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -120,8 +123,15 @@ public class RobotContainer {
                         new RunCommand(() -> groundIntake.setGroundIntake(0), groundIntake)
                 );
                 groundPivot.setDefaultCommand(
-                        new RunCommand(() -> groundPivot.setGroundPivotAngleToGhost(), groundPivot)
+                        new RunCommand(() -> groundPivot.drivePivotPID(), groundPivot)
                 );
+
+                Driver3.a().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(137)));
+                Driver3.b().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(0)));
+                Driver3.x().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(30)));
+                Driver3.leftBumper().onTrue(new InstantCommand(()-> groundPivot.zeroEncoder()));
+                Driver3.leftTrigger().whileTrue(new RunCommand(()->groundIntake.setGroundIntake(.45), groundIntake));
+                Driver3.rightTrigger().whileTrue(new RunCommand(()->groundIntake.setGroundIntake(-.45), groundIntake));
 
                 Driver1.rightBumper()
                                 .whileTrue(
@@ -417,11 +427,11 @@ public class RobotContainer {
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.0), roller));
                 Driver2.leftStick().whileTrue(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> groundPivot.changeGroundPivotAngleGhost(GroundPivot.kGroundPivotSetPointLow), groundPivot),
+                                new InstantCommand(() -> groundPivot.changeSetpoint(GroundPivot.kGroundPivotSetPointLow), groundPivot),
                                 new RunCommand(() -> groundIntake.setGroundIntake(GroundIntake.kGroundIntakeSpeed), groundIntake)));
                 Driver2.rightStick().whileTrue(
                         new SequentialCommandGroup(
-                                new InstantCommand(() -> groundPivot.changeGroundPivotAngleGhost(GroundPivot.kGroundPivotSetPointHigh), groundPivot),
+                                new InstantCommand(() -> groundPivot.changeSetpoint(GroundPivot.kGroundPivotSetPointHigh), groundPivot),
                                 new RunCommand(() -> groundIntake.setGroundIntake(-GroundIntake.kGroundIntakeSpeed), groundIntake)));
         }
 

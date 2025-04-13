@@ -305,8 +305,8 @@ public final class Constants {
         }
         public static class GroundPivot {
                 public static final int kGroundPivotCanID = 52;
-                public static final double kGroundPivotSetPointLow = 0; // Change this value
-                public static final double kGroundPivotSetPointHigh = 15; // Change this value
+                public static final double kGroundPivotSetPointLow = 25; // Change this value
+                public static final double kGroundPivotSetPointHigh = 0; // Change this value
         }
         public static class Climber {
                 public static final int kClimberCanID = 40;
