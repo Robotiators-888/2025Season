@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 5.005,
+        "y": 2.796
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6942370129870126,
-        "y": 1.3754058441558434
+        "x": 3.6779870129870122,
+        "y": 1.3651558441558431
       },
       "isLocked": false,
       "linkedName": "E ReefScore"
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "stow",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

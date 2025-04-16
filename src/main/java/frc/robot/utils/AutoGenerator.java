@@ -68,14 +68,17 @@ public class AutoGenerator extends SubsystemBase {
 
     public void setreachedtarget(boolean value) {
         reachedAutoTarget = value;
+        SmartDashboard.putBoolean("ReachedAutoTarget", reachedAutoTarget);
     }
 
     public boolean getreachedtarget() {
         return reachedAutoTarget;
+
     }
 
     public void setintakecomplete(boolean value) {
         intakecomplete = value;
+        SmartDashboard.putBoolean("IntakeComplete", intakecomplete);
     }
 
     public boolean getintakecomplete() {
@@ -83,6 +86,5 @@ public class AutoGenerator extends SubsystemBase {
     }
 
     public void periodic() {
-        SmartDashboard.putBoolean("ReachedAutoTarget", reachedAutoTarget);
     }
 }

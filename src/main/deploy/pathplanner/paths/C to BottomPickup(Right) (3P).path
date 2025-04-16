@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.65625,
-        "y": 2.9524999999999992
+        "x": 3.668,
+        "y": 2.951
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.193934758008196,
-        "y": 2.325050018881311
+        "x": 3.205684758008196,
+        "y": 2.3235500188813116
       },
       "isLocked": false,
       "linkedName": "C ReefScore"
@@ -33,10 +33,10 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.19556388628553584,
+      "maxWaypointRelativePos": 0.20599999999999444,
       "constraints": {
         "maxVelocity": 3.0,
-        "maxAcceleration": 1.25,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 180.0,
         "maxAngularAcceleration": 180.0,
         "nominalVoltage": 12.0,
@@ -82,7 +82,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 4.51,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,

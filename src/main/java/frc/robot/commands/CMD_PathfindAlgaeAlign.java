@@ -44,30 +44,30 @@ public class CMD_PathfindAlgaeAlign extends Command {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
 
-    redRight.put(7, new Translation2d(14.341348, 4.0208200000000005));
-    redLeft.put(7, new Translation2d(14.341348, 4.0208200000000005));
-    redRight.put(8, new Translation2d(13.699871, 5.130849553296214));
-    redLeft.put(8, new Translation2d(13.699871, 5.130849553296214));
-    redRight.put(9, new Translation2d(12.417933, 5.130849553296214));
-    redLeft.put(9, new Translation2d(12.417933, 5.130849553296214));
-    redRight.put(10, new Translation2d(11.776455999999998, 4.0208200000000005));
-    redLeft.put(10, new Translation2d(11.776455999999998, 4.0208200000000005));
-    redRight.put(11, new Translation2d(12.417933, 2.9107904467037855));
-    redLeft.put(11, new Translation2d(12.417933, 2.9107904467037855));
-    redRight.put(6, new Translation2d(13.699871, 2.9107904467037855));
-    redLeft.put(6, new Translation2d(13.699871, 2.9107904467037855));
-    blueRight.put(21, new Translation2d(5.771896, 4.0208200000000005));
-    blueLeft.put(21, new Translation2d(5.771896, 4.0208200000000005));
-    blueRight.put(20, new Translation2d(5.130165, 5.130849553296214));
-    blueLeft.put(20, new Translation2d(5.130165, 5.130849553296214));
-    blueRight.put(19, new Translation2d(3.848480999999999, 5.130849553296214));
-    blueLeft.put(19, new Translation2d(3.848480999999999, 5.130849553296214));
-    blueRight.put(18, new Translation2d(3.20675, 4.0208200000000005));
-    blueLeft.put(18, new Translation2d(3.20675, 4.0208200000000005));
-    blueRight.put(17, new Translation2d(3.8484809999999987, 2.9107904467037855));
-    blueLeft.put(17, new Translation2d(3.8484809999999987, 2.9107904467037855));
-    blueRight.put(22, new Translation2d(5.130165, 2.9107904467037855));
-    blueLeft.put(22, new Translation2d(5.130165, 2.9107904467037855));
+    redRight.put(7, new Translation2d(14.341348, 4.0259));
+redLeft.put(7, new Translation2d(14.341348, 4.0259));
+redRight.put(8, new Translation2d(13.699871, 5.135929553296214));
+redLeft.put(8, new Translation2d(13.699871, 5.135929553296214));
+redRight.put(9, new Translation2d(12.417933, 5.135929553296214));
+redLeft.put(9, new Translation2d(12.417933, 5.135929553296214));
+redRight.put(10, new Translation2d(11.776455999999998, 4.0259));
+redLeft.put(10, new Translation2d(11.776455999999998, 4.0259));
+redRight.put(11, new Translation2d(12.417933, 2.9158704467037855));
+redLeft.put(11, new Translation2d(12.417933, 2.9158704467037855));
+redRight.put(6, new Translation2d(13.699871, 2.9158704467037855));
+redLeft.put(6, new Translation2d(13.699871, 2.9158704467037855));
+blueRight.put(21, new Translation2d(5.771896, 4.0259));
+blueLeft.put(21, new Translation2d(5.771896, 4.0259));
+blueRight.put(20, new Translation2d(5.130165, 5.135929553296214));
+blueLeft.put(20, new Translation2d(5.130165, 5.135929553296214));
+blueRight.put(19, new Translation2d(3.848480999999999, 5.135929553296214));
+blueLeft.put(19, new Translation2d(3.848480999999999, 5.135929553296214));
+blueRight.put(18, new Translation2d(3.20675, 4.0259));
+blueLeft.put(18, new Translation2d(3.20675, 4.0259));
+blueRight.put(17, new Translation2d(3.8484809999999987, 2.9158704467037855));
+blueLeft.put(17, new Translation2d(3.8484809999999987, 2.9158704467037855));
+blueRight.put(22, new Translation2d(5.130165, 2.9158704467037855));
+blueLeft.put(22, new Translation2d(5.130165, 2.9158704467037855));
     
     
 

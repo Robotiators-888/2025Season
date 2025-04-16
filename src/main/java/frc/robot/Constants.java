@@ -51,7 +51,7 @@ public final class Constants {
                 // Calculations required for driving motor conversion factors and feed forward
                 public static final double kDrivingMotorFreeSpeedRps =
                                 Motor.kVortexFreeSpeedRpm / 60;
-                public static final double kWheelDiameterMeters = Units.inchesToMeters(2.989);
+                public static final double kWheelDiameterMeters = Units.inchesToMeters(2 * 1.6243455433105947);
                 // Thrifty tread 2.95in
                 // Orange Tread 2.70
                 // Black Rev 2.95
@@ -274,9 +274,9 @@ public final class Constants {
 
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
-                public static final double kL2Setpoint = 0.202 + .04;
-                public static final double kL3Setpoint = 0.46 -.02;
-                public static final double kL4Setpoint = 0.78;
+                public static final double kL2Setpoint = 0.162;
+                public static final double kL3Setpoint = 0.375;
+                public static final double kL4Setpoint = 0.705;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
         }
