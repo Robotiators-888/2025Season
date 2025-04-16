@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.005,
-        "y": 2.796
+        "x": 5.02125,
+        "y": 2.80625
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.276543949379391,
-        "y": 2.361351425420113
+        "x": 5.292793949379392,
+        "y": 2.371601425420113
       },
       "isLocked": false,
       "linkedName": "E ReefScore"
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.2,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "folder": "Reef Backup Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 122.00538320808354
   },
   "useDefaultConstraints": true
 }

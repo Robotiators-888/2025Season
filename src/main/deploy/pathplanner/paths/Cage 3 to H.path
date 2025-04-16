@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.152226027397259,
-        "y": 4.055051369863014
+        "x": 7.175,
+        "y": 4.99366883116883
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.2729407134739175,
-        "y": 3.5269755761905266
+        "x": 6.295714686076658,
+        "y": 4.465593037496343
       },
       "isLocked": false,
       "linkedName": "CageStart3"
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

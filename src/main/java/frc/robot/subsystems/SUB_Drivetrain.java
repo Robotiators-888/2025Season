@@ -55,9 +55,6 @@ public class SUB_Drivetrain extends SubsystemBase {
   public StructPublisher<Pose2d> publisher4 = NetworkTableInstance.getDefault()
   .getStructTopic("PhotonCam2Pose", Pose2d.struct).publish(); 
 
-  public StructPublisher<Pose2d> selectPosePublisher = NetworkTableInstance.getDefault()
-  .getStructTopic("SelectedPose", Pose2d.struct).publish(); 
-
 
   StructArrayPublisher<SwerveModuleState> currentStatePublisher = NetworkTableInstance.getDefault()
 .getStructArrayTopic("Current States", SwerveModuleState.struct).publish();

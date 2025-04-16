@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.969,
-        "y": 2.815
+        "x": 3.9585000000000004,
+        "y": 2.815999999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4082231939980714,
-        "y": 2.2436958588993656
+        "x": 3.397723193998072,
+        "y": 2.2446958588993646
       },
       "isLocked": false,
       "linkedName": "D Score"
@@ -33,10 +33,10 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.20431115276476103,
+      "maxWaypointRelativePos": 0.24866310160427874,
       "constraints": {
         "maxVelocity": 3.0,
-        "maxAcceleration": 1.75,
+        "maxAcceleration": 1.25,
         "maxAngularVelocity": 180.0,
         "maxAngularAcceleration": 180.0,
         "nominalVoltage": 12.0,
@@ -81,8 +81,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 2.7,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.2,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -96,7 +96,7 @@
   "folder": "3 Piece (Lower) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 57.99499999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -29,7 +29,7 @@ public class SUB_Pivot extends SubsystemBase {
   // public double outputvoltage2 = 0;
 
   private double setpoint = PivotConstants.kIntakeSetpoint;// TODO: Change
-  private PIDController voltagePID = new PIDController(2.0 * 0.035, 0, 0); // TODO: Change
+  private PIDController voltagePID = new PIDController(0.035, 0, 0.0035); // TODO: Change
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();
@@ -145,21 +145,6 @@ public class SUB_Pivot extends SubsystemBase {
     SmartDashboard.putBoolean("GOOD TO ELEVATE?",
         Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees);
     return Math.abs(absoluteEncoder.getPosition() - setpoint) < PivotConstants.toleranceDegrees;
-  }
-
-  public boolean atSetpointAlgae(double setpoint) {
-    SmartDashboard.putNumber("CURRENT POSITION ELEVATOR CONDITIONAL", currentPosition);
-    SmartDashboard.putBoolean("GOOD TO ELEVATE?",
-        Math.abs(currentPosition - setpoint) < PivotConstants.toleranceDegrees);
-    return absoluteEncoder.getPosition() < 226;
-  }
-
-  public boolean atElevatingSetpoint(){
-    if (absoluteEncoder.getPosition() < 297 && absoluteEncoder.getPosition() > 285){
-      return true;
-    }
-    return false;
-  
   }
 
   public boolean atSetpoint(Supplier<Double> setpoint) {

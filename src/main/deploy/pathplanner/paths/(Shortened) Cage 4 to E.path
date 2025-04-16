@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.005,
-        "y": 2.796
+        "x": 5.02125,
+        "y": 2.80625
       },
       "prevControl": {
-        "x": 5.177598700116039,
-        "y": 2.499978374753256
+        "x": 5.193848700116039,
+        "y": 2.510228374753256
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 122.00538320808354
   },
   "reversed": false,
   "folder": "Start to Score",
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
