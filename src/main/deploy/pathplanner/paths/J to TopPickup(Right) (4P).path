@@ -28,7 +28,12 @@
       "linkedName": "TopPickup(Right)"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -62.64992475045123
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -45,7 +50,41 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "ResetReachedTarget",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "ResetReachedTarget"
+        }
+      }
+    },
+    {
+      "name": "runRoller",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.02999999999999842,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "runRoller"
+        }
+      }
+    },
+    {
+      "name": "stow",
+      "waypointRelativePos": 0.031599999999999684,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stow"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.92,
     "maxAcceleration": 4.5,

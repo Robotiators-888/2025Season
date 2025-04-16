@@ -3,44 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.175,
-        "y": 6.138027597402597
+        "x": 1.6645559210526315,
+        "y": 7.43108552631579
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.171749999999999,
-        "y": 5.90675
+        "x": 2.2854240733135045,
+        "y": 6.781415168539592
       },
       "isLocked": false,
-      "linkedName": "CageStart2"
+      "linkedName": "TopPickup(Right)"
     },
     {
       "anchor": {
-        "x": 5.00478896103896,
-        "y": 5.250081168831168
+        "x": 3.6757500000000003,
+        "y": 5.10725
       },
       "prevControl": {
-        "x": 5.17725,
-        "y": 5.468
+        "x": 3.08404170493233,
+        "y": 5.813459127735847
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "J Score"
+      "linkedName": "L Score"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.45423143350604345,
-      "rotationDegrees": -128.3092136677719
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8971999999999998,
+      "minWaypointRelativePos": 0.9404000000000001,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 4.0,
+        "maxVelocity": 4.92,
         "maxAcceleration": 2.5,
         "maxAngularVelocity": 180.0,
         "maxAngularAcceleration": 180.0,
@@ -50,19 +45,7 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "ReachedTarget",
-      "waypointRelativePos": 0.29559999999999786,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ReachedTarget"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.92,
     "maxAcceleration": 4.5,
@@ -73,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -59.99999999999999
   },
   "reversed": false,
   "folder": "4 Piece (Upper) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -54.207249243337166
   },
   "useDefaultConstraints": false
 }
