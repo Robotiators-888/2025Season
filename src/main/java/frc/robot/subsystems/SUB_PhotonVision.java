@@ -56,15 +56,12 @@ public class SUB_PhotonVision extends SubsystemBase {
   
     Optional<EstimatedRobotPose> finalPose1 = Optional.empty();
     for (PhotonPipelineResult result : results1) {
-
-
       if (result.hasTargets()) {
         cam1BestTarget = result.getBestTarget();
         finalPose1 = poseEstimator1.update(result);
       }
     }
     return finalPose1;
-
   }
 
   public Optional<EstimatedRobotPose> getCam2Pose() {

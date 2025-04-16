@@ -3,50 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.298500000000001,
-        "y": 1.8507499999999992
+        "x": 7.497816780821918,
+        "y": 4.040025684931507
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.056145310957557,
-        "y": 1.9121031148283496
+        "x": 6.53617294520548,
+        "y": 4.040025684931507
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.02125,
-        "y": 2.80625
+        "x": 6.5061215753424655,
+        "y": 4.040025684931507
       },
       "prevControl": {
-        "x": 5.1024367259819075,
-        "y": 2.569799760997501
+        "x": 7.272431506849315,
+        "y": 4.040025684931507
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "ReachedTarget",
-      "waypointRelativePos": 0.7404000000000024,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ReachedTarget"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.2,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -54,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 122.00538320808354
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "3 Piece (Lower) Paths",
+  "folder": "Just Drive Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

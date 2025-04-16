@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.9585000000000004,
-        "y": 2.815999999999999
+        "x": 3.969,
+        "y": 2.815
       },
       "prevControl": {
-        "x": 3.461156524101636,
-        "y": 2.3503794612754207
+        "x": 3.4716565241016357,
+        "y": 2.3493794612754217
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.99499999999999
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "Pickup to Score",
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 53.426969021480694
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.882814331203142,
-        "y": 3.6190419966152096
+        "x": 6.0380825310747435,
+        "y": 3.7520708764952917
       },
       "isLocked": false,
       "linkedName": "G Score"
     },
     {
       "anchor": {
-        "x": 6.058928571428571,
-        "y": 3.0230925324675324
+        "x": 6.205607876712329,
+        "y": 3.8588068181818174
       },
       "prevControl": {
-        "x": 5.988080759039149,
-        "y": 3.2628436273130683
+        "x": 6.0227001102868645,
+        "y": 4.02923201872812
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.2,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,

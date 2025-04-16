@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.9585000000000004,
-        "y": 2.815999999999999
+        "x": 3.969,
+        "y": 2.815
       },
       "prevControl": {
-        "x": 3.1007576853377006,
-        "y": 1.9415692438025651
+        "x": 3.1112576853377,
+        "y": 1.9405692438025661
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "ReachedTarget",
-      "waypointRelativePos": 0.79679144385027,
+      "waypointRelativePos": 0.7387999999999931,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -45,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.2,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.99499999999999
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "3 Piece (Lower) Paths",

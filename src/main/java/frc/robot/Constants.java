@@ -51,7 +51,7 @@ public final class Constants {
                 // Calculations required for driving motor conversion factors and feed forward
                 public static final double kDrivingMotorFreeSpeedRps =
                                 Motor.kVortexFreeSpeedRpm / 60;
-                public static final double kWheelDiameterMeters = Units.inchesToMeters(2.989);
+                public static final double kWheelDiameterMeters = Units.inchesToMeters(2 * 1.6243455433105947);
                 // Thrifty tread 2.95in
                 // Orange Tread 2.70
                 // Black Rev 2.95
@@ -223,18 +223,18 @@ public final class Constants {
                                 new ArmFeedforward(0, 0.69, 0.34); // TODO: Set it the same for now,
                                                                    // change later
 
-                public static final double kAlgaeSafeSetpoint = 176;
+                public static final double kAlgaeSafeSetpoint = 160;
                 public static final double kAlgaeScoringSetpoint = 132;
 
-                public static final double kIntakeSetpoint = 323;
+                public static final double kIntakeSetpoint = 326;
                 public static final double kElevatingSetpoint = 288;
                 public static final double kCoralSetpoint = 300;
                 public static final double kAlgaeSetpoint = 176;
-                public static final double toleranceDegrees = 8.5;
+                public static final double toleranceDegrees = 5;
 
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 294;
-                public static final double kL3Setpoint = 290;
+                public static final double kL3Setpoint = 295;
                 public static final double kL4Setpoint = 273;
 
                 public static final double kUpperBoundStuckPoint = 340.0;
@@ -257,9 +257,9 @@ public final class Constants {
                 public static final double kMaxUpErrorThreshold = 0.25;
                 public static final double kHighUpVoltage = 5.1;
                 public static final double kHighUpErrorThreshold = 0.15;
-                public static final double kMediumUpVoltage = 3.4;
+                public static final double kMediumUpVoltage = 4.2;
                 public static final double kMediumUpErrorThreshold = 0.06;
-                public static final double kSlowUpVoltage = 1.6;
+                public static final double kSlowUpVoltage = 3.4;
 
                 public static final double kMaxDownVoltage = -2.65;
                 public static final double kMaxDownErrorThreshold = 0.25;
@@ -271,15 +271,15 @@ public final class Constants {
                 public static final double kSlowDownThreshold = 0.06;
 
                 public static final double kEmptyHoldingVoltage = 0.6;
-                public static final double kEmptyHoldingVoltageTop = 0.69;
+                public static final double kEmptyHoldingVoltageTop = 0.74;
                 public static final double kCoralHoldingVoltage = 0.85;
                 public static final double kAlgaeHoldingVoltage = 0.72;
 
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
-                public static final double kL2Setpoint = 0.252;
-                public static final double kL3Setpoint = 0.42;
-                public static final double kL4Setpoint = 0.80;
+                public static final double kL2Setpoint = 0.162;
+                public static final double kL3Setpoint = 0.375;
+                public static final double kL4Setpoint = 0.705;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
         }
@@ -290,7 +290,7 @@ public final class Constants {
                 public static final double kIntakeCurrentThreshold = 35; // Amps
                 public static final int kRollerCurrentLimit = 60;
                 public static final int kHelperCurrentLimit = 20;
-                public static final double kRollerHelperSpeed = 0.4;
+                public static final double kRollerHelperSpeed = 0.7;
                 public static final double kIntakeSpeed = 0.2; // Percent
                 public static final double kIntakeFinishSpeed = 0.1; // Percent
                 public static final double kIntakeStartingTime = 1.25; // Seconds

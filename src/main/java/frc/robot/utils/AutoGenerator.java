@@ -19,6 +19,8 @@ public class AutoGenerator extends SubsystemBase {
     public static SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
     private static AutoGenerator INSTANCE = null;
     public static boolean reachedAutoTarget;
+    public static boolean intakecomplete = true;
+
     public AutoGenerator() {
         RobotConfig config;
         try {
@@ -27,41 +29,62 @@ public class AutoGenerator extends SubsystemBase {
             e.printStackTrace();
             return;
         }
-        AutoBuilder.configure(
-            drivetrain::getPose, // Robot pose supplier
-            drivetrain::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-            drivetrain::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> drivetrain.driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(10, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(7, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // The robot configuration
-            () -> {
-              return DriverStation.getAlliance().equals(Optional.of(Alliance.Red));
-            },
-            drivetrain // Reference to this subsystem to set requirements
+        AutoBuilder.configure(drivetrain::getPose, // Robot pose supplier
+                drivetrain::resetPose, // Method to reset odometry (will be called if your auto has
+                                       // a starting pose)
+                drivetrain::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> drivetrain.driveRobotRelative(speeds), // Method that will
+                                                                                 // drive the robot
+                                                                                 // given ROBOT
+                                                                                 // RELATIVE
+                                                                                 // ChassisSpeeds.
+                                                                                 // Also optionally
+                                                                                 // outputs
+                                                                                 // individual
+                                                                                 // module
+                                                                                 // feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path
+                                                // following controller for holonomic drive trains
+                        new PIDConstants(10, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(12, 6.0, 0.0) // Rotation PID constants
+                ), config, // The robot configuration
+                () -> {
+                    return DriverStation.getAlliance().equals(Optional.of(Alliance.Red));
+                }, drivetrain // Reference to this subsystem to set requirements
         );
 
         registerAllCommands();
     }
+
     public void registerAllCommands() {}
+
     public static AutoGenerator getInstance() {
         if (INSTANCE == null) {
-          INSTANCE = new AutoGenerator();
+            INSTANCE = new AutoGenerator();
         }
-    
+
         return INSTANCE;
-      }
-      public void setreachedtarget(boolean value){
+    }
+
+    public void setreachedtarget(boolean value) {
         reachedAutoTarget = value;
-    }
-
-    public boolean getreachedtarget(){
-        return reachedAutoTarget;
-    }
-
-    public void periodic(){
         SmartDashboard.putBoolean("ReachedAutoTarget", reachedAutoTarget);
+    }
+
+    public boolean getreachedtarget() {
+        return reachedAutoTarget;
+
+    }
+
+    public void setintakecomplete(boolean value) {
+        intakecomplete = value;
+        SmartDashboard.putBoolean("IntakeComplete", intakecomplete);
+    }
+
+    public boolean getintakecomplete() {
+        return intakecomplete;
+    }
+
+    public void periodic() {
     }
 }

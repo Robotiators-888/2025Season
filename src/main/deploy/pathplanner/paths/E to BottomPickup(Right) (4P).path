@@ -27,8 +27,14 @@
       "isLocked": false,
       "linkedName": "Bottom Pickup(Right)"
     }
+ 
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4224525043177903,
+      "rotationDegrees": 69.24028651169145
+    }
   ],
-  "rotationTargets": [],
+  
   "constraintZones": [
     {
       "name": "Constraints Zone",
