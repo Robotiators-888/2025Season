@@ -311,11 +311,6 @@ public final class Constants {
                 public static final double kStowPos = 0;
                 public static final double kScorePos = 25; 
         }
-        public static class Climber {
-                public static final int kClimberCanID = 40;
-                public static final double kClimberPercentOutput = 0.2;
-        }
-
         public static class LEDs {
                 public static final int kPWMPort = 9;
                 public static final double kColorGreen = 0.77;

@@ -8,7 +8,6 @@ package frc.robot;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import static edu.wpi.first.units.Units.Ohm;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
@@ -38,9 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.Climber;
 import frc.robot.Constants.Elevator;
 import frc.robot.Constants.Operator;
 import frc.robot.Constants.PivotConstants;
@@ -80,7 +77,6 @@ public class RobotContainer {
         public static SUB_Elevator elevator = SUB_Elevator.getInstance();
         public static SUB_Roller roller = SUB_Roller.getInstance();
         public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
-        public static SUB_Climber climber = SUB_Climber.getInstance();
         public static SUB_LEDs leds = SUB_LEDs.getInstance();
         public static SUB_GroundIntake groundIntake = SUB_GroundIntake.getInstance();
         public static SUB_GroundPivot groundPivot = SUB_GroundPivot.getInstance();
@@ -295,12 +291,6 @@ public class RobotContainer {
 
                 Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
-                Driver1.leftTrigger()
-                                .whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput)))
-                                .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
-                Driver1.leftBumper()
-                                .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
-                                .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
                 Driver1.y().onTrue(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
