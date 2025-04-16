@@ -25,7 +25,7 @@ public class SUB_GroundPivot extends SubsystemBase{
     private SparkAbsoluteEncoder absoluteEncoder = groundPivot.getAbsoluteEncoder();
     private RelativeEncoder relativeEncoder = groundPivot.getEncoder();
     private PIDController voltagePID = new PIDController(4, 0, 0.8); // TODO: Change
-    public double activesetpoint = Constants.GroundPivot.kGroundPivotSetPointHigh;
+    public double activesetpoint = Constants.GroundPivot.kStowPos;
 
     public SUB_GroundPivot() {
       config.smartCurrentLimit(25);
@@ -53,12 +53,16 @@ public class SUB_GroundPivot extends SubsystemBase{
     }
 
     public void drivePivotPID() {
-      double outputVoltage = MathUtil.clamp(voltagePID.calculate(relativeEncoder.getPosition(), activesetpoint), -3, 3);
+      double outputVoltage = MathUtil.clamp(voltagePID.calculate(relativeEncoder.getPosition(), activesetpoint), -6, 6);
       runGroundPivotManualVoltage(outputVoltage);
     }
 
     public void zeroEncoder(){
       relativeEncoder.setPosition(0);
+    }
+
+    public boolean nearIntakeSetpoint() {
+      return relativeEncoder.getPosition() > Constants.GroundPivot.kIntakePos - Constants.GroundPivot.kIntakeThreshold;
     }
 
     public static SUB_GroundPivot getInstance() {
@@ -70,7 +74,7 @@ public class SUB_GroundPivot extends SubsystemBase{
 
       public void periodic() {
         SmartDashboard.putNumber("Ground Pivot Relative Encoder", relativeEncoder.getPosition());
-        SmartDashboard.putNumber("OutputVoltage", MathUtil.clamp(voltagePID.calculate(relativeEncoder.getPosition(), activesetpoint), -3, 3));
+        SmartDashboard.putNumber("OutputVoltage", MathUtil.clamp(voltagePID.calculate(relativeEncoder.getPosition(), activesetpoint), -6, 6));
       }
 
 }

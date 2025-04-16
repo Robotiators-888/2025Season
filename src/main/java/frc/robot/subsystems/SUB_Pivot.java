@@ -148,7 +148,7 @@ public class SUB_Pivot extends SubsystemBase {
   }
 
   public boolean atSetpoint(Supplier<Double> setpoint) {
-    return Math
+  return Math
         .abs(absoluteEncoder.getPosition() - setpoint.get()) < PivotConstants.toleranceDegrees;
   }
 

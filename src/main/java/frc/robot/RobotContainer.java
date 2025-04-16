@@ -8,6 +8,7 @@ package frc.robot;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import static edu.wpi.first.units.Units.Ohm;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.Climber;
 import frc.robot.Constants.Elevator;
@@ -93,9 +95,6 @@ public class RobotContainer {
 
         private final CommandXboxController Driver2 = new CommandXboxController(Operator.kDriver2ControllerPort);
 
-        private final CommandXboxController Driver3 = new CommandXboxController(2);
-
-
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -119,19 +118,14 @@ public class RobotContainer {
                 pivot.setDefaultCommand(
                                 new RunCommand(() -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
                 roller.setDefaultCommand(new RunCommand(() -> roller.setRollerOutput(0.0,0.0), roller));
+                
                 groundIntake.setDefaultCommand(
-                        new RunCommand(() -> groundIntake.setGroundIntake(0), groundIntake)
+                        new RunCommand(() -> groundIntake.groundIntakeDetection(()->groundPivot.nearIntakeSetpoint()), groundIntake)
                 );
+                
                 groundPivot.setDefaultCommand(
                         new RunCommand(() -> groundPivot.drivePivotPID(), groundPivot)
                 );
-
-                Driver3.a().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(137)));
-                Driver3.b().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(0)));
-                Driver3.x().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(30)));
-                Driver3.leftBumper().onTrue(new InstantCommand(()-> groundPivot.zeroEncoder()));
-                Driver3.leftTrigger().whileTrue(new RunCommand(()->groundIntake.setGroundIntake(.45), groundIntake));
-                Driver3.rightTrigger().whileTrue(new RunCommand(()->groundIntake.setGroundIntake(-.45), groundIntake));
 
                 Driver1.rightBumper()
                                 .whileTrue(
@@ -315,6 +309,12 @@ public class RobotContainer {
 
                 // Driver 2
 
+                
+                Driver2.start().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(GroundPivot.kIntakePos)));
+                Driver2.leftStick().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(GroundPivot.kStowPos)));
+                Driver2.back().onTrue(new InstantCommand(()-> groundPivot.changeSetpoint(GroundPivot.kScorePos)));
+                Driver2.rightStick().whileTrue(new RunCommand(()->groundIntake.setGroundIntake(GroundIntake.kGroundEjectSpeed)));
+
                 Driver2.a().onTrue(getZeroSetpointCommand());
 
                 Driver2.b().onTrue(getL2SetpointCommand());
@@ -395,7 +395,8 @@ public class RobotContainer {
                                                                                 0)),
                                                 new InstantCommand(
                                                                 () -> Driver2.getHID().setRumble(RumbleType.kBothRumble,
-                                                                                0))));
+                                                                                0))))
+                                                                                .whileTrue(new RunCommand(()->groundIntake.setGroundIntake(.45), groundIntake));
 
                 Driver2.rightTrigger()
                                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
@@ -425,14 +426,6 @@ public class RobotContainer {
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))
                                                 .alongWith(new RunCommand(() -> roller.setRollerOutput(0.95), roller)))
                                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.0), roller));
-                Driver2.leftStick().whileTrue(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> groundPivot.changeSetpoint(GroundPivot.kGroundPivotSetPointLow), groundPivot),
-                                new RunCommand(() -> groundIntake.setGroundIntake(GroundIntake.kGroundIntakeSpeed), groundIntake)));
-                Driver2.rightStick().whileTrue(
-                        new SequentialCommandGroup(
-                                new InstantCommand(() -> groundPivot.changeSetpoint(GroundPivot.kGroundPivotSetPointHigh), groundPivot),
-                                new RunCommand(() -> groundIntake.setGroundIntake(-GroundIntake.kGroundIntakeSpeed), groundIntake)));
         }
 
         public void robotInit() {

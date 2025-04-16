@@ -301,12 +301,15 @@ public final class Constants {
         }
         public static class GroundIntake {
                 public static final int kGroundIntakeCanID = 51;
-                public static final double kGroundIntakeSpeed = -.4;
+                public static final double kGroundIntakeSpeed = -0.45;
+                public static final double kGroundEjectSpeed = 0.45;
         }
         public static class GroundPivot {
                 public static final int kGroundPivotCanID = 52;
-                public static final double kGroundPivotSetPointLow = 25; // Change this value
-                public static final double kGroundPivotSetPointHigh = 0; // Change this value
+                public static final double kIntakePos = 135;
+                public static final double kIntakeThreshold = 10; 
+                public static final double kStowPos = 0;
+                public static final double kScorePos = 25; 
         }
         public static class Climber {
                 public static final int kClimberCanID = 40;
