@@ -16,7 +16,7 @@ public class SUB_GroundIntake extends SubsystemBase{
     private SparkMax groundIntake = new SparkMax(GroundIntake.kGroundIntakeCanID, MotorType.kBrushless);
     
     public SUB_GroundIntake() {
-      config.smartCurrentLimit(35);
+      config.smartCurrentLimit(45);
       config.inverted(false);
       config.voltageCompensation(12);
       groundIntake.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -26,11 +26,18 @@ public class SUB_GroundIntake extends SubsystemBase{
         groundIntake.set(percent);
     }
 
-    public void groundIntakeDetection(Supplier<Boolean> shouldIntake){
+    public void groundIntakeDetection(Supplier<Boolean> shouldIntake, Supplier<Boolean> shouldRun){
       if (shouldIntake.get()) {
         setGroundIntake(GroundIntake.kGroundIntakeSpeed);
-      } else {
+        return;
+      }
+      if (shouldRun.get()){
+        setGroundIntake(-.2);
+        return;
+      }
+      else{
         setGroundIntake(0);
+        return;
       }
     }
 
