@@ -61,7 +61,7 @@ public class SUB_GroundPivot extends SubsystemBase {
     if (Math.abs(manualAxis) > GroundPivot.kPivotDeadband) {
       runningAutomatic = false;
       runGroundPivotManualVoltage(
-          12 * Math.pow(MathUtil.applyDeadband(manualAxis, GroundPivot.kPivotDeadband), 2)
+          12 * Math.copySign(Math.pow(MathUtil.applyDeadband(manualAxis, GroundPivot.kPivotDeadband), 2), manualAxis)
               * GroundPivot.kPivotSpeed);
       return;
     }

@@ -235,7 +235,7 @@ public final class Constants {
                 public static final double kL1Setpoint = 300;
                 public static final double kL2Setpoint = 294;
                 public static final double kL3Setpoint = 295;
-                public static final double kL4Setpoint = 273;
+                public static final double kL4Setpoint = 270;
 
                 public static final double kUpperBoundStuckPoint = 340.0;
                 public static final double kLowerBoundStuckPoint = 327.0;
@@ -274,10 +274,10 @@ public final class Constants {
 
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
-                public static final double kL2Setpoint = 0.162;
-                public static final double kL3Setpoint = 0.375;
-                public static final double kL4Setpoint = 0.705;
-                public static final double kAlgaeSetpoint = 0.508;
+                public static final double kL2Setpoint = 0.162 - 0.0378;
+                public static final double kL3Setpoint = 0.375 - 0.0378;
+                public static final double kL4Setpoint = 0.695;
+                public static final double kAlgaeSetpoint = 0.428;
                 public static final double kProcessorSetpoint = 0.104;
         }
 
@@ -305,7 +305,9 @@ public final class Constants {
         public static class GroundPivot {
                 public static final int kGroundPivotCanID = 52;
                 public static final double kIntakePos = 181;
-                public static final double kIntakeThreshold = 10; 
+                public static final double kIntakeThreshold = 30; 
+
+
                 public static final double kStowPos = 0;
                 public static final double kScorePos = 45;
                 public static final double kPivotDeadband = 0.05;
