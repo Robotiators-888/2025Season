@@ -433,7 +433,7 @@ public class RobotContainer {
                 Driver2.povUp().onTrue(getAlgaeSetpointCommand());
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
-                Driver2.povRight().onTrue(getBargeScoringCommand());
+                // Driver2.povRight().onTrue(getBargeScoringCommand());
                 Driver2.leftBumper()
                                 .whileTrue(new RunCommand(() -> roller.setRollerOutput(
                                                 -Roller.kIntakeSpeed, -Roller.kRollerHelperSpeed)))
