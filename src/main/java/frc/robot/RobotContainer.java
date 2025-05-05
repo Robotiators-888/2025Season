@@ -57,6 +57,7 @@ import frc.robot.Constants.Roller;
 import frc.robot.commands.CMD_OldPathfindReefAlign;
 import frc.robot.commands.CMD_PathfindAlgaeAlign;
 import frc.robot.commands.CMD_PathfindReefAlign;
+import frc.robot.commands.CMD_DriveToClosestGroundObject;
 import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_Elevator;
@@ -233,7 +234,7 @@ public class RobotContainer {
                                 new RunCommand(() -> roller
                                                 .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
                                                                 .withTimeout(.15)));
-                                                                
+
                 NamedCommands.registerCommand("scoreL4(conditional)", new ParallelRaceGroup(new SequentialCommandGroup(
                                 Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
                                 new InstantCommand(() -> pivot
@@ -290,8 +291,8 @@ public class RobotContainer {
                                                                 new RunCommand(() -> roller.setRollerOutput(
                                                                                 -Roller.kIntakeSpeed))),
                                                 new WaitCommand(1.0)));
-                
-                
+
+
                 NamedCommands.registerCommand("moveElevatorToZero", new SequentialCommandGroup(
                         new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
                         Commands.waitUntil(() -> elevator.atSetpoint(0.0))
@@ -342,6 +343,9 @@ public class RobotContainer {
                 Driver1.leftBumper().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, true)); // Right
                 Driver1.leftTrigger().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, false)); // Left
 
+                // Drive to the closest ground object using PhotonVision
+                Driver1.rightTrigger().whileTrue(new CMD_DriveToClosestGroundObject(drivetrain, photonVision));
+
                 Driver1.rightStick().onTrue(Commands.none())
                                 .onFalse(new InstantCommand(() -> getSelectedReefSide())); 
 
@@ -383,7 +387,7 @@ public class RobotContainer {
                 Driver2.povRight().onTrue(getBargeScoringCommand());
                 Driver2.leftBumper().whileTrue(new RunCommand(()->roller.setRollerOutput(-Roller.kIntakeSpeed, -Roller.kRollerHelperSpeed))).onFalse(new InstantCommand(()->roller.setRollerOutput(0.0, 0.0)));
 
-                
+
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
                 // Driver2.povUp().onTrue(new InstantCommand(() -> pivot.changeVoltage(0.02)));
@@ -508,11 +512,11 @@ public class RobotContainer {
                 int reefAngleDegrees = (int)Math.round((angleDegrees)/60)*60;
                 listIndex = Math.floorMod((int)Math.round((angleDegrees)/60),6);
                 //long listIndex = Math.round((angleDegrees)/60);
-                
+
                 SmartDashboard.putNumber("Angle", angleDegrees);
                 SmartDashboard.putNumber("Reef Side Angle", reefAngleDegrees);
                 SmartDashboard.putNumber("Reef Align Target ID", targetTagSet[listIndex]);
-                
+
                 Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
                 drivetrain.publisher1.set(pose);
                 targetId = targetTagSet[listIndex];
@@ -658,7 +662,7 @@ public class RobotContainer {
                 return c;
         }
 
-        
+
         public Command getDealgaeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
@@ -730,7 +734,7 @@ public class RobotContainer {
                 //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
                 //         return Commands.none();
                 // }
-                
+
         }
 
         public Command constructAligningCommand(boolean isLeftAlign) {
@@ -780,7 +784,7 @@ public class RobotContainer {
         }
 
         public void robotPeriodic() {
-                
+
                 SmartDashboard.putNumber("Battery Voltage", powerDistribution.getVoltage());
                 SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
                 autoField.setRobotPose(drivetrain.getPose());

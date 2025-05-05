@@ -188,7 +188,7 @@ public final class Constants {
                 public static final double fieldLength = 1755.0 / 100.0;
                 public static final double fieldWidth = 805.0 / 100.0;
         }
-
+/**CBL adjust the position of these camera to fit the new robot */
         public static final class PhotonVision {
 
                 public static final String kCam1Name = "AprilTagCam1";
