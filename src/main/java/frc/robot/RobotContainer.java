@@ -47,7 +47,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.Climber;
 import frc.robot.Constants.Elevator;
 import frc.robot.Constants.Field;
 import frc.robot.Constants.LEDs;
@@ -58,7 +57,6 @@ import frc.robot.commands.CMD_OldPathfindReefAlign;
 import frc.robot.commands.CMD_PathfindAlgaeAlign;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.commands.CMD_DriveToClosestGroundObject;
-import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_Elevator;
 import frc.robot.subsystems.SUB_LEDs;
@@ -84,7 +82,6 @@ public class RobotContainer {
         public static SUB_Elevator elevator = SUB_Elevator.getInstance();
         public static SUB_Roller roller = SUB_Roller.getInstance();
         public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
-        public static SUB_Climber climber = SUB_Climber.getInstance();
         public static SUB_LEDs leds = SUB_LEDs.getInstance();
         public static PowerDistribution powerDistribution = new PowerDistribution();
         private static String autoName, newAutoName;
@@ -326,12 +323,6 @@ public class RobotContainer {
 
                 Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
-                Driver1.povUp()
-                                .whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput)))
-                                .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
-                Driver1.povDown()
-                                .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
-                                .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
                 Driver1.y().whileTrue(new CMD_PathfindAlgaeAlign(drivetrain, photonVision));
                 Driver1.a().onTrue(
