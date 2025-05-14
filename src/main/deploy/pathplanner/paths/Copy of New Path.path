@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.175,
-        "y": 1.8359983766233767
+        "x": 5.199,
+        "y": 2.8830479452054796
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.146861612083314,
-        "y": 1.7455521943068217
+        "x": 5.199,
+        "y": 1.3504280821917802
       },
       "isLocked": false,
-      "linkedName": "CageStart5"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.005,
-        "y": 2.796
+        "x": 2.99,
+        "y": 2.222
       },
       "prevControl": {
-        "x": 5.213417951588752,
-        "y": 2.6579349520858067
+        "x": 2.743968115060116,
+        "y": 2.266365657810152
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E ReefScore"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,15 +33,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ReachedTarget",
-      "waypointRelativePos": 0.5611999999999985,
+      "name": "",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "ReachedTarget"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -54,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -0.0036868882387503096
   },
   "reversed": false,
-  "folder": "3 Piece (Lower) Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -59.62087398863168
   },
   "useDefaultConstraints": true
 }

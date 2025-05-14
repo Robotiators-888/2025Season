@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import java.util.List;
@@ -24,8 +20,12 @@ public class SUB_PhotonVision extends SubsystemBase {
 
   private final PhotonCamera cam1 = new PhotonCamera(PhotonVision.kCam1Name);
   private final PhotonCamera cam2 = new PhotonCamera(PhotonVision.kCam2Name);
+  private final PhotonCamera cam3 = new PhotonCamera(PhotonVision.kCam3Name);
+
   private PhotonTrackedTarget cam1BestTarget;
   private PhotonTrackedTarget cam2BestTarget;
+  private PhotonTrackedTarget cam3BestTarget;
+
   private final PhotonPoseEstimator poseEstimator1;
   private final PhotonPoseEstimator poseEstimator2;
   public AprilTagFieldLayout at_field;
@@ -38,10 +38,11 @@ public class SUB_PhotonVision extends SubsystemBase {
   }
 
   private SUB_PhotonVision() {
-    at_field =  AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark); // TODO: Change for diff events
+    at_field =  AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 
     cam1.setPipelineIndex(0);
     cam2.setPipelineIndex(0);
+    cam3.setPipelineIndex(2); // HSV tracking
 
     poseEstimator1 = new PhotonPoseEstimator(at_field, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
         PhotonVision.kRobotToCamera1);
@@ -53,7 +54,6 @@ public class SUB_PhotonVision extends SubsystemBase {
 
   public Optional<EstimatedRobotPose> getCam1Pose() {
     List<PhotonPipelineResult> results1 = cam1.getAllUnreadResults();
-  
     Optional<EstimatedRobotPose> finalPose1 = Optional.empty();
     for (PhotonPipelineResult result : results1) {
       if (result.hasTargets()) {
@@ -84,6 +84,16 @@ public class SUB_PhotonVision extends SubsystemBase {
     return cam2BestTarget;
   }
 
+  public PhotonTrackedTarget getCam3BestTarget() {
+    List<PhotonPipelineResult> results3 = cam3.getAllUnreadResults();
+    for (PhotonPipelineResult result : results3) {
+      if (result.hasTargets()) {
+        cam3BestTarget = result.getTargets().get(0); // 👈 THIS LINE
+      }
+    }
+    return cam3BestTarget;
+  }
+
   public double getTargetYaw(PhotonTrackedTarget target) {
     return target.getYaw();
   }
@@ -101,7 +111,5 @@ public class SUB_PhotonVision extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-
-  }
+  public void periodic() {}
 }
