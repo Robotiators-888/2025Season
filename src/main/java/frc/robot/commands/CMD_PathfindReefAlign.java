@@ -26,26 +26,52 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
-/*
- * You should consider using the more terse Command factories API instead
- * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#
- * defining-commands
+/**
+ * The CMD_PathfindReefAlign class is a command that aligns the robot to a "reef" scoring position
+ * using PathPlanner. It dynamically selects a target AprilTag and a pre-defined path based on
+ * supplier inputs. If a pre-defined path file is not found, it falls back to pathfinding directly
+ * to a hardcoded target pose.
  */
 public class CMD_PathfindReefAlign extends Command {
 
-  Command pathfindingCommand;
-  boolean isLeftAlign = false;
-  SUB_PhotonVision photonVision;
-  SUB_Drivetrain drivetrain;
-  Supplier<Integer> targetId;
-  Supplier<Integer> pathId;
+  /** The PathPlanner command that will be generated and executed. */
+  private Command pathfindingCommand;
 
-  HashMap<Integer, Translation2d> redLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> redRight = new HashMap<>();
-  HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+  /** A boolean indicating whether to align to the left or right side of the target. */
+  private boolean isLeftAlign = false;
 
-  /** Creates a new CMD_PathfindReefAlign. */
+  /** The PhotonVision subsystem instance for AprilTag detection. */
+  private SUB_PhotonVision photonVision;
+
+  /** The drivetrain subsystem instance for robot movement. */
+  private SUB_Drivetrain drivetrain;
+
+  /** A supplier function that provides the target AprilTag ID. */
+  private Supplier<Integer> targetId;
+
+  /** A supplier function that provides the path ID, used to select a pre-defined path from a list. */
+  private Supplier<Integer> pathId;
+
+  /** A map of hardcoded coordinates for the left side of the red alliance reef positions. */
+  private HashMap<Integer, Translation2d> redLeft = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the right side of the red alliance reef positions. */
+  private HashMap<Integer, Translation2d> redRight = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the left side of the blue alliance reef positions. */
+  private HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the right side of the blue alliance reef positions. */
+  private HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+
+  /**
+   * Creates a new CMD_PathfindReefAlign command.
+   * @param drivetrain The drivetrain subsystem to use.
+   * @param photonVision The PhotonVision subsystem to use.
+   * @param isLeftAlign True to align to the left side, false to align to the right.
+   * @param targetId A supplier function for the target AprilTag ID.
+   * @param pathId A supplier function for the path ID.
+   */
   public CMD_PathfindReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
       boolean isLeftAlign, Supplier<Integer> targetId,Supplier<Integer> pathId) {
     this.photonVision = photonVision;
@@ -54,6 +80,7 @@ public class CMD_PathfindReefAlign extends Command {
     this.targetId = targetId;
     this.pathId = pathId;
     
+    // Populate the HashMaps with hardcoded coordinates for each reef position.
     redRight.put(7, new Translation2d(14.341348, 4.2116375));
     redLeft.put(7, new Translation2d(14.341348, 3.8401625));
     redRight.put(8, new Translation2d(13.539017606564588, 5.228798303296214));
@@ -80,12 +107,14 @@ public class CMD_PathfindReefAlign extends Command {
     blueLeft.put(22, new Translation2d(4.969311606564588, 2.8230016967037854));
     
     
-
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called when the command is initially scheduled. This method selects the appropriate set of coordinates
+   * and path name based on alliance color and alignment side, then generates a PathPlanner command to
+   * follow the path or, if the path is not found, to pathfind to the target pose directly.
+   */
   @Override
   public void initialize() {
     Pose2d tagPose = new Pose2d();
@@ -96,17 +125,9 @@ public class CMD_PathfindReefAlign extends Command {
     HashMap<Integer, Translation2d> selectedMap;
     if (alliance.isPresent()) {
       if (isLeftAlign) {
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redLeft;
-        } else {
-          selectedMap = blueLeft;
-        }
+        selectedMap = alliance.get() == DriverStation.Alliance.Red ? redLeft : blueLeft;
       } else {
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redRight;
-        } else {
-          selectedMap = blueRight;
-        }
+        selectedMap = alliance.get() == DriverStation.Alliance.Red ? redRight : blueRight;
       }
     } else {
       return;
@@ -120,6 +141,7 @@ public class CMD_PathfindReefAlign extends Command {
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
     drivetrain.selectPosePublisher.set(pose);
     
+    // Select a path name based on the path ID and alignment side.
     List<List<String>> characterLists = Arrays.asList(
       Arrays.asList("G", "H"),
       Arrays.asList("I", "J"),
@@ -131,28 +153,38 @@ public class CMD_PathfindReefAlign extends Command {
 
     String selectedCharacter = characterLists.get(path).get(isLeftAlign ? 0 : 1);
     try {
+      // Attempt to load the pre-defined path.
       PathPlannerPath paths = PathPlannerPath.fromPathFile(selectedCharacter + " Score Pathfind");
       pathfindingCommand = AutoBuilder.pathfindThenFollowPath(paths, constraints);
     } catch (Exception e) {
-      //System.out.println("Path not found, switching to pathfindToPose. Error: " + e);
+      // If the path file is not found, fall back to pathfinding to the hardcoded pose directly.
       pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
     }
     pathfindingCommand.initialize();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   * Executes the generated PathPlanner command.
+   */
   @Override
   public void execute() {
     pathfindingCommand.execute();
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called once the command ends or is interrupted.
+   * @param interrupted True if the command was interrupted, false otherwise.
+   */
   @Override
   public void end(boolean interrupted) {
     pathfindingCommand.end(interrupted);
   }
 
-  // Returns true when the command should end.
+  /**
+   * Returns true when the command should end.
+   * @return True when the pathfinding command is finished, false otherwise.
+   */
   @Override
   public boolean isFinished() {
     return pathfindingCommand.isFinished();

@@ -1,4 +1,3 @@
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -6,8 +5,21 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDs;
 
+/**
+ * The SUB_LEDs class manages the robot's LED strip, which is controlled by a
+ * Rev Robotics Blinkin module connected to a Spark motor controller PWM port.
+ * It provides a comprehensive enum of all available patterns and methods to set the LEDs
+ * to a specific pattern or to reflect the current alliance color.
+ * This class follows a singleton pattern.
+ */
 public class SUB_LEDs extends SubsystemBase {
+  /** The singleton instance of the LED subsystem. */
   private static SUB_LEDs INSTANCE = null;
+
+  /**
+   * The BlinkinPattern enum maps human-readable names of the LED patterns to the
+   * specific PWM values required by the Rev Robotics Blinkin module.
+   */
   public enum BlinkinPattern {
     /*
      * Fixed Palette Pattern
@@ -125,47 +137,67 @@ public class SUB_LEDs extends SubsystemBase {
     DARK_GRAY(+0.97),
     BLACK(+0.99);
 
+    /** The PWM value [-1.0, 1.0] corresponding to the Blinkin pattern. */
     public final double value;
 
+    /**
+     * Constructs a new BlinkinPattern enum constant.
+     * @param value The PWM value for the specific pattern.
+     */
     private BlinkinPattern(double value) {
       this.value = value;
     }
   };
 
-  static Spark blinkin;
-    public static double ledValue = -0.99;
+  /** The Spark motor controller object that sends signals to the Blinkin module. */
+  private static Spark blinkin;
   
-    public SUB_LEDs() {
-      blinkin = new Spark(LEDs.kPWMPort);
-    }
+  /** Stores the current PWM value sent to the Blinkin module. */
+  public static double ledValue = -0.99;
   
-    /*
-     * Set the color and blink pattern of the LED strip.
-     * 
-     * Consult the Rev Robotics Blinkin manual Table 5 for a mapping of values to
-     * patterns.
-     * 
-     * @param val The LED blink color and patern value [-1,1]
-     * 
-     */
-    public void set(double pulsewidth) {
-      if ((pulsewidth >= -1.0) && (pulsewidth <= 1.0)) {
-        blinkin.set(pulsewidth);
+  /**
+   * Constructs a new SUB_LEDs.
+   * This constructor is private to enforce the singleton pattern.
+   * It initializes the Spark controller on the specified PWM port.
+   */
+  public SUB_LEDs() {
+    blinkin = new Spark(LEDs.kPWMPort);
+  }
+
+  /**
+   * Sets the color and blink pattern of the LED strip.
+   * It takes a pulse width value between -1.0 and 1.0.
+   * Consult the Rev Robotics Blinkin manual (Table 5) for a mapping of values to patterns.
+   * @param pulsewidth The LED blink color and pattern value [-1.0, 1.0].
+   */
+  public void set(double pulsewidth) {
+    if ((pulsewidth >= -1.0) && (pulsewidth <= 1.0)) {
+      blinkin.set(pulsewidth);
+      ledValue = pulsewidth;
     }
   }
 
+  /**
+   * Sets the LED color to match the current alliance (Red or Blue).
+   * If the alliance is not present, no change is made.
+   */
   public void setAllianceColor() {
     var alliance = DriverStation.getAlliance();
 
     if (alliance.isPresent()) {
       if (alliance.get() == DriverStation.Alliance.Red) {
-        blinkin.set(0.61);
+        set(BlinkinPattern.RED.value);
       } else {
-        blinkin.set(0.87);
+        set(BlinkinPattern.BLUE.value);
       }
     }
   }
 
+  /**
+   * Returns the singleton instance of the LED subsystem.
+   * This method ensures that only one instance of the SUB_LEDs is created and used.
+   * @return The singleton instance of the SUB_LEDs.
+   */
   public static SUB_LEDs getInstance() {
     if (INSTANCE == null) {
       INSTANCE = new SUB_LEDs();

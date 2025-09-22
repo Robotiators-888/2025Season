@@ -23,30 +23,52 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
-/*
- * You should consider using the more terse Command factories API instead
- * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#
- * defining-commands
+/**
+ * The CMD_L1Align class is a command that aligns the robot to a Level 1 scoring position.
+ * It determines the closest AprilTag and uses PathPlanner to generate a path to a hardcoded
+ * target pose corresponding to that tag. The target poses are different for each alliance
+ * color and for left/right alignment preferences.
  */
 public class CMD_L1Align extends Command {
 
-  Command pathfindingCommand;
-  boolean isLeftAlign = false;
-  SUB_PhotonVision photonVision;
-  SUB_Drivetrain drivetrain;
+  /** The PathPlanner command that will be generated and executed. */
+  private Command pathfindingCommand;
 
-  HashMap<Integer, Translation2d> redLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> redRight = new HashMap<>();
-  HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+  /** A boolean indicating whether to align to the left or right side of the target. */
+  private boolean isLeftAlign = false;
 
-  /** Creates a new CMD_PathfindReefAlign. */
+  /** The PhotonVision subsystem instance for AprilTag detection. */
+  private SUB_PhotonVision photonVision;
+
+  /** The drivetrain subsystem instance for robot movement. */
+  private SUB_Drivetrain drivetrain;
+
+  /** A map of hardcoded coordinates for the left side of the red alliance L1 scoring positions. */
+  private HashMap<Integer, Translation2d> redLeft = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the right side of the red alliance L1 scoring positions. */
+  private HashMap<Integer, Translation2d> redRight = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the left side of the blue alliance L1 scoring positions. */
+  private HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the right side of the blue alliance L1 scoring positions. */
+  private HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+
+  /**
+   * Creates a new CMD_L1Align command.
+   * @param drivetrain The drivetrain subsystem to use.
+   * @param photonVision The PhotonVision subsystem to use.
+   * @param isLeftAlign True to align to the left side of the target, false to align to the right.
+   */
   public CMD_L1Align(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
       boolean isLeftAlign) {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
     this.isLeftAlign = isLeftAlign;
 
+    // Populate the HashMaps with hardcoded coordinates for each L1 scoring position,
+    // keyed by AprilTag ID.
     redRight.put(7, new Translation2d(14.341348, 4.43982));
     redLeft.put(7, new Translation2d(14.341348, 3.6018200000000005));
     redRight.put(8, new Translation2d(13.33700635581432, 5.340349553296214));
@@ -73,45 +95,40 @@ public class CMD_L1Align extends Command {
     blueLeft.put(22, new Translation2d(4.76730035581432, 2.7012904467037853));
     
     
-    
-
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called when the command is initially scheduled. This method determines the closest AprilTag,
+   * selects the appropriate hardcoded target pose based on alliance and alignment preference,
+   * and generates a PathPlanner command to drive to that pose.
+   */
   @Override
   public void initialize() {
     Pose2d tagPose = new Pose2d();
     Integer targetId = 7;
 
-
     List<Integer> targetTagSet;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     HashMap<Integer, Translation2d> selectedMap;
+
+    // Determine which set of tags and coordinates to use based on alliance and alignment preference.
     if (alliance.isPresent()) {
       targetTagSet =
           alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
               : Arrays.asList(21, 20, 19, 18, 17, 22);
 
       if (isLeftAlign) {
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redLeft;
-        } else {
-          selectedMap = blueLeft;
-        }
+        selectedMap = alliance.get() == DriverStation.Alliance.Red ? redLeft : blueLeft;
       } else {
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redRight;
-        } else {
-          selectedMap = blueRight;
-        }
+        selectedMap = alliance.get() == DriverStation.Alliance.Red ? redRight : blueRight;
       }
     } else {
+      // If alliance is not present, cannot proceed.
       return;
     }
 
-
+    // Find the closest AprilTag to the robot.
     double minDistance = Double.MAX_VALUE;
     for (int tag : targetTagSet) {
       Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
@@ -125,32 +142,44 @@ public class CMD_L1Align extends Command {
       }
     }
 
+    // Define PathPlanner constraints.
     PathConstraints constraints = new PathConstraints(
     3.0, 2.5,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
 
-
+    // Get the target translation from the selected map and create the final target pose.
     Translation2d translate = selectedMap.get(targetId);
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
     drivetrain.publisher1.set(pose);
+
+    // Build the pathfinding command.
     pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
 
     pathfindingCommand.initialize();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   * Executes the generated PathPlanner command.
+   */
   @Override
   public void execute() {
     pathfindingCommand.execute();
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called once the command ends or is interrupted.
+   * @param interrupted True if the command was interrupted, false otherwise.
+   */
   @Override
   public void end(boolean interrupted) {
     pathfindingCommand.end(interrupted);
   }
 
-  // Returns true when the command should end.
+  /**
+   * Returns true when the command should end.
+   * @return True when the pathfinding command is finished, false otherwise.
+   */
   @Override
   public boolean isFinished() {
     return pathfindingCommand.isFinished();

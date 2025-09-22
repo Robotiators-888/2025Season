@@ -26,27 +26,63 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
+/**
+ * The CMD_ReefAlign class is a command that aligns the robot to a "reef" scoring position.
+ * It uses PID controllers to control the robot's x, y, and rotational movement to
+ * align with a target pose calculated from the closest AprilTag at the reef.
+ */
 public class CMD_ReefAlign extends RunCommand {
+  /** The PhotonVision subsystem instance for accessing camera data. */
   private final SUB_PhotonVision photonVision;
+
+  /** The drivetrain subsystem instance for controlling robot movement. */
   private final SUB_Drivetrain drivetrain;
+
+  /** The ID of the target AprilTag that the robot is aligning to. */
   private Integer targetId;
 
+  /** A boolean indicating whether to align to the left or right side of the target. */
   private final boolean isLeftAlign;
+
+  /** A list of possible target AprilTag IDs for the current alliance. */
   private List<Integer> targetTagSet;
+
+  /** The target pose for the robot to align to. */
   private Pose2d targetPose = new Pose2d();
 
-  HashMap<Integer, Translation2d> redLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> redRight = new HashMap<>();
-  HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+  /** A map of hardcoded coordinates for the left side of the red alliance reef. */
+  private HashMap<Integer, Translation2d> redLeft = new HashMap<>();
 
+  /** A map of hardcoded coordinates for the right side of the red alliance reef. */
+  private HashMap<Integer, Translation2d> redRight = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the left side of the blue alliance reef. */
+  private HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the right side of the blue alliance reef. */
+  private HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+
+  /** The PID controller for managing movement in the x-direction. */
   private final PIDController xController = new PIDController(0.3, 0, 0.03);
+
+  /** The PID controller for managing movement in the y-direction. */
   private final PIDController yController = new PIDController(0.3, 0, 0.03);
+
+  /** The PID controller for managing the robot's rotation. */
   private final PIDController robotAngleController = new PIDController(0.7, 0, 0.05);
 
+  /** The magnitude of the x-shift for calculating the target pose. */
   private final double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
+
+  /** The magnitude of the y-shift for calculating the target pose. */
   private final double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
 
+  /**
+   * Creates a new CMD_ReefAlign command.
+   * @param drivetrain The drivetrain subsystem to use.
+   * @param photonVision The PhotonVision subsystem to use.
+   * @param isLeftAlign True to align to the left side, false to align to the right.
+   */
   public CMD_ReefAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision,
       boolean isLeftAlign) {
     super(() -> {
@@ -56,6 +92,8 @@ public class CMD_ReefAlign extends RunCommand {
     this.photonVision = photonVision;
     this.isLeftAlign = isLeftAlign;
     robotAngleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Populate the HashMaps with hardcoded coordinates for each reef position.
     redRight.put(7, new Translation2d(14.341348, 4.2116375));
     redLeft.put(7, new Translation2d(14.341348, 3.8401625));
     redRight.put(8, new Translation2d(13.539017606564588, 5.228798303296214));
@@ -84,6 +122,10 @@ public class CMD_ReefAlign extends RunCommand {
     addRequirements(drivetrain);
   }
 
+  /**
+   * Called when the command is initially scheduled. This method determines the closest reef AprilTag,
+   * calculates the target pose, and initializes the PID controllers.
+   */
   @Override
   public void initialize() {
     xController.setTolerance(Units.inchesToMeters(1.25));
@@ -93,7 +135,7 @@ public class CMD_ReefAlign extends RunCommand {
     Pose2d tagPose = new Pose2d();
     Integer targetId = 7;
 
-
+    // Determine the set of target tags based on the current alliance color.
     List<Integer> targetTagSet;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
     HashMap<Integer, Translation2d> selectedMap;
@@ -103,23 +145,15 @@ public class CMD_ReefAlign extends RunCommand {
               : Arrays.asList(21, 20, 19, 18, 17, 22);
 
       if (isLeftAlign) {
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redLeft;
-        } else {
-          selectedMap = blueLeft;
-        }
+        selectedMap = alliance.get() == DriverStation.Alliance.Red ? redLeft : blueLeft;
       } else {
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redRight;
-        } else {
-          selectedMap = blueRight;
-        }
+        selectedMap = alliance.get() == DriverStation.Alliance.Red ? redRight : blueRight;
       }
     } else {
       return;
     }
 
-
+    // Find the closest target tag to the robot.
     double minDistance = Double.MAX_VALUE;
     for (int tag : targetTagSet) {
       Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d()).toPose2d();
@@ -133,7 +167,7 @@ public class CMD_ReefAlign extends RunCommand {
       }
     }
 
-
+    // Calculate the final target pose based on the selected map and tag.
     Translation2d translate = selectedMap.get(targetId);
     targetPose = new Pose2d(translate.getX(), translate.getY(),
         tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
@@ -142,13 +176,17 @@ public class CMD_ReefAlign extends RunCommand {
     yController.reset();
   }
 
+  /**
+   * Called every time the scheduler runs while the command is scheduled. This method calculates
+   * the required speeds to align with the target and drives the robot.
+   */
   @Override
   public void execute() {
     Pose2d currentPose = drivetrain.getPose();
 
     drivetrain.publisher1.set(targetPose);
 
-
+    // Calculate the speeds required to reach the target pose using PID controllers.
     double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
     double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
     double omegaSpeed = robotAngleController.calculate(
@@ -160,11 +198,19 @@ public class CMD_ReefAlign extends RunCommand {
     SmartDashboard.putNumber("Y Error", currentPose.getY() - targetPose.getY());
   }
 
+  /**
+   * Called once the command ends or is interrupted.
+   * @param interrupted True if the command was interrupted, false otherwise.
+   */
   @Override
   public void end(boolean interrupted) {
-    // No specific actions on end
+    // No specific actions on end; the drivetrain will stop via its default command.
   }
 
+  /**
+   * Returns true when the command should end.
+   * @return True when the robot is at the target setpoint, false otherwise.
+   */
   @Override
   public boolean isFinished() {
     boolean atSetpoint =

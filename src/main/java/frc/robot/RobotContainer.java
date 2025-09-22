@@ -69,431 +69,319 @@ import frc.robot.utils.Elastic;
 
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
+ * This class is where the bulk of the robot's functionality is declared and configured.
+ * Since Command-based is a "declarative" paradigm, very little robot logic should actually be
+ * handled in the {@link Robot} periodic methods (other than the scheduler calls). Instead, the
+ * structure of the robot (including subsystems, commands, and trigger mappings) should be
+ * declared here.
  */
 public class RobotContainer {
         // The robot's subsystems and commands are defined here...
+
+        // Subsystem Instantiation
         private static final SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
         private static final SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
         private static final AutoGenerator autoGenerator = AutoGenerator.getInstance();
-        private final SendableChooser<Command> autoChooser;
-        public static SUB_Elevator elevator = SUB_Elevator.getInstance();
-        public static SUB_Roller roller = SUB_Roller.getInstance();
-        public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
-        public static SUB_Climber climber = SUB_Climber.getInstance();
-        public static SUB_LEDs leds = SUB_LEDs.getInstance();
-        public static PowerDistribution powerDistribution = new PowerDistribution();
-        private static String autoName, newAutoName;
-        Optional<Alliance> lastAlliance;
-        Optional<Alliance> alliance;
-        public static Field2d autoField = new Field2d();
-        public int listIndex = 0;
-        public int targetId = 7;
+        public static final SUB_Elevator elevator = SUB_Elevator.getInstance();
+        public static final SUB_Roller roller = SUB_Roller.getInstance();
+        public static final SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
+        public static final SUB_Climber climber = SUB_Climber.getInstance();
+        public static final SUB_LEDs leds = SUB_LEDs.getInstance();
 
-        // Replace with CommandPS4Controller or CommandJoystick if needed
+        /** The Power Distribution Panel, for monitoring current and voltage. */
+        public static final PowerDistribution powerDistribution = new PowerDistribution();
+
+        // Autonomous Mode Selection
+        private final SendableChooser<Command> autoChooser;
+        private static String autoName, newAutoName;
+
+        // Alliance Color Tracking
+        private Optional<Alliance> lastAlliance;
+        private Optional<Alliance> alliance;
+
+        /** A Field2d object for visualizing the robot's position and autonomous paths on SmartDashboard. */
+        public static final Field2d autoField = new Field2d();
+
+        // Operator Interface
         private final CommandXboxController Driver1 =
                         new CommandXboxController(Operator.kDriver1ControllerPort);
-
         private final CommandXboxController Driver2 =
                         new CommandXboxController(Operator.kDriver2ControllerPort);
 
+        // State tracking for alignment
+        private int listIndex = 0;
+        private int targetId = 7;
+
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
+         * This constructor is where subsystems are initialized, default commands are set,
+         * named commands for autonomous are registered, and button bindings are configured.
          */
         public RobotContainer() {
-                drivetrain.setDefaultCommand(new RunCommand( // Unstable
+                // Set default commands for subsystems. These run when no other command is scheduled for the subsystem.
+                drivetrain.setDefaultCommand(new RunCommand(
                                 () -> drivetrain.drive(
-                                                MathUtil.applyDeadband(Driver1.getRawAxis(1),
-                                                                Operator.kDriveDeadband),
-                                                MathUtil.applyDeadband(Driver1.getRawAxis(0),
-                                                                Operator.kDriveDeadband),
-                                                -MathUtil.applyDeadband(Driver1.getRawAxis(4),
-                                                                Operator.kDriveDeadband),
+                                                MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                                                MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                                                -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
                                                 true, true),
                                 drivetrain));
 
-                // Trigger c = new
-                // Trigger(()->!pivot.atSetpoint(PivotConstants.kElevatingSetpoint))
-                // c.onTrue(new RunCommand(() -> elevator.runElevator(), elevator);
-
-                elevator.setDefaultCommand(new RunCommand(() -> elevator.runElevator(
-                                () -> pivot.atElevatingSetpoint()),
+                elevator.setDefaultCommand(new RunCommand(
+                                () -> elevator.runElevator(() -> pivot.atElevatingSetpoint()),
                                 elevator));
+
                 pivot.setDefaultCommand(new RunCommand(
                                 () -> pivot.runPivot(() -> roller.getHasCoral()), pivot));
+
                 roller.setDefaultCommand(
                                 new RunCommand(() -> roller.setRollerOutput(0.0, 0.0), roller));
 
+                // Configure a "turbo" mode for the drivetrain, activated by the right bumper.
+                // This squares the inputs for finer control at low speeds.
                 Driver1.rightBumper().whileTrue(new RunCommand(
-                                () -> drivetrain.drive(-MathUtil.applyDeadband(
-                                                Math.copySign(Math.pow(Driver1.getRawAxis(1), 2),
-                                                                Driver1.getRawAxis(1)),
+                                () -> drivetrain.drive(MathUtil.applyDeadband(
+                                                Math.copySign(Math.pow(Driver1.getRawAxis(1), 2), Driver1.getRawAxis(1)),
                                                 Operator.kDriveDeadband),
-                                                -MathUtil.applyDeadband(Math.copySign(
-                                                                Math.pow(Driver1.getRawAxis(0), 2),
-                                                                Driver1.getRawAxis(0)),
+                                                MathUtil.applyDeadband(Math.copySign(
+                                                                Math.pow(Driver1.getRawAxis(0), 2), Driver1.getRawAxis(0)),
                                                                 Operator.kDriveDeadband),
-                                                -MathUtil.applyDeadband(Driver1.getRawAxis(4),
-                                                                Operator.kDriveDeadband),
+                                                -MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
                                                 false, true),
                                 drivetrain));
 
-                // File pathFolder = new File(Filesystem.getDeployDirectory() +
-                // "/pathplanner/paths/");
-                // File[] listOfFiles = pathFolder.listFiles();
-                // List<String> pathNames = new ArrayList<>();
+                // Register named commands for autonomous mode. These can be called by name from PathPlanner autos.
+                registerNamedCommands();
 
-                // if (listOfFiles != null) {
-                // for (File file : listOfFiles) {
-                // if (file.isFile() && file.getName().endsWith(".path")) {
-                // pathNames.add(file.getName());
-                // }
-                // }
-                // }
+                // Configure the trigger bindings for the controllers.
+                configureBindings();
 
-                // for (String pathName : pathNames) {
-                // String modifiedPathName = pathName.substring(0, pathName.length() - 5);
-                // NamedCommands.registerCommand(modifiedPathName + " Pathfind",
-                // getPathCommand(modifiedPathName));
-                // }
+                // Build the autonomous chooser and add it to SmartDashboard for selection.
+                autoChooser = AutoBuilder.buildAutoChooser();
+                SmartDashboard.putData("Auto Chooser", autoChooser);
+                SmartDashboard.putData("Active Auto Path", autoField);
+        }
 
+        /**
+         * Registers all the named commands that can be used in PathPlanner autonomous routines.
+         * This allows complex actions to be triggered by name from the PathPlanner GUI.
+         */
+        private void registerNamedCommands() {
+                // Command to score at level 1
                 NamedCommands.registerCommand("scoreL1", new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL1Setpoint)),
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL1Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL1Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL1Setpoint)))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL1Setpoint)))
                                                                                 .andThen(new RunCommand(
-                                                                                                () -> roller.setRollerOutput(
-                                                                                                                Roller.kEjectSpeed),
+                                                                                                () -> roller.setRollerOutput(Roller.kEjectSpeed),
                                                                                                 roller).until(() -> !roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
 
+                // Command to score at level 2
                 NamedCommands.registerCommand("scoreL2", new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL2Setpoint)))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)))
                                                                                 .andThen(new RunCommand(
-                                                                                                () -> roller.setRollerOutput(
-                                                                                                                Roller.kEjectSpeed),
+                                                                                                () -> roller.setRollerOutput(Roller.kEjectSpeed),
                                                                                                 roller).until(() -> !roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
 
+                // Command to score at level 3
                 NamedCommands.registerCommand("scoreL3", new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL3Setpoint)),
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL3Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL3Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL3Setpoint)))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL3Setpoint)))
                                                                                 .andThen(new RunCommand(
-                                                                                                () -> roller.setRollerOutput(
-                                                                                                                Roller.kEjectSpeed),
+                                                                                                () -> roller.setRollerOutput(Roller.kEjectSpeed),
                                                                                                 roller).until(() -> !roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
 
+                // Command to score at level 4
                 NamedCommands.registerCommand("scoreL4", new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL4Setpoint)))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint)))
                                                                                 .andThen(new RunCommand(
-                                                                                                () -> roller.setRollerOutput(
-                                                                                                                Roller.kEjectSpeed),
+                                                                                                () -> roller.setRollerOutput(Roller.kEjectSpeed),
                                                                                                 roller).until(() -> !roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0.), roller))));
 
-                NamedCommands.registerCommand("ReachedTarget", new InstantCommand(
+                // Command to indicate that the robot has reached a path target.
+                NamedCommands.registerCommand("ReachedTarget", new InstantCommand(() -> autoGenerator.setReachedTarget(true)));
 
-                                () -> autoGenerator.setreachedtarget(true)));
+                // Command to reset the reached target flag.
+                NamedCommands.registerCommand("ResetReachedTarget", new InstantCommand(() -> autoGenerator.setReachedTarget(false)));
 
-                NamedCommands.registerCommand("ResetReachedTarget",
-                                new InstantCommand(() -> autoGenerator.setreachedtarget(false)));
-
+                // Command to score at level 2, conditional on reaching a target.
                 NamedCommands.registerCommand("scoreL2(conditional)", new SequentialCommandGroup(
-                                Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
+                                Commands.waitUntil(() -> autoGenerator.getReachedTarget()),
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint)),
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kL2Setpoint)),
-                                Commands.waitUntil(
-                                                () -> pivot.atSetpoint(PivotConstants.kL2Setpoint)),
-                                new RunCommand(() -> roller
-                                                .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
-                                                                .withTimeout(.15)));
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)),
+                                Commands.waitUntil(() -> pivot.atSetpoint(PivotConstants.kL2Setpoint)),
+                                new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed - 0.1), roller).withTimeout(.15)));
                                                                 
+                // Command to score at level 4, conditional on reaching a target.
                 NamedCommands.registerCommand("scoreL4(conditional)", new ParallelRaceGroup(new SequentialCommandGroup(
-                                Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                Commands.waitUntil(() -> autoGenerator.getReachedTarget()),
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint)),
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kL4Setpoint)),
-                                Commands.waitUntil(
-                                                () -> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint)),
+                                Commands.waitUntil(() -> pivot.atSetpoint(PivotConstants.kL4Setpoint)),
                                 new WaitCommand(.05),
-                                new RunCommand(() -> roller
-                                                .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
-                                                                .withTimeout(.1)).withTimeout(4),Commands.waitUntil(()->!autoGenerator.getintakecomplete())));
+                                new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed - 0.1), roller).withTimeout(.1)).withTimeout(4),
+                                Commands.waitUntil(()->!autoGenerator.getIntakeComplete())));
 
-                NamedCommands.registerCommand(
-                                "runRoller", new RunCommand(
-                                                () -> roller.setRollerOutput(Roller.kEjectSpeed,
-                                                                Roller.kRollerHelperSpeed),
-                                                roller));
+                // Command to run the roller to eject game pieces.
+                NamedCommands.registerCommand("runRoller", new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed, Roller.kRollerHelperSpeed), roller));
 
-                NamedCommands.registerCommand("intake",
-                new ParallelRaceGroup(
-                new SequentialCommandGroup(
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kIntakeSetpoint)))
-                                                                                .andThen(new RunCommand(
-                                                                                                () -> roller.setRollerOutput(
-                                                                                                                Roller.kIntakeSpeed,
-                                                                                                                Roller.kRollerHelperSpeed),
-                                                                                                roller).until(() -> roller.getHasCoral()).andThen(new InstantCommand(() -> roller.setRollerOutput(0, 0)).andThen(new InstantCommand(()->autoGenerator.setintakecomplete(true))))),
-                                new SequentialCommandGroup(new WaitCommand(4), new InstantCommand(()->autoGenerator.setintakecomplete(false)))
-                                )
+                // Command to intake a game piece.
+                NamedCommands.registerCommand("intake", new ParallelRaceGroup(
+                                new SequentialCommandGroup(
+                                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                                                new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
+                                                Commands.waitUntil(() -> elevator.atSetpoint(0.0))
+                                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)))
+                                                                                .andThen(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed, Roller.kRollerHelperSpeed), roller)
+                                                                                                .until(() -> roller.getHasCoral())
+                                                                                                .andThen(new InstantCommand(() -> roller.setRollerOutput(0, 0))
+                                                                                                .andThen(new InstantCommand(()->autoGenerator.setIntakeComplete(true))))),
+                                new SequentialCommandGroup(new WaitCommand(4), new InstantCommand(()->autoGenerator.setIntakeComplete(false))))
                                                                                                 );
 
-                NamedCommands.registerCommand("stow", new SequentialCommandGroup(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
+                // Command to stow the intake mechanism to a safe position.
+                NamedCommands.registerCommand("stow", new SequentialCommandGroup(
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kIntakeSetpoint))));
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint))));
 
+                // Command to move to the L2 algae intake position.
                 NamedCommands.registerCommand("L2AlgaeIntake", getL2AlgaeSetpointCommand());
 
-                NamedCommands.registerCommand("grabAlgae",  new ParallelRaceGroup(new InstantCommand(
-                                                () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))
-                                                .alongWith(
-                                                                new RunCommand(() -> roller.setRollerOutput(
-                                                                                -Roller.kIntakeSpeed))),
+                // Command to grab algae.
+                NamedCommands.registerCommand("grabAlgae",  new ParallelRaceGroup(
+                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint))
+                                                .alongWith(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed))),
                                                 new WaitCommand(1.0)));
                 
                 
+                // Command to move the elevator to the zero (bottom) position.
                 NamedCommands.registerCommand("moveElevatorToZero", new SequentialCommandGroup(
                         new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
                         Commands.waitUntil(() -> elevator.atSetpoint(0.0))
                 ));
+
+                // Command to move the elevator to the processor and then score algae.
                 NamedCommands.registerCommand("moveElevatorToProcessorAndScoreAlgae", new SequentialCommandGroup(
                         new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kProcessorSetpoint)),
                         Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kProcessorSetpoint)),
                         new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint)),
                         new RunCommand(() -> roller.setRollerOutput(-Roller.kEjectSpeed), roller).withTimeout(1.0)
                 ));
-
-                // Configure the trigger bindings
-                configureBindings();
-
-                autoChooser = AutoBuilder.buildAutoChooser();
-                SmartDashboard.putData("Auto Chooser", autoChooser);
-                SmartDashboard.putData("Active Auto Path", autoField);
-
         }
 
         /**
          * Use this method to define your trigger->command mappings. Triggers can be created via the
          * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-         * predicate, or via the named factories in
-         * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-         * {@link CommandXboxController
-         * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers
-         * or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
+         * predicate, or via the named factories in {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s
+         * subclasses for {@link CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+         * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
          */
         private void configureBindings() {
+                // --- Driver 1 Controls (Drivetrain and Alignment) --- //
+                // Zero the gyro heading when the left stick is pressed.
+                Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading()));
+                // Control the climber with the POV hat.
+                Driver1.povUp().whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput))).onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
+                Driver1.povDown().whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput))).onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
 
-                Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
-                                                                                                // Change
-                Driver1.povUp()
-                                .whileTrue(new RunCommand(() -> climber.setSpeed(Climber.kClimberPercentOutput)))
-                                .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
-                Driver1.povDown()
-                                .whileTrue(new RunCommand(() -> climber.setSpeed(-Climber.kClimberPercentOutput)))
-                                .onFalse(new InstantCommand(() -> climber.setSpeed(0.0)));
-
+                // Alignment commands
                 Driver1.y().whileTrue(new CMD_PathfindAlgaeAlign(drivetrain, photonVision));
-                Driver1.a().onTrue(
-                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)));
-
+                Driver1.a().onTrue(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)));
                 Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, ()->targetId,()->listIndex));
                 Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, ()->targetId,()->listIndex));
-
                 Driver1.leftBumper().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, true)); // Right
                 Driver1.leftTrigger().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, false)); // Left
 
-                Driver1.rightStick().onTrue(Commands.none())
-                                .onFalse(new InstantCommand(() -> getSelectedReefSide())); 
+                // Select the reef side with the right stick.
+                Driver1.rightStick().onTrue(Commands.none()).onFalse(new InstantCommand(() -> getSelectedReefSide()));
 
+                // Allow for driving without turning (strafe only) when the POV is used.
                 Driver1.povLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
                                 MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
                                 MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-                                0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
-                                true, true), drivetrain));
+                                0, true, true), drivetrain));
                 Driver1.povUpLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
                         MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
                         MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-                        0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
-                        true, true), drivetrain));
+                        0, true, true), drivetrain));
                 Driver1.povDownLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
                         MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
                         MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-                        0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
-                        true, true), drivetrain));
+                        0, true, true), drivetrain));
 
-                // Driver1.rightStick();
-                // Driver 2
-
+                // --- Driver 2 Controls (Scoring and Intake) --- //
+                // Elevator and Pivot setpoints
                 Driver2.a().onTrue(getZeroSetpointCommand());
-
                 Driver2.b().onTrue(getL2SetpointCommand());
-
                 Driver2.x().onTrue(getL3SetpointCommand());
-
                 Driver2.y().onTrue(getL4SetpointCommand());
-                // Driver2.a().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kIntakeSetpoint)));
-                // Driver2.b().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kL2Setpoint)));
-                // Driver2.x().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kL3Setpoint)));
-                // Driver2.y().onTrue(new InstantCommand(()->pivot.changeSetpoint(PivotConstants.kL4Setpoint)));
 
-
+                // Algae and special scoring setpoints
                 Driver2.povUp().onTrue(getAlgaeSetpointCommand());
                 Driver2.povDown().onTrue(getL2AlgaeSetpointCommand());
                 Driver2.povLeft().onTrue(getProcessorSetpointCommand());
                 Driver2.povRight().onTrue(getBargeScoringCommand());
+
+                // Roller controls
                 Driver2.leftBumper().whileTrue(new RunCommand(()->roller.setRollerOutput(-Roller.kIntakeSpeed, -Roller.kRollerHelperSpeed))).onFalse(new InstantCommand(()->roller.setRollerOutput(0.0, 0.0)));
-
                 
-                // Driver2.povDown().onTrue(new InstantCommand(() ->
-                // pivot.changeVoltage(-0.02)));
-                // Driver2.povUp().onTrue(new InstantCommand(() -> pivot.changeVoltage(0.02)));
-
-                // Driver2.leftBumper()
-                // .whileTrue(new InstantCommand(() -> roller.timerInteract(true))
-                // .andThen(new RunCommand(
-                // () -> roller.setRollerOutput(Roller.kIntakeSpeed),
-                // roller).until(() -> roller.atCurrentThresholdandTimerElapsed()))
-                // .andThen(new ParallelCommandGroup(
-                // new RunCommand(() -> roller.setRollerOutput(
-                // Roller.kIntakeFinishSpeed), roller),
-                // new InstantCommand(
-                // () -> roller.timerInteract(false)),
-                // new InstantCommand(() -> Driver1.getHID().setRumble(
-                // RumbleType.kBothRumble, 1)),
-                // new InstantCommand(() -> Driver2.getHID().setRumble(
-                // RumbleType.kBothRumble, 1)),
-                // new InstantCommand(() -> roller.hasCoral(true)))
-                // .withTimeout(Roller.kIntakeFinishTime)
-                // .andThen(new ParallelCommandGroup(
-                // new InstantCommand(
-                // () -> Driver1.getHID()
-                // .setRumble(RumbleType.kBothRumble,
-                // 0)),
-                // new InstantCommand(
-                // () -> Driver2.getHID()
-                // .setRumble(RumbleType.kBothRumble,
-                // 0)))))
-                // .andThen(new InstantCommand(() -> roller.setRollerOutput(0.),
-                // roller)))
-                // .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
-                // roller));
-
-                Driver2.rightBumper().whileTrue(new RunCommand(() -> roller.setRollerOutput(
-                                Roller.kIntakeSpeed, Roller.kRollerHelperSpeed), roller)
-                                                .until(() -> roller.getHasCoral())
-
+                // Intake command with rumble feedback when a game piece is detected.
+                Driver2.rightBumper().whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed, Roller.kRollerHelperSpeed), roller)
+                                .until(() -> roller.getHasCoral())
+                                .andThen(new ParallelCommandGroup(
+                                                new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 1)),
+                                                new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 1)),
+                                                new InstantCommand(() -> leds.set(LEDs.kColorGreen)),
+                                                new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeFinishSpeed, 0), roller))
+                                                .withTimeout(Roller.kIntakeFinishTime)
                                                 .andThen(new ParallelCommandGroup(
-                                                                new InstantCommand(() -> Driver1
-                                                                                .getHID()
-                                                                                .setRumble(RumbleType.kBothRumble,
-                                                                                                1)),
-                                                                new InstantCommand(() -> Driver2
-                                                                                .getHID()
-                                                                                .setRumble(RumbleType.kBothRumble,
-                                                                                                1)),
-                                                                new InstantCommand(() -> leds.set(
-                                                                                LEDs.kColorGreen)),
-                                                                new RunCommand(() -> roller
-                                                                                .setRollerOutput(
-                                                                                                Roller.kIntakeFinishSpeed,
-                                                                                                0),
-                                                                                roller)).withTimeout(
-                                                                                                Roller.kIntakeFinishTime)
-                                                                                                .andThen(new ParallelCommandGroup(
-                                                                                                                new InstantCommand(
-                                                                                                                                () -> Driver1.getHID()
-                                                                                                                                                .setRumble(RumbleType.kBothRumble,
-                                                                                                                                                                0)),
-                                                                                                                new InstantCommand(
-                                                                                                                                () -> Driver2.getHID()
-                                                                                                                                                .setRumble(RumbleType.kBothRumble,
-                                                                                                                                                                0))))))
+                                                                new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 0)),
+                                                                new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 0))))))
                                 .onFalse(new ParallelCommandGroup(
-                                                new InstantCommand(() -> Driver1.getHID().setRumble(
-                                                                RumbleType.kBothRumble, 0)),
-                                                new InstantCommand(() -> Driver2.getHID().setRumble(
-                                                                RumbleType.kBothRumble, 0))));
+                                                new InstantCommand(() -> Driver1.getHID().setRumble(RumbleType.kBothRumble, 0)),
+                                                new InstantCommand(() -> Driver2.getHID().setRumble(RumbleType.kBothRumble, 0))));
 
-                Driver2.rightTrigger().whileTrue(new RunCommand(() -> roller
-                                .setRollerOutput(Roller.kEjectSpeed),
-                                roller).until(() -> !roller.getHasCoral()).andThen(
-                                                new SequentialCommandGroup(new InstantCommand(
-                                                                () -> roller.setRollerOutput(0.),
-                                                                roller),
-                                                                new InstantCommand(() -> leds
-                                                                                .setAllianceColor()))))
-                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.),
-                                                roller));
+                // Eject command.
+                Driver2.rightTrigger().whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kEjectSpeed), roller)
+                                .until(() -> !roller.getHasCoral())
+                                .andThen(new SequentialCommandGroup(
+                                                new InstantCommand(() -> roller.setRollerOutput(0.), roller),
+                                                new InstantCommand(() -> leds.setAllianceColor()))))
+                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.), roller));
 
-                // Driver2.leftBumper()
-                // .whileTrue(new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed),
-                // roller)
-                // .andThen(Commands.waitSeconds(1)).andThen(new InstantCommand(() -> pivot
-                // .changeSetpoint(PivotConstants.kElevatingSetpoint))))
-                // .onFalse(new InstantCommand(() -> roller.setRollerOutput(0), roller));
-
-                // Driver2.leftBumper().whileTrue(new InstantCommand(() -> pivot
-                //                 .changeSetpoint(PivotConstants.kElevatingSetpoint)).alongWith(
-                //                                 new RunCommand(() -> roller.setRollerOutput(
-                //                                                 -Roller.kIntakeSpeed))))
-                //                 .onFalse(new InstantCommand(() -> roller.setRollerOutput(0),
-                //                                 roller));
-
-                Driver2.leftTrigger().whileTrue(new InstantCommand(
-                                () -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))
-                                                .alongWith(new RunCommand(
-                                                                () -> roller.setRollerOutput(0.95),
-                                                                roller)))
-                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.0),
-                                                roller));
-
+                // Algae scoring command.
+                Driver2.leftTrigger().whileTrue(new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))
+                                .alongWith(new RunCommand(() -> roller.setRollerOutput(0.95), roller)))
+                                .onFalse(new InstantCommand(() -> roller.setRollerOutput(0.0), roller));
         }
 
+        /**
+         * Initializes robot-wide settings that are not subsystem-specific.
+         */
         public void robotInit() {
                 Pathfinding.setPathfinder(new LocalADStar());
                 powerDistribution.setSwitchableChannel(true);
         }
 
+        /**
+         * Gets the selected reef side based on the driver's controller input.
+         * This is used for dynamic alignment during teleop.
+         */
         public void getSelectedReefSide() {
                 double x = Driver1.getRawAxis(4);
                 double y = -Driver1.getRawAxis(5);
@@ -507,7 +395,6 @@ public class RobotContainer {
                 double angleDegrees = angleRadians*180/Math.PI;
                 int reefAngleDegrees = (int)Math.round((angleDegrees)/60)*60;
                 listIndex = Math.floorMod((int)Math.round((angleDegrees)/60),6);
-                //long listIndex = Math.round((angleDegrees)/60);
                 
                 SmartDashboard.putNumber("Angle", angleDegrees);
                 SmartDashboard.putNumber("Reef Side Angle", reefAngleDegrees);
@@ -516,311 +403,252 @@ public class RobotContainer {
                 Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d()).toPose2d();
                 drivetrain.publisher1.set(pose);
                 targetId = targetTagSet[listIndex];
-
         }
 
+        /**
+         * Creates a pathfinding command for a given path name from the PathPlanner GUI.
+         * @param pathName The name of the path file (without the .path extension).
+         * @return A command that pathfinds to and follows the specified path.
+         */
         public Command getPathCommand(String pathName) {
                 Pathfinding.setPathfinder(new LocalADStar());
                 try {
                         PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
                         PathConstraints constraints = new PathConstraints(0.5, 0.5,
-                                        Units.degreesToRadians(180), Units.degreesToRadians(180)); // unstable
+                                        Units.degreesToRadians(180), Units.degreesToRadians(180));
                         return AutoBuilder.pathfindThenFollowPath(path, constraints);
                 } catch (Exception e) {
-                        DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+                        DriverStation.reportError("Failed to load path: " + pathName + "; " + e.getMessage(), e.getStackTrace());
                         return Commands.none();
                 }
         }
 
+        // --- Command Factory Methods --- //
+
+        /**
+         * Returns a command to move the elevator and pivot to the processor setpoint.
+         * @return A command to move to the processor setpoint.
+         */
         public Command getProcessorSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kProcessorSetpoint)),
-                                Commands.waitUntil(() -> elevator
-                                                .atSetpoint(Elevator.kProcessorSetpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeScoringSetpoint))),
-                                new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot
-                                                .atSetpointAlgae(PivotConstants.kAlgaeSafeSetpoint))));
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kProcessorSetpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kProcessorSetpoint))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
+                                new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot.atSetpointAlgae(PivotConstants.kAlgaeSafeSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command to move the elevator and pivot to the barge setpoint.
+         * @return A command to move to the barge setpoint.
+         */
         public Command getBargeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeScoringSetpoint))),
-                                new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot
-                                                .atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeScoringSetpoint))),
+                                new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot.atSetpoint(PivotConstants.kAlgaeSafeSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command to move the elevator and pivot to the L4 setpoint.
+         * @return A command to move to the L4 setpoint.
+         */
         public Command getL4SetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL4Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL4Setpoint))),
-                                new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atElevatingSetpoint())));
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL4Setpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot.atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command to move the elevator and pivot to the L3 setpoint.
+         * @return A command to move to the L3 setpoint.
+         */
         public Command getL3SetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL3Setpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL3Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL3Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL3Setpoint))),
-                                new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atElevatingSetpoint())));
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL3Setpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot.atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command to move the elevator and pivot to the L2 setpoint.
+         * @return A command to move to the L2 setpoint.
+         */
         public Command getL2SetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kL2Setpoint))),
-                                new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atElevatingSetpoint())));
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot.atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command for scoring on the barge.
+         * @return A command for scoring on the barge.
+         */
         public Command getBargeScoringCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL4Setpoint)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL4Setpoint)),
                                 Commands.waitUntil(()->elevator.getCurrentPosition() > Elevator.kL2Setpoint),
                                 new InstantCommand(()->pivot.changeSetpoint(103)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(.69)),
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(240)), // 250 Is close to when the bottom of the manuipulator collides with the top of the elevator.
+                                new InstantCommand(() -> pivot.changeSetpoint(240)),
                                 new ParallelRaceGroup(new SequentialCommandGroup(
-                                                Commands.waitUntil(() -> pivot.atSetpoint(231.5)),// Here 250 Is used as a kind of default value, will have to be tested. 
-                                                new RunCommand(() -> roller.setRollerOutput(
-                                                                -Roller.kIntakeSpeed))),
-                                                new SequentialCommandGroup(Commands
-                                                                .waitUntil(() -> pivot.atSetpoint(
-                                                                                240)),
-                                                                new WaitCommand(.2)),
-                                                new InstantCommand(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeSafeSetpoint)),
-                                                new InstantCommand(() -> elevator
-                                                                .ChangeSetpoint(0.0)))), new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot
-                                                                .atSetpointAlgae(PivotConstants.kAlgaeSafeSetpoint))));
+                                                Commands.waitUntil(() -> pivot.atSetpoint(231.5)),
+                                                new RunCommand(() -> roller.setRollerOutput(-Roller.kIntakeSpeed))),
+                                                new SequentialCommandGroup(Commands.waitUntil(() -> pivot.atSetpoint(240)), new WaitCommand(.2)),
+                                                new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSafeSetpoint)),
+                                                new InstantCommand(() -> elevator.ChangeSetpoint(0.0)))),
+                                new RunCommand(() -> elevator.runElevatorAlgae(() -> pivot.atSetpointAlgae(PivotConstants.kAlgaeSafeSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command to move the elevator and pivot to the zero (intake) setpoint.
+         * @return A command to move to the zero setpoint.
+         */
         public Command getZeroSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
                                 new InstantCommand(() -> elevator.ChangeSetpoint(0.0)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(0.0))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kIntakeSetpoint))),
-                                new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atElevatingSetpoint())));
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kIntakeSetpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot.atElevatingSetpoint())));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command to move the elevator and pivot to the algae intake setpoint.
+         * @return A command to move to the algae intake setpoint.
+         */
         public Command getAlgaeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kAlgaeSetpoint + 0.05)),
-                                Commands.waitUntil(
-                                                () -> elevator.atSetpoint(Elevator.kAlgaeSetpoint + 0.05))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeSetpoint))),
-                                new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kAlgaeSetpoint + 0.05)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kAlgaeSetpoint + 0.05))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
 
-        
+        /**
+         * Returns a command to move the elevator and pivot to the de-algae setpoint.
+         * @return A command to move to the de-algae setpoint.
+         */
         public Command getDealgaeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kAlgaeSetpoint)),
-                                Commands.waitUntil(
-                                                () -> elevator.atSetpoint(Elevator.kAlgaeSetpoint))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeSetpoint))),
-                                new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kAlgaeSetpoint)),
+                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kAlgaeSetpoint))
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
 
+        /**
+         * Returns a command to move the elevator and pivot to the L2 algae setpoint.
+         * @return A command to move to the L2 algae setpoint.
+         */
         public Command getL2AlgaeSetpointCommand() {
                 Command c = new ParallelRaceGroup(new SequentialCommandGroup(new InstantCommand(
                                 () -> pivot.changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL2Setpoint + 0.1)),
+                                new InstantCommand(() -> elevator.ChangeSetpoint(Elevator.kL2Setpoint + 0.1)),
                                 Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint + 0.1))
-                                                .andThen(() -> pivot.changeSetpoint(
-                                                                PivotConstants.kAlgaeSetpoint))),
-                                new RunCommand(() -> elevator.runElevator(() -> pivot
-                                                .atSetpoint(PivotConstants.kElevatingSetpoint))));
+                                                .andThen(() -> pivot.changeSetpoint(PivotConstants.kAlgaeSetpoint))),
+                                new RunCommand(() -> elevator.runElevator(() -> pivot.atSetpoint(PivotConstants.kElevatingSetpoint))));
                 c.addRequirements(elevator);
                 return c;
         }
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
-         *
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
                 return autoChooser.getSelected();
-                // Pathfinding.setPathfinder(new LocalADStar());
-
-                // try{
-                // // Load the path we want to pathfind to and follow
-                // PathPlannerPath path = PathPlannerPath.fromPathFile("New Path");
-                // drivetrain.publisher1.set(path.getStartingHolonomicPose().get());
-                // // // Create the constraints to use while pathfinding. The constraints
-                // defined in the path will only be used for the path.
-                // PathConstraints constraints = new PathConstraints(
-                // 0.5, 0.5,
-                // Units.degreesToRadians(180), Units.degreesToRadians(180));
-
-                // // Since AutoBuilder is configured, we can use it to build pathfinding
-                // commands
-                // return AutoBuilder.pathfindThenFollowPath(
-                // path,
-                // constraints);
-                // return AutoBuilder.followPath(path);
-
-                // PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
-                // return auto;
-                //drivetrain.resetPose(new Pose2d(2.0, 3.0, new Rotation2d(Math.toRadians(90))));
-                //return new CMD_PathfindReefAlign(drivetrain, photonVision, false, 6, 2);
-
-                // RobotConfig robotConfig = RobotConfig.fromGUISettings();
-                // PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
-
-                // drivetrain.resetPose(
-                // AllianceFlipUtil.apply(path.getStartingHolonomicPose().get())
-                // );
-                // return AutoBuilder.followPath(path);
-                // } catch (Exception e) {
-                //         DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-                //         return Commands.none();
-                // }
-                
         }
 
-        public Command constructAligningCommand(boolean isLeftAlign) {
-                Pose2d tagPose = new Pose2d();
-                Integer targetId = 7;
-                double xMagnitude = Constants.Drivetrain.kXShiftMagnitude;
-                double yMagnitude = Constants.Drivetrain.kYShiftMagnitude;
-
-                List<Integer> targetTagSet;
-                Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                        targetTagSet = alliance.get() == DriverStation.Alliance.Red
-                                        ? Arrays.asList(7, 8, 9, 10, 11, 6)
-                                        : Arrays.asList(21, 20, 19, 18, 17, 22);
-                } else {
-                        return null;
-                }
-
-                double minDistance = Double.MAX_VALUE;
-                for (int tag : targetTagSet) {
-                        Pose2d pose = photonVision.at_field.getTagPose(tag).orElse(new Pose3d())
-                                        .toPose2d();
-                        Translation2d translate = pose.minus(drivetrain.getPose()).getTranslation();
-                        double distance = translate.getNorm();
-
-                        if (distance < minDistance) {
-                                tagPose = pose;
-                                targetId = tag;
-                                minDistance = distance;
-                        }
-                }
-
-                double angle = Units.degreesToRadians(60 * targetTagSet.indexOf(targetId));
-                double offset = Units.degreesToRadians(isLeftAlign ? 90 : -90);
-
-                double x = xMagnitude * Math.cos(angle) + yMagnitude * Math.cos(angle + offset);
-                double y = xMagnitude * Math.sin(angle) + yMagnitude * Math.sin(angle + offset);
-
-                PathConstraints constraints = new PathConstraints(3.0, 4.0,
-                                Units.degreesToRadians(540), Units.degreesToRadians(720));
-                return AutoBuilder.pathfindToPose(
-                                new Pose2d(tagPose.getX() + x, tagPose.getY() + y,
-                                                tagPose.getRotation()
-                                                                .plus(Rotation2d.fromRadians(
-                                                                                Math.PI / 2.0))),
-                                constraints);
-        }
-
+        /**
+         * This method is called periodically across all robot modes.
+         * It updates SmartDashboard with battery voltage, match time, and the robot's pose.
+         */
         public void robotPeriodic() {
-                
                 SmartDashboard.putNumber("Battery Voltage", powerDistribution.getVoltage());
                 SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
                 autoField.setRobotPose(drivetrain.getPose());
         }
 
+        /**
+         * This method is called once when autonomous is initialized.
+         * It sets initial states, selects the "Autonomous" tab on Elastic dashboard, and configures PathPlanner logging.
+         */
         public void autonomousInit() {
-                autoGenerator.setintakecomplete(true);
-                autoGenerator.setreachedtarget(false);
+                autoGenerator.setIntakeComplete(true);
+                autoGenerator.setReachedTarget(false);
                 Elastic.selectTab("Autonomous");
                 leds.set(LEDs.kParty_Palette_Twinkles);
                 PathPlannerLogging.setLogTargetPoseCallback((pose) -> {
-
                         Pose2d currentPose = drivetrain.getPose();
-
                         SmartDashboard.putNumber("X Error", pose.getX() - currentPose.getX());
                         SmartDashboard.putNumber("Y Error", pose.getY() - currentPose.getY());
-                        SmartDashboard.putNumber("Theta Error", pose.getRotation().getRadians()
-                                        - currentPose.getRotation().getRadians());
+                        SmartDashboard.putNumber("Theta Error", pose.getRotation().getRadians() - currentPose.getRotation().getRadians());
                         SmartDashboard.putNumber("Desired Theta", pose.getRotation().getRadians());
-                        SmartDashboard.putNumber("Actual Theta",
-                                        currentPose.getRotation().getRadians());
-
+                        SmartDashboard.putNumber("Actual Theta", currentPose.getRotation().getRadians());
                 });
         }
 
+        /**
+         * This method is called periodically during autonomous.
+         * It updates the robot's pose estimate using PhotonVision data.
+         */
         public void autonomousPeriodic() {
                 photonAutonPoseUpdate();
         }
 
+        /**
+         * This method is called once when teleop is initialized.
+         * It sets the LEDs to the alliance color and selects the "Teleoperated" tab on Elastic dashboard.
+         */
         public void teleopInit() {
                 leds.setAllianceColor();
                 Elastic.selectTab("Teleoperated");
-                Elastic.Notification notification = new Elastic.Notification(Elastic.Notification.NotificationLevel.INFO, "I AM STEVE", "CHICKEN JOCKEY!!!!!");
-                Elastic.sendNotification(notification);
         }
 
+        /**
+         * This method is called periodically during teleoperated mode.
+         * It updates the robot's pose estimate using PhotonVision data.
+         */
         public void teleopPeriodic() {
                 photonPoseUpdate();
         }
 
+        /**
+         * This method is called periodically while the robot is disabled.
+         * It updates the autonomous path visualization on SmartDashboard when the selected auto or alliance changes.
+         */
         public void disabledPeriodic() {
                 newAutoName = getAutonomousCommand().getName();
                 alliance = DriverStation.getAlliance();
@@ -829,39 +657,27 @@ public class RobotContainer {
                         lastAlliance = alliance;
                         if (AutoBuilder.getAllAutoNames().contains(autoName)) {
                                 try {
-                                        List<PathPlannerPath> pathPlannerPaths = PathPlannerAuto
-                                                        .getPathGroupFromAutoFile(autoName);
+                                        List<PathPlannerPath> pathPlannerPaths = PathPlannerAuto.getPathGroupFromAutoFile(autoName);
                                         List<Pose2d> poses = new ArrayList<>();
                                         for (PathPlannerPath path : pathPlannerPaths) {
-
-                                                if (DriverStation.getAlliance().equals(
-                                                                Optional.of(Alliance.Red))) {
-                                                        poses.addAll(path.getAllPathPoints()
-                                                                        .stream()
+                                                if (DriverStation.getAlliance().equals(Optional.of(Alliance.Red))) {
+                                                        poses.addAll(path.getAllPathPoints().stream()
                                                                         .map(point -> new Pose2d(
-                                                                                        Field.fieldLength
-                                                                                                        - point.position.getX(),
-                                                                                        Field.fieldWidth - point.position
-                                                                                                        .getY(),
+                                                                                        Field.fieldLength - point.position.getX(),
+                                                                                        Field.fieldWidth - point.position.getY(),
                                                                                         new Rotation2d()))
-                                                                        .collect(Collectors
-                                                                                        .toList()));
+                                                                        .collect(Collectors.toList()));
                                                 } else {
-                                                        poses.addAll(path.getAllPathPoints()
-                                                                        .stream()
+                                                        poses.addAll(path.getAllPathPoints().stream()
                                                                         .map(point -> new Pose2d(
                                                                                         point.position.getX(),
                                                                                         point.position.getY(),
                                                                                         new Rotation2d()))
-                                                                        .collect(Collectors
-                                                                                        .toList()));
+                                                                        .collect(Collectors.toList()));
                                                 }
                                         }
                                         autoField.getObject("path").setPoses(poses);
-                                } catch (IOException e) {
-                                        e.printStackTrace();
-                                        return;
-                                } catch (ParseException e) {
+                                } catch (IOException | ParseException e) {
                                         e.printStackTrace();
                                         return;
                                 }
@@ -870,124 +686,87 @@ public class RobotContainer {
                 photonPoseUpdate();
         }
 
+        /**
+         * Updates the robot's pose estimate using data from both PhotonVision cameras.
+         * It calculates a standard deviation for the vision measurement based on the distance to the target
+         * and fuses it with the drivetrain's odometry.
+         */
         public static void photonPoseUpdate() {
                 Optional<EstimatedRobotPose> photonPoseOptional = photonVision.getCam1Pose();
-
                 if (photonPoseOptional.isPresent()) {
                         Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-
                         if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
-                                        && photonPose.getY() >= 0
-                                        && photonPose.getY() <= Field.fieldWidth
+                                        && photonPose.getY() >= 0 && photonPose.getY() <= Field.fieldWidth
                                         && photonVision.getCam1BestTarget() != null) {
-
-                                Pose2d closestTag = photonVision.at_field.getTagPose(
-                                                photonVision.getCam1BestTarget().getFiducialId())
-                                                .get().toPose2d();
-                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                                                .getTranslation();
-
+                                Pose2d closestTag = photonVision.at_field.getTagPose(photonVision.getCam1BestTarget().getFiducialId()).get().toPose2d();
+                                Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
                                 double distance = translate.getNorm();
                                 double xStddev = Math.pow(distance, 2) / (8.0088 * 0.5);
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher3.set(photonPose.toPose2d());
-                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
-                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                                                photonPoseOptional.get().timestampSeconds);
-                                drivetrain.publisher3.set(photonPose.toPose2d());
+                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
                         }
                 }
 
                 photonPoseOptional = photonVision.getCam2Pose();
-
                 if (photonPoseOptional.isPresent()) {
                         Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-
                         if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
-                                        && photonPose.getY() >= 0
-                                        && photonPose.getY() <= Field.fieldWidth
+                                        && photonPose.getY() >= 0 && photonPose.getY() <= Field.fieldWidth
                                         && photonVision.getCam2BestTarget() != null) {
-
-                                Pose2d closestTag = photonVision.at_field.getTagPose(
-                                                photonVision.getCam2BestTarget().getFiducialId())
-                                                .get().toPose2d();
-                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                                                .getTranslation();
-
+                                Pose2d closestTag = photonVision.at_field.getTagPose(photonVision.getCam2BestTarget().getFiducialId()).get().toPose2d();
+                                Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
                                 double distance = translate.getNorm();
                                 double xStddev = Math.pow(distance, 2) / 8.0088;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher4.set(photonPose.toPose2d());
-                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
-                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                                                photonPoseOptional.get().timestampSeconds);
-
-                                drivetrain.publisher4.set(photonPose.toPose2d());
+                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
                         }
                 }
         }
 
+        /**
+         * Updates the robot's pose estimate using PhotonVision data during autonomous mode.
+         * This version uses a different standard deviation calculation that incorporates the robot's current speed.
+         */
         public static void photonAutonPoseUpdate() {
                 Optional<EstimatedRobotPose> photonPoseOptional = photonVision.getCam1Pose();
-
                 if (photonPoseOptional.isPresent()) {
                         Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-
                         if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
-                                        && photonPose.getY() >= 0
-                                        && photonPose.getY() <= Field.fieldWidth
+                                        && photonPose.getY() >= 0 && photonPose.getY() <= Field.fieldWidth
                                         && photonVision.getCam1BestTarget() != null) {
-
-                                Pose2d closestTag = photonVision.at_field.getTagPose(
-                                                photonVision.getCam1BestTarget().getFiducialId())
-                                                .get().toPose2d();
-                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                                                .getTranslation();
-
+                                Pose2d closestTag = photonVision.at_field.getTagPose(photonVision.getCam1BestTarget().getFiducialId()).get().toPose2d();
+                                Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
                                 double distance = translate.getNorm();
                                 double xStddev = Math.pow(distance, 1.75) * (3 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher3.set(photonPose.toPose2d());
-                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
-                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                                                photonPoseOptional.get().timestampSeconds);
-                                drivetrain.publisher3.set(photonPose.toPose2d());
+                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
                         }
                 }
 
                 photonPoseOptional = photonVision.getCam2Pose();
-
                 if (photonPoseOptional.isPresent()) {
                         Pose3d photonPose = photonPoseOptional.get().estimatedPose;
-
                         if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
-                                        && photonPose.getY() >= 0
-                                        && photonPose.getY() <= Field.fieldWidth
+                                        && photonPose.getY() >= 0 && photonPose.getY() <= Field.fieldWidth
                                         && photonVision.getCam2BestTarget() != null) {
-
-                                Pose2d closestTag = photonVision.at_field.getTagPose(
-                                                photonVision.getCam2BestTarget().getFiducialId())
-                                                .get().toPose2d();
-                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                                                .getTranslation();
-
+                                Pose2d closestTag = photonVision.at_field.getTagPose(photonVision.getCam2BestTarget().getFiducialId()).get().toPose2d();
+                                Translation2d translate = closestTag.minus(photonPose.toPose2d()).getTranslation();
                                 double distance = translate.getNorm();
                                 double xStddev = Math.pow(distance, 1.75) * (3 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
                                 double yStddev = xStddev;
                                 double rotStddev = Units.degreesToRadians(120.0);
                                 drivetrain.publisher4.set(photonPose.toPose2d());
-                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
-                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                                                photonPoseOptional.get().timestampSeconds);
-
-                                drivetrain.publisher4.set(photonPose.toPose2d());
+                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                drivetrain.addVisionMeasurement(photonPose.toPose2d(), photonPoseOptional.get().timestampSeconds);
                         }
                 }
         }

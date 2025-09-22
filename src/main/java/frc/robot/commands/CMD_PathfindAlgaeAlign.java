@@ -23,64 +23,82 @@ import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
 
-/*
- * You should consider using the more terse Command factories API instead
- * https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#
- * defining-commands
+/**
+ * The CMD_PathfindAlgaeAlign class is a command that aligns the robot to an "algae" scoring position.
+ * It determines the closest AprilTag and uses PathPlanner to generate a path to a hardcoded
+ * target pose corresponding to that tag.
  */
 public class CMD_PathfindAlgaeAlign extends Command {
 
-  Command pathfindingCommand;
-  SUB_PhotonVision photonVision;
-  SUB_Drivetrain drivetrain;
+  /** The PathPlanner command that will be generated and executed. */
+  private Command pathfindingCommand;
 
-  HashMap<Integer, Translation2d> redLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> redRight = new HashMap<>();
-  HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
-  HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+  /** The PhotonVision subsystem instance for AprilTag detection. */
+  private SUB_PhotonVision photonVision;
 
-  /** Creates a new CMD_PathfindReefAlign. */
+  /** The drivetrain subsystem instance for robot movement. */
+  private SUB_Drivetrain drivetrain;
+
+  /** A map of hardcoded coordinates for the left side of the red alliance algae positions. */
+  private HashMap<Integer, Translation2d> redLeft = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the right side of the red alliance algae positions. */
+  private HashMap<Integer, Translation2d> redRight = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the left side of the blue alliance algae positions. */
+  private HashMap<Integer, Translation2d> blueLeft = new HashMap<>();
+
+  /** A map of hardcoded coordinates for the right side of the blue alliance algae positions. */
+  private HashMap<Integer, Translation2d> blueRight = new HashMap<>();
+
+  /**
+   * Creates a new CMD_PathfindAlgaeAlign command.
+   * @param drivetrain The drivetrain subsystem to use.
+   * @param photonVision The PhotonVision subsystem to use.
+   */
   public CMD_PathfindAlgaeAlign(SUB_Drivetrain drivetrain, SUB_PhotonVision photonVision) {
     this.photonVision = photonVision;
     this.drivetrain = drivetrain;
 
+    // Populate the HashMaps with hardcoded coordinates for each algae position,
+    // keyed by AprilTag ID. Note: The left and right coordinates are the same for algae.
     redRight.put(7, new Translation2d(14.341348, 4.0259));
-redLeft.put(7, new Translation2d(14.341348, 4.0259));
-redRight.put(8, new Translation2d(13.699871, 5.135929553296214));
-redLeft.put(8, new Translation2d(13.699871, 5.135929553296214));
-redRight.put(9, new Translation2d(12.417933, 5.135929553296214));
-redLeft.put(9, new Translation2d(12.417933, 5.135929553296214));
-redRight.put(10, new Translation2d(11.776455999999998, 4.0259));
-redLeft.put(10, new Translation2d(11.776455999999998, 4.0259));
-redRight.put(11, new Translation2d(12.417933, 2.9158704467037855));
-redLeft.put(11, new Translation2d(12.417933, 2.9158704467037855));
-redRight.put(6, new Translation2d(13.699871, 2.9158704467037855));
-redLeft.put(6, new Translation2d(13.699871, 2.9158704467037855));
-blueRight.put(21, new Translation2d(5.771896, 4.0259));
-blueLeft.put(21, new Translation2d(5.771896, 4.0259));
-blueRight.put(20, new Translation2d(5.130165, 5.135929553296214));
-blueLeft.put(20, new Translation2d(5.130165, 5.135929553296214));
-blueRight.put(19, new Translation2d(3.848480999999999, 5.135929553296214));
-blueLeft.put(19, new Translation2d(3.848480999999999, 5.135929553296214));
-blueRight.put(18, new Translation2d(3.20675, 4.0259));
-blueLeft.put(18, new Translation2d(3.20675, 4.0259));
-blueRight.put(17, new Translation2d(3.8484809999999987, 2.9158704467037855));
-blueLeft.put(17, new Translation2d(3.8484809999999987, 2.9158704467037855));
-blueRight.put(22, new Translation2d(5.130165, 2.9158704467037855));
-blueLeft.put(22, new Translation2d(5.130165, 2.9158704467037855));
+    redLeft.put(7, new Translation2d(14.341348, 4.0259));
+    redRight.put(8, new Translation2d(13.699871, 5.135929553296214));
+    redLeft.put(8, new Translation2d(13.699871, 5.135929553296214));
+    redRight.put(9, new Translation2d(12.417933, 5.135929553296214));
+    redLeft.put(9, new Translation2d(12.417933, 5.135929553296214));
+    redRight.put(10, new Translation2d(11.776455999999998, 4.0259));
+    redLeft.put(10, new Translation2d(11.776455999999998, 4.0259));
+    redRight.put(11, new Translation2d(12.417933, 2.9158704467037855));
+    redLeft.put(11, new Translation2d(12.417933, 2.9158704467037855));
+    redRight.put(6, new Translation2d(13.699871, 2.9158704467037855));
+    redLeft.put(6, new Translation2d(13.699871, 2.9158704467037855));
+    blueRight.put(21, new Translation2d(5.771896, 4.0259));
+    blueLeft.put(21, new Translation2d(5.771896, 4.0259));
+    blueRight.put(20, new Translation2d(5.130165, 5.135929553296214));
+    blueLeft.put(20, new Translation2d(5.130165, 5.135929553296214));
+    blueRight.put(19, new Translation2d(3.848480999999999, 5.135929553296214));
+    blueLeft.put(19, new Translation2d(3.848480999999999, 5.135929553296214));
+    blueRight.put(18, new Translation2d(3.20675, 4.0259));
+    blueLeft.put(18, new Translation2d(3.20675, 4.0259));
+    blueRight.put(17, new Translation2d(3.8484809999999987, 2.9158704467037855));
+    blueLeft.put(17, new Translation2d(3.8484809999999987, 2.9158704467037855));
+    blueRight.put(22, new Translation2d(5.130165, 2.9158704467037855));
+    blueLeft.put(22, new Translation2d(5.130165, 2.9158704467037855));
     
     
-
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called when the command is initially scheduled. This method determines the closest AprilTag,
+   * selects the appropriate hardcoded target pose, and generates a PathPlanner command to drive to it.
+   */
   @Override
   public void initialize() {
     Pose2d tagPose = new Pose2d();
     Integer targetId = 7;
-
 
     List<Integer> targetTagSet;
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
@@ -90,15 +108,11 @@ blueLeft.put(22, new Translation2d(5.130165, 2.9158704467037855));
           alliance.get() == DriverStation.Alliance.Red ? Arrays.asList(7, 8, 9, 10, 11, 6)
               : Arrays.asList(21, 20, 19, 18, 17, 22);
 
-        if (alliance.get() == DriverStation.Alliance.Red) {
-          selectedMap = redLeft;
-        } else {
-          selectedMap = blueLeft;
-        }
+      // For algae, left and right maps are the same, so we just pick one.
+      selectedMap = alliance.get() == DriverStation.Alliance.Red ? redLeft : blueLeft;
     } else {
       return;
     }
-
 
     double minDistance = Double.MAX_VALUE;
     for (int tag : targetTagSet) {
@@ -126,19 +140,28 @@ blueLeft.put(22, new Translation2d(5.130165, 2.9158704467037855));
     pathfindingCommand.initialize();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   * Executes the generated PathPlanner command.
+   */
   @Override
   public void execute() {
     pathfindingCommand.execute();
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * Called once the command ends or is interrupted.
+   * @param interrupted True if the command was interrupted, false otherwise.
+   */
   @Override
   public void end(boolean interrupted) {
     pathfindingCommand.end(interrupted);
   }
 
-  // Returns true when the command should end.
+  /**
+   * Returns true when the command should end.
+   * @return True when the pathfinding command is finished, false otherwise.
+   */
   @Override
   public boolean isFinished() {
     return pathfindingCommand.isFinished();

@@ -9,31 +9,48 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
+/**
+ * The MAXSwerveModule class represents a single REV MAXSwerve module.
+ * It encapsulates the driving and turning motors, encoders, and PID controllers for one module,
+ * providing an interface to control and query its state.
+ */
 public class MAXSwerveModule {
+  /** The SparkFlex motor controller for driving the module. */
   private final SparkFlex m_drivingSparkFlex;
+
+  /** The SparkMax motor controller for turning the module. */
   private final SparkMax m_turningSparkMax;
 
+  /** The encoder for the driving motor, measures linear distance. */
   private final RelativeEncoder m_drivingEncoder;
+
+  /** The encoder for the turning motor, measures absolute angle. */
   private final AbsoluteEncoder m_turningEncoder;
 
+  /** The closed-loop PID controller for the driving motor. */
   private final SparkClosedLoopController m_drivingClosedLoopController;
+
+  /** The closed-loop PID controller for the turning motor. */
   private final SparkClosedLoopController m_turningClosedLoopController;
 
+  /** The angular offset of the module from the chassis, in radians. */
   private double m_chassisAngularOffset = 0;
+
+  /** The desired state of the module (speed and angle). */
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor, encoder, and PID
    * controller. This configuration is specific to the REV MAXSwerve Module built with NEOs, SPARKS
    * MAX, and a Through Bore Encoder.
+   *
+   * @param drivingCANId The CAN ID of the driving motor.
+   * @param turningCANId The CAN ID of the turning motor.
+   * @param chassisAngularOffset The angular offset of the module from the chassis.
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double chassisAngularOffset) {
     m_drivingSparkFlex = new SparkFlex(drivingCANId, SparkLowLevel.MotorType.kBrushless);
     m_turningSparkMax = new SparkMax(turningCANId, SparkLowLevel.MotorType.kBrushless);
-
-    // Factory reset, so we get the SPARKS MAX to a known state before configuring
-    // them. This is useful in case a SPARK MAX is swapped out.
-
     m_drivingEncoder = m_drivingSparkFlex.getEncoder();
     m_turningEncoder = m_turningSparkMax.getAbsoluteEncoder();
     m_drivingClosedLoopController = m_drivingSparkFlex.getClosedLoopController();
@@ -49,14 +66,12 @@ public class MAXSwerveModule {
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(m_turningEncoder.getPosition());
     m_drivingEncoder.setPosition(0);
-
-
   }
 
   /**
    * Returns the current state of the module.
    *
-   * @return The current state of the module.
+   * @return The current state of the module as a SwerveModuleState object.
    */
   public SwerveModuleState getState() {
     // Apply chassis angular offset to the encoder position to get the position
@@ -68,7 +83,7 @@ public class MAXSwerveModule {
   /**
    * Returns the current position of the module.
    *
-   * @return The current position of the module.
+   * @return The current position of the module as a SwerveModulePosition object.
    */
   public SwerveModulePosition getPosition() {
     // Apply chassis angular offset to the encoder position to get the position
@@ -77,6 +92,11 @@ public class MAXSwerveModule {
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
 
+  /**
+   * Sets the position of the driving encoder.
+   *
+   * @param posMeters The position in meters.
+   */
   public void setPosition(double posMeters) {
     m_drivingEncoder.setPosition(posMeters);
   }
@@ -84,7 +104,7 @@ public class MAXSwerveModule {
   /**
    * Sets the desired state for the module.
    *
-   * @param desiredState Desired state with speed and angle.
+   * @param desiredState The desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Apply chassis angular offset to the desired state.
@@ -107,15 +127,27 @@ public class MAXSwerveModule {
     m_desiredState = desiredState;
   }
 
-  /** Zeroes all the SwerveModule encoders. */
+  /**
+   * Resets the driving encoder to a position of 0.
+   */
   public void resetEncoders() {
     m_drivingEncoder.setPosition(0);
   }
 
+  /**
+   * Returns the velocity of the driving motor.
+   *
+   * @return The velocity of the driving motor in meters per second.
+   */
   public double getVelocityDrive() {
     return m_drivingEncoder.getVelocity();
   }
 
+  /**
+   * Returns the velocity of the turning motor.
+   *
+   * @return The velocity of the turning motor in radians per second.
+   */
   public double getVelocitySteer() {
     return m_turningEncoder.getVelocity();
   }

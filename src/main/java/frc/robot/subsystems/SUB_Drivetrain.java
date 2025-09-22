@@ -34,89 +34,135 @@ import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
 import frc.robot.Constants.Swerve;
 import frc.robot.utils.*;
-// import org.littletonrobotics.junction.Logger;
 
+/**
+ * The SUB_Drivetrain class manages the robot's swerve drive system.
+ * It encapsulates the four swerve modules, gyro, kinematics, and odometry.
+ * It provides methods for controlling the robot's movement, including field-relative driving,
+ * and for querying the robot's state, such as its pose and velocity.
+ * This class follows a singleton pattern to ensure only one instance is created.
+ */
 public class SUB_Drivetrain extends SubsystemBase {
 
-  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+  /** A publisher for sending odometry data to AdvantageScope for visualization. */
+  private StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
   .getStructTopic("AdvantageScopeOdometry", Pose2d.struct).publish();
 
+  /** A publisher for debugging a target X point on the field. */
   public StructPublisher<Pose2d> publisher1 = NetworkTableInstance.getDefault()
   .getStructTopic("debugXPoint", Pose2d.struct).publish(); 
 
+  /** A publisher for debugging a target Y point on the field. */
   public StructPublisher<Pose2d> publisher2 = NetworkTableInstance.getDefault()
   .getStructTopic("debugYPoint", Pose2d.struct).publish(); 
 
-
+  /** A publisher for the pose estimated by PhotonVision camera 1. */
   public StructPublisher<Pose2d> publisher3 = NetworkTableInstance.getDefault()
   .getStructTopic("PhotonCam1Pose", Pose2d.struct).publish(); 
 
-
+  /** A publisher for the pose estimated by PhotonVision camera 2. */
   public StructPublisher<Pose2d> publisher4 = NetworkTableInstance.getDefault()
   .getStructTopic("PhotonCam2Pose", Pose2d.struct).publish(); 
 
+  /** A publisher for the final selected pose after sensor fusion. */
   public StructPublisher<Pose2d> selectPosePublisher = NetworkTableInstance.getDefault()
   .getStructTopic("SelectedPose", Pose2d.struct).publish(); 
 
-
-  StructArrayPublisher<SwerveModuleState> currentStatePublisher = NetworkTableInstance.getDefault()
+  /** A publisher for the current states of the swerve modules. */
+  private StructArrayPublisher<SwerveModuleState> currentStatePublisher = NetworkTableInstance.getDefault()
 .getStructArrayTopic("Current States", SwerveModuleState.struct).publish();
 
-StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInstance.getDefault()
+  /** A publisher for the desired states of the swerve modules. */
+  private StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInstance.getDefault()
 .getStructArrayTopic("Desired States", SwerveModuleState.struct).publish();
 
+  /** The field visualization object for displaying the robot's pose on SmartDashboard. */
   public final Field2d m_field = new Field2d();
-  private static SUB_Drivetrain INSTANCE = null;
-  /** Creates a new Drivetrain. */
 
+  /** The singleton instance of the drivetrain subsystem. */
+  private static SUB_Drivetrain INSTANCE = null;
+
+  /** The front-left swerve module instance. */
   private final MAXSwerveModule frontLeft =
       new MAXSwerveModule(Constants.Drivetrain.kFRONT_LEFT_DRIVE_MOTOR_CANID,
           Constants.Drivetrain.kFRONT_LEFT_STEER_MOTOR_CANID,
           Constants.Drivetrain.kFrontLeftChassisAngularOffset);
 
+  /** The front-right swerve module instance. */
   private final MAXSwerveModule frontRight =
       new MAXSwerveModule(Constants.Drivetrain.kFRONT_RIGHT_DRIVE_MOTOR_CANID,
           Constants.Drivetrain.kFRONT_RIGHT_STEER_MOTOR_CANID,
           Constants.Drivetrain.kFrontRightChassisAngularOffset);
 
+  /** The back-left swerve module instance. */
   private final MAXSwerveModule backLeft =
       new MAXSwerveModule(Constants.Drivetrain.kBACK_LEFT_DRIVE_MOTOR_CANID,
           Constants.Drivetrain.kBACK_LEFT_STEER_MOTOR_CANID,
           Constants.Drivetrain.kBackLeftChassisAngularOffset);
 
+  /** The back-right swerve module instance. */
   private final MAXSwerveModule backRight =
       new MAXSwerveModule(Constants.Drivetrain.kBACK_RIGHT_DRIVE_MOTOR_CANID,
           Constants.Drivetrain.kBACK_RIGHT_STEER_MOTOR_CANID,
           Constants.Drivetrain.kBackRightChassisAngularOffset);
 
+  /** An array containing all the swerve modules for easy iteration. */
   private MAXSwerveModule[] modules =
       new MAXSwerveModule[] {frontLeft, frontRight, backLeft, backRight};
+
+  /** An array to hold the current states of the swerve modules. */
   private SwerveModuleState[] moduleStates = getModuleStates();
+
+  /** The desired chassis speeds, used for velocity control. */
   private ChassisSpeeds setpoint = new ChassisSpeeds();
 
+  /** The layout of the AprilTags on the field, used for pose estimation. */
   public AprilTagFieldLayout at_field;
 
+  /** The calculated field-relative velocity of the robot. */
   private FieldRelativeSpeed m_fieldRelVel = new FieldRelativeSpeed();
+
+  /** The last known field-relative velocity, used for calculating acceleration. */
   private FieldRelativeSpeed m_lastFieldRelVel = new FieldRelativeSpeed();
+
+  /** The calculated field-relative acceleration of the robot. */
   private FieldRelativeAccel m_fieldRelAccel = new FieldRelativeAccel();;
 
-  AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
+  /** The NavX gyro for measuring robot heading and rotation. */
+  private AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
+  /** The current rotational velocity of the robot. */
   private double m_currentRotation = 0.0;
+
+  /** The current direction of translation of the robot. */
   private double m_currentTranslationDir = 0.0;
+
+  /** The current magnitude of translation of the robot. */
   private double m_currentTranslationMag = 0.0;
 
+  /** A slew rate limiter for the magnitude of translation to smooth joystick inputs. */
   private SlewRateLimiter m_magLimiter =
       new SlewRateLimiter(Constants.Drivetrain.kMagnitudeSlewRate);
+
+  /** A slew rate limiter for the rotation of the robot to smooth joystick inputs. */
   private SlewRateLimiter m_rotLimiter =
       new SlewRateLimiter(Constants.Drivetrain.kRotationalSlewRate);
+
+  /** The previous timestamp, used for calculating elapsed time in rate limiting. */
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
-  Pose2d pose = new Pose2d();
-  // Odometry class for tracking robot pose
+  /** The current pose of the robot on the field. */
+  private Pose2d pose = new Pose2d();
 
+  /** The pose estimator for fusing sensor data to determine robot pose. */
   public SwerveDrivePoseEstimator m_poseEstimator;
 
+  /**
+   * Returns the singleton instance of the drivetrain subsystem.
+   * Ensures that only one instance of the drivetrain is created.
+   *
+   * @return The singleton instance of the SUB_Drivetrain.
+   */
   public static SUB_Drivetrain getInstance() {
     if (INSTANCE == null) {
       INSTANCE = new SUB_Drivetrain();
@@ -125,6 +171,11 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     return INSTANCE;
   }
 
+  /**
+   * Constructs a new SUB_Drivetrain.
+   * This constructor is private to enforce the singleton pattern.
+   * It initializes the pose estimator and zeroes the gyro heading.
+   */
   private SUB_Drivetrain() {
     m_poseEstimator = new SwerveDrivePoseEstimator(Constants.Drivetrain.kDriveKinematics,
     Rotation2d.fromDegrees(getAngle()),
@@ -135,6 +186,11 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     
   }
 
+  /**
+   * This method is called periodically every robot loop (approximately every 20ms).
+   * It updates the pose estimator, calculates robot speed and acceleration,
+   * and sends telemetry data to SmartDashboard and AdvantageScope.
+   */
   @Override
   public void periodic() {
 
@@ -185,7 +241,7 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
   /**
    * Returns the currently-estimated pose of the robot.
    *
-   * @return The pose.
+   * @return The robot's pose as a Pose2d object.
    */
   public Pose2d getPose() {
     Pose2d pose =  m_poseEstimator.getEstimatedPosition();
@@ -193,7 +249,7 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
   }
 
   /**
-   * Resets the odometry to the specified pose.
+   * Resets the robot's odometry to a specified pose.
    *
    * @param pose The pose to which to set the odometry.
    */
@@ -207,13 +263,13 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
   }
 
   /**
-   * Method to drive the robot using joystick info.
+   * Drives the robot using joystick inputs.
    *
-   * @param xSpeed Speed of the robot in the x direction (forward).
-   * @param ySpeed Speed of the robot in the y direction (sideways).
-   * @param rot Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the field.
-   * @param rateLimit Whether to enable rate limiting for smoother control.
+   * @param xSpeed The speed of the robot in the x direction (forward/backward).
+   * @param ySpeed The speed of the robot in the y direction (strafe left/right).
+   * @param rot The angular rate of the robot (rotation).
+   * @param fieldRelative True to drive relative to the field, false to drive relative to the robot.
+   * @param rateLimit True to enable rate limiting for smoother control.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative,
       boolean rateLimit) {
@@ -226,15 +282,13 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
       double inputTranslationMag = Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2));
 
-      // Calculate the direction slew rate based on an estimate of the lateral
-      // acceleration
+      // Calculate the direction slew rate based on an estimate of the lateral acceleration
       double directionSlewRate;
       if (m_currentTranslationMag != 0.0) {
         directionSlewRate =
             Math.abs(Constants.Drivetrain.kDirectionSlewRate / m_currentTranslationMag);
       } else {
-        directionSlewRate = 500.0; // some high number that means the slew rate is effectively
-                                   // instantaneous
+        directionSlewRate = 500.0; // a high number that means the slew rate is effectively instantaneous
       }
 
       double currentTime = WPIUtilJNI.now() * 1e-6;
@@ -245,8 +299,7 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
             inputTranslationDir, directionSlewRate * elapsedTime);
         m_currentTranslationMag = m_magLimiter.calculate(inputTranslationMag);
       } else if (angleDif > 0.85 * Math.PI) {
-        if (m_currentTranslationMag > 1e-4) { // some small number to avoid floating-point errors
-                                              // with equality checking
+        if (m_currentTranslationMag > 1e-4) { // a small number to avoid floating-point errors
           // keep currentTranslationDir unchanged
           m_currentTranslationMag = m_magLimiter.calculate(0.0);
         } else {
@@ -275,7 +328,7 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     double ySpeedDelivered = ySpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
 
-    // Adjust the heading to be within the range of -180 to 180 degrees
+    // Convert chassis speeds to individual module states, handling field-relative translation
     var swerveModuleStates =
         Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
@@ -291,7 +344,7 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     desiredStatePublisher.set(swerveModuleStates);
   }
 
-  /** Sets the wheels into an X formation to prevent movement. */
+  /** Commands the swerve modules to form an "X" shape, preventing movement. */
   public void setX() {
     frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
@@ -299,6 +352,10 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     backRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
+  /**
+   * Commands all swerve modules to a specific angle.
+   * @param angle The angle in degrees to set the modules to.
+   */
   public void setAngle(double angle) {
     frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
     frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(angle)));
@@ -307,9 +364,9 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
   }
 
   /**
-   * Sets the swerve ModuleStates.
+   * Sets the desired states for each swerve module.
    *
-   * @param desiredStates The desired SwerveModule states.
+   * @param desiredStates An array of the desired SwerveModuleState for each module.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates,
@@ -320,7 +377,7 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     backRight.setDesiredState(desiredStates[3]);
   }
 
-  /** Resets the drive encoders to currently read a position of 0. */
+  /** Resets the drive encoders on all swerve modules to zero. */
   public void resetEncoders() {
     frontLeft.resetEncoders();
     backLeft.resetEncoders();
@@ -328,39 +385,51 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     backRight.resetEncoders();
   }
 
-  /** Zeroes the heading of the robot. */
+  /** Zeroes the heading of the robot by resetting the NavX gyro. */
   public void zeroHeading() {
     navx.zeroYaw();
     m_poseEstimator.resetRotation(Rotation2d.fromDegrees(navx.getAngle()));
   }
 
 
+  /**
+   * Returns the raw angle of the robot from the NavX gyro.
+   * @return The angle of the robot in degrees.
+   */
   public double getAngle() {
     return -navx.getAngle();
   }
 
   /**
-   * Returns the heading of the robot.
+   * Returns the heading of the robot in degrees, from -180 to 180.
    *
-   * @return the robot's heading in degrees, from -180 to 180
+   * @return The robot's heading.
    */
   public double getHeading() {
     return Rotation2d.fromDegrees(getAngle()).getDegrees();
   }
 
+  /**
+   * Returns the rotation of the robot as a Rotation2d object.
+   * @return The rotation of the robot.
+   */
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(getAngle());
   }
 
   /**
-   * Returns the turn rate of the robot.
+   * Returns the turn rate of the robot from the NavX gyro.
    *
-   * @return The turn rate of the robot, in degrees per second
+   * @return The turn rate in degrees per second.
    */
   public double getTurnRate() {
     return navx.getRate() * (Constants.Drivetrain.kGyroReversed ? -1.0 : 1.0);
   }
 
+  /**
+   * Returns the current states of the swerve modules.
+   * @return An array of SwerveModuleState objects.
+   */
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[modules.length];
     for (int i = 0; i < modules.length; i++) {
@@ -370,6 +439,10 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
   }
 
 
+  /**
+   * Returns the current positions of the swerve modules.
+   * @return An array of SwerveModulePosition objects.
+   */
   public SwerveModulePosition[] getPositions() {
     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
 
@@ -379,21 +452,37 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     return positions;
   }
 
+  /**
+   * Returns the current chassis speeds of the robot.
+   * @return The chassis speeds as a ChassisSpeeds object.
+   */
   public ChassisSpeeds getChassisSpeeds() {
     return Drivetrain.kDriveKinematics.toChassisSpeeds(getModuleStates());
   }
 
+  /**
+   * Resets the robot's pose in the pose estimator.
+   * @param pose The new pose of the robot.
+   */
   public void resetPose(Pose2d pose) {
     m_poseEstimator.resetPosition(getRotation2d(), getPositions(), pose);
 
     this.pose = pose;
   }
 
+  /**
+   * Drives the robot with field-relative speeds.
+   * @param fieldRelativeSpeeds The desired field-relative speeds.
+   */
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
     driveRobotRelative(
         ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose().getRotation()));
   }
 
+  /**
+   * Drives the robot with robot-relative speeds.
+   * @param robotRelativeSpeeds The desired robot-relative speeds.
+   */
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
 
     ChassisSpeeds adjustedSpeeds = new ChassisSpeeds(
@@ -408,19 +497,33 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     setModuleStates(targetStates);
   }
 
+  /**
+   * Sets the desired translational velocity of the robot.
+   * @param speeds The desired chassis speeds (vx and vy).
+   */
   public void driveVelocity(ChassisSpeeds speeds) {
     setpoint.vxMetersPerSecond = speeds.vxMetersPerSecond;
     setpoint.vyMetersPerSecond = speeds.vyMetersPerSecond;
   }
 
+  /**
+   * Sets the desired rotational velocity of the robot.
+   * @param omega The desired rotational velocity in radians per second.
+   */
   public void driveVelocity(double omega) {
     setpoint.omegaRadiansPerSecond = omega;
   }
 
+  /** Stops the robot's movement completely. */
   public void stop() {
     driveVelocity(new ChassisSpeeds());
   }
 
+  /**
+   * Returns a command that drives the robot while maintaining a PID-controlled heading.
+   * @param headingSupplier A supplier for the desired heading as an Optional<Rotation2d>.
+   * @return A command that controls the robot's heading.
+   */
   public Command pidControlledHeading(Supplier<Optional<Rotation2d>> headingSupplier) {
     var subsystem = this;
     return new Command() {
@@ -462,6 +565,11 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     };
 }
 
+  /**
+   * Returns a command that drives the robot with field-relative speeds.
+   * @param speeds A supplier for the desired field-relative chassis speeds.
+   * @return A command that drives the robot field-relatively.
+   */
   public Command fieldRelative(Supplier<ChassisSpeeds> speeds) {
     var subsystem = this;
     return new Command() {
@@ -482,6 +590,12 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
     };
   }
 
+  /**
+   * Returns a command that points the robot towards a specific position on the field.
+   * @param posToPointTo A supplier for the target position as an Optional<Translation2d>.
+   * @param forward A supplier for the desired forward direction of the robot.
+   * @return A command that points the robot to the specified position.
+   */
   public Command pointTo(Supplier<Optional<Translation2d>> posToPointTo,
       Supplier<Rotation2d> forward) {
     return pidControlledHeading(() -> posToPointTo.get().map((pointTo) -> {
@@ -491,19 +605,28 @@ StructArrayPublisher<SwerveModuleState> desiredStatePublisher = NetworkTableInst
   }
 
   /**
-   * Allows for vision measurements to be added to drive odometry.
+   * Adds a vision-based pose measurement to the pose estimator.
+   * This is used to correct the robot's estimated pose with data from cameras.
    * 
-   * @param visionPose The pose supplied by getPose() in SUB_Limelight
+   * @param visionPose The pose estimated by the vision system.
+   * @param timestampSeconds The timestamp of the vision measurement.
    */
   public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds) {
-    // visionPose.rotateBy();
     m_poseEstimator.addVisionMeasurement(visionPose, timestampSeconds);
   }
 
+  /**
+   * Returns the current field-relative speed of the robot.
+   * @return The field-relative speed as a FieldRelativeSpeed object.
+   */
   public FieldRelativeSpeed getFieldRelativeSpeed() {
     return m_fieldRelVel;
   }
 
+  /**
+   * Returns the current field-relative acceleration of the robot.
+   * @return The field-relative acceleration as a FieldRelativeAccel object.
+   */
   public FieldRelativeAccel getFieldRelativeAccel() {
     return m_fieldRelAccel;
   }

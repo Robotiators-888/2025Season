@@ -12,38 +12,39 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
- * this project, you must also update the Main.java file in the project.
+ * The VM is configured to automatically run this class, and to call the functions corresponding to
+ * each mode, as described in the TimedRobot documentation. This class extends LoggedRobot from
+ * AdvantageKit to enable advanced logging capabilities. If you change the name of this class or
+ * the package after creating this project, you must also update the build.gradle file in the
+ * project.
  */
-
 public class Robot extends LoggedRobot {
+  /** The command selected for the autonomous period. */
   private Command m_autonomousCommand;
 
+  /** The robot's main container, which holds all subsystems, commands, and operator interface configuration. */
   private final RobotContainer m_robotContainer;
 
   /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
+   * This function is run when the robot is first started up. It should be used for any
+   * initialization code. It starts the data log and AdvantageKit logger, and then
+   * instantiates the RobotContainer.
    */
   public Robot() {
-
     DataLogManager.start();
     Logger.start();
     
-    // Instantiate our RobotContainer. This will perform all our button bindings, and put our
+    // Instantiate our RobotContainer. This will perform all button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_robotContainer.robotInit();
   }
 
   /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
+   * This function is called every 20 ms, regardless of the mode. Use this for items like diagnostics
+   * that you want to run during disabled, autonomous, teleoperated, and test modes.
    *
-   * <p>
-   * This runs after the mode specific periodic functions, but before LiveWindow and SmartDashboard
-   * integrated updating.
+   * <p>This runs after the mode-specific periodic functions, but before LiveWindow and
+   * SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
@@ -57,31 +58,41 @@ public class Robot extends LoggedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    // Intentionally left blank.
+  }
 
+  /** This function is called periodically during disabled mode. */
   @Override
   public void disabledPeriodic() {
     m_robotContainer.disabledPeriodic();
   }
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /**
+   * This function is called once when the autonomous period begins.
+   * It gets the selected autonomous command from the RobotContainer and schedules it.
+   */
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    // schedule the autonomous command (example)
+    // Schedule the autonomous command if one was selected.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
     m_robotContainer.autonomousInit();
   }
 
-  /** This function is called periodically during autonomous. */
+  /** This function is called periodically during the autonomous period. */
   @Override
   public void autonomousPeriodic() {
     m_robotContainer.autonomousPeriodic();
   }
 
+  /**
+   * This function is called once when the teleoperated period begins.
+   * It cancels the autonomous command to ensure it doesn't interfere with teleop control.
+   */
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -95,12 +106,16 @@ public class Robot extends LoggedRobot {
   }
   
 
-  /** This function is called periodically during operator control. */
+  /** This function is called periodically during the teleoperated period (operator control). */
   @Override
   public void teleopPeriodic() {
     m_robotContainer.teleopPeriodic();
   }
 
+  /**
+   * This function is called once when test mode begins.
+   * It cancels all running commands.
+   */
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
@@ -109,13 +124,19 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    // Intentionally left blank.
+  }
 
-  /** This function is called once when the robot is first started up. */
+  /** This function is called once when the simulation is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    // Intentionally left blank.
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+    // Intentionally left blank.
+  }
 }
