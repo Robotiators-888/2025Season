@@ -42,6 +42,9 @@ import frc.robot.utils.*;
  * and for querying the robot's state, such as its pose and velocity.
  * This class follows a singleton pattern to ensure only one instance is created.
  */
+
+// Notice the extends keyword, this means that SUB_Drivetrain inherits from SubsystemBase
+// SubsystemBase is a class provided by wpilib and allows us to do things like requiring the subsystem and to other useful commands
 public class SUB_Drivetrain extends SubsystemBase {
 
   /** A publisher for sending odometry data to AdvantageScope for visualization. */
@@ -80,8 +83,13 @@ public class SUB_Drivetrain extends SubsystemBase {
   public final Field2d m_field = new Field2d();
 
   /** The singleton instance of the drivetrain subsystem. */
+  // Sets up for the getInstance() method below, this has to be static so that it is shared across all instances of the class or else none of this would work.
   private static SUB_Drivetrain INSTANCE = null;
 
+  // Declares the motors and other components of the drivetrain   
+  // Notice the use of the new keyword to call constructors of classes provided by wpilib and our own custom classes.
+  // Also notice the use of Constants.XXXX. This is how we access the values defined in Constants.java
+  // Notice that in java we can use multi line statements because of the use of semicolons to end statements.
   /** The front-left swerve module instance. */
   private final MAXSwerveModule frontLeft =
       new MAXSwerveModule(Constants.Drivetrain.kFRONT_LEFT_DRIVE_MOTOR_CANID,
@@ -163,17 +171,22 @@ public class SUB_Drivetrain extends SubsystemBase {
    *
    * @return The singleton instance of the SUB_Drivetrain.
    */
+  // This is a public static method to get the instance of the drivetrain subsystem
+  // Notice how this is static, this means that it is shared across all instances of the class so that we can make sure there is only one instance
+  // Also notice how it has a return type of SUB_Drivetrain and is public so other classes can call it
   public static SUB_Drivetrain getInstance() {
+    // If there is no instance yet, create one by using the constructor below
+    // This constructor is private so that no other class can call it and create another instance
     if (INSTANCE == null) {
       INSTANCE = new SUB_Drivetrain();
     }
 
+    //If there is already an instance, just return it
     return INSTANCE;
   }
 
   /**
    * Constructs a new SUB_Drivetrain.
-   * This constructor is private to enforce the singleton pattern.
    * It initializes the pose estimator and zeroes the gyro heading.
    */
   private SUB_Drivetrain() {
@@ -190,8 +203,10 @@ public class SUB_Drivetrain extends SubsystemBase {
    * This method is called periodically every robot loop (approximately every 20ms).
    * It updates the pose estimator, calculates robot speed and acceleration,
    * and sends telemetry data to SmartDashboard and AdvantageScope.
+   * This allows the drivers to see the robot's position on the field and other useful information.
    */
   @Override
+  // Notice how this function has a void return type, this means that it does not return any value so it cant be used like so: int x = periodic();.
   public void periodic() {
 
     m_poseEstimator.update(Rotation2d.fromDegrees(getAngle()),
@@ -238,13 +253,17 @@ public class SUB_Drivetrain extends SubsystemBase {
 
   }
 
+  // Regular methods start here
+  // For new coders: You might see a lot of methods that seem very useless that just return one value
+  // However, they are neccecary because motors are defined as private meaning they shouldn't be accessed from other classes and these public methods allow other classes to interface with the motors
+
   /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The robot's pose as a Pose2d object.
    */
   public Pose2d getPose() {
-    Pose2d pose =  m_poseEstimator.getEstimatedPosition();
+    Pose2d pose =  m_poseEstimator.getEstimatedPosition(); // Why not just return m_poseEstimator.getEstimatedPosition()?
     return pose;
   }
 
@@ -262,6 +281,10 @@ public class SUB_Drivetrain extends SubsystemBase {
     this.pose = pose;
   }
 
+  // The below comments are called doxygen comments and are used to give those useful popups when hovering over a method.
+  // They define a description of the method, its parameters, and its return value using @breif @param and @return respectivley.
+  // They also are used to generate documentation automatically
+  // This is great to know what a method does and you will see it used in many wpilib methods and classes.
   /**
    * Drives the robot using joystick inputs.
    *
@@ -324,11 +347,17 @@ public class SUB_Drivetrain extends SubsystemBase {
     }
 
     // Convert the commanded speeds into the correct units for the drivetrain
+    // Notice the use of * for multiplication
     double xSpeedDelivered = xSpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * Constants.Drivetrain.kMaxSpeedMetersPerSecond;
     double rotDelivered = m_currentRotation * Constants.Drivetrain.kMaxAngularSpeed;
 
     // Convert chassis speeds to individual module states, handling field-relative translation
+    // Notice the use of the var keyword, this allows the compiler to infer the type of the variable based on what it is being set to
+    // This is useful to reduce redundancy and make the code cleaner with complex types but does not mean that the type can change during runtime
+    // This is unlike languages like python where types can be changed at runtime instead of being determined at compile time
+    // Dont use the var keyword for evrything though as it can make it hard to determine the type of a variable
+    // var also cant be used for the type of a function parameter or return type
     var swerveModuleStates =
         Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,

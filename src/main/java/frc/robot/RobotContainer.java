@@ -79,6 +79,7 @@ public class RobotContainer {
         // The robot's subsystems and commands are defined here...
 
         // Subsystem Instantiation
+        // Notice the getInstance() method. This is how we make sure that there is only one instance of each subsystem.
         private static final SUB_Drivetrain drivetrain = SUB_Drivetrain.getInstance();
         private static final SUB_PhotonVision photonVision = SUB_PhotonVision.getInstance();
         private static final AutoGenerator autoGenerator = AutoGenerator.getInstance();
@@ -111,6 +112,20 @@ public class RobotContainer {
         // State tracking for alignment
         private int listIndex = 0;
         private int targetId = 7;
+
+        //@avacado-a Please review this section for accuracy and clarity
+
+        // For new coders: You will se a lot of () -> in the code below. This is called a lambda expression.
+        // Labmdas are used to pass functions as parameters to other functions (especially wpilib functions). They are similar to function pointers in C/C++ (dont worry about c++ yet).
+        // Lamdas are technically "one time use" functions that have no name and are anonymous as they are declared and used once.
+        // Instant commands are commands that do one thing once and then end
+        // Runcommands are commands that run a function repeatedly until interrupted or ended
+        // Sequential command groups run a list of commands in order, one after the other
+        // Parallel command groups run a list of commands at the same time until they are all finished
+        // Race command groups run a list of commands at the same time until one of them finishes, then they end all the other commands
+        // Default commands are commands that run on a subsystem when no other command is using/requiring the subsystem. This is seen in the drive subsystem where the default behavior is to use the joysticks to drive
+        // When you see a lambda in an instant or run command with a comma and then a subsystem, it means that subsysem is being required (the function and subsystem are parameters of run and instant commands).
+        // This works because subsystems inherit from subsystembase
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -326,6 +341,8 @@ public class RobotContainer {
 
                 // --- Driver 2 Controls (Scoring and Intake) --- //
                 // Elevator and Pivot setpoints
+                // Controls the buttons to move the elevator to predefined points in constants.java.
+                // Notice how methods of classes are being called.
                 Driver2.a().onTrue(getZeroSetpointCommand());
                 Driver2.b().onTrue(getL2SetpointCommand());
                 Driver2.x().onTrue(getL3SetpointCommand());
@@ -340,7 +357,7 @@ public class RobotContainer {
                 // Roller controls
                 Driver2.leftBumper().whileTrue(new RunCommand(()->roller.setRollerOutput(-Roller.kIntakeSpeed, -Roller.kRollerHelperSpeed))).onFalse(new InstantCommand(()->roller.setRollerOutput(0.0, 0.0)));
                 
-                // Intake command with rumble feedback when a game piece is detected.
+                // Intake command with rumble feedback when a game piece is detected. We love rumble 😁😍
                 Driver2.rightBumper().whileTrue(new RunCommand(() -> roller.setRollerOutput(Roller.kIntakeSpeed, Roller.kRollerHelperSpeed), roller)
                                 .until(() -> roller.getHasCoral())
                                 .andThen(new ParallelCommandGroup(

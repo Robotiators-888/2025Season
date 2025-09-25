@@ -37,6 +37,7 @@ public class MAXSwerveModule {
   private double m_chassisAngularOffset = 0;
 
   /** The desired state of the module (speed and angle). */
+  // Constructors can also be used as so (nestled just like functions)
   private SwerveModuleState m_desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   /**

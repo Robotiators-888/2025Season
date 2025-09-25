@@ -32,7 +32,7 @@ public class Robot extends LoggedRobot {
    */
   public Robot() {
     DataLogManager.start();
-    Logger.start();
+    Logger.start(); // Starts AdvantageKit logger.
     
     // Instantiate our RobotContainer. This will perform all button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -43,7 +43,7 @@ public class Robot extends LoggedRobot {
    * This function is called every 20 ms, regardless of the mode. Use this for items like diagnostics
    * that you want to run during disabled, autonomous, teleoperated, and test modes.
    *
-   * <p>This runs after the mode-specific periodic functions, but before LiveWindow and
+   * This runs after the mode-specific periodic functions, but before LiveWindow and
    * SmartDashboard integrated updating.
    */
   @Override

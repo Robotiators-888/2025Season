@@ -18,13 +18,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
+ * The Constants class provides a convenient place to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
  * as `public static final` so they are immutable and accessible globally.
  *
- * <p>
  * It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
+ * 
+ * We use this class for many useful things such as CAN IDs, PID values, and setpoints. These should never be changed while code is runnig so they are constants.
+ * Please do not declare CAN IDs (and other relevant variables) in the subsystem files, please put them here.
  */
 public final class Constants {
 
