@@ -29,15 +29,10 @@ public class SUB_GroundIntake extends SubsystemBase{
     public void groundIntakeDetection(Supplier<Boolean> shouldIntake, Supplier<Boolean> shouldRun){
       if (shouldIntake.get()) {
         setGroundIntake(GroundIntake.kGroundIntakeSpeed);
-        return;
-      }
-      if (shouldRun.get()){
+      } else if (shouldRun.get()){
         setGroundIntake(-.2);
-        return;
-      }
-      else{
+      } else {
         setGroundIntake(0);
-        return;
       }
     }
 

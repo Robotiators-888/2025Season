@@ -130,6 +130,10 @@ blueLeft.put(22, new Translation2d(4.969311606564588, 2.8230016967037854));
 
 
     Translation2d translate = selectedMap.get(targetId);
+    if (translate == null) {
+      DriverStation.reportError("CMD_OldPathfindReefAlign: Invalid targetId " + targetId + ", cannot find translation.", false);
+      return;
+    }
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
     drivetrain.publisher1.set(pose);
     pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);

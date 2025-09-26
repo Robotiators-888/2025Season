@@ -121,8 +121,8 @@ public class RobotContainer {
 
                                 drivetrain.setDefaultCommand(new RunCommand( // Unstable
                                 () -> drivetrain.drive(
-                                        deadbandCompensate(Driver1.getRawAxis(1)),
-                                        deadbandCompensate(Driver1.getRawAxis(0)),
+                                        -deadbandCompensate(Driver1.getRawAxis(1)),
+                                        -deadbandCompensate(Driver1.getRawAxis(0)),
                                         -deadbandCompensate(Driver1.getRawAxis(4)),
                                                 true, true),
                                 drivetrain));
@@ -240,20 +240,26 @@ public class RobotContainer {
                 NamedCommands.registerCommand("ResetReachedTarget",
                                 new InstantCommand(() -> autoGenerator.setreachedtarget(false)));
 
-                NamedCommands.registerCommand("scoreL2(conditional)", new SequentialCommandGroup(
-                                Commands.waitUntil(() -> autoGenerator.getreachedtarget()),
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kElevatingSetpoint)),
-                                new InstantCommand(() -> elevator
-                                                .ChangeSetpoint(Elevator.kL2Setpoint)),
-                                Commands.waitUntil(() -> elevator.atSetpoint(Elevator.kL2Setpoint)),
-                                new InstantCommand(() -> pivot
-                                                .changeSetpoint(PivotConstants.kL2Setpoint)),
+                NamedCommands.registerCommand("scoreL2(conditional)", new ParallelRaceGroup(
+                                new SequentialCommandGroup(
+                                                Commands.waitUntil(() -> autoGenerator
+                                                                .getreachedtarget()),
+                                                new InstantCommand(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kElevatingSetpoint)),
+                                                new InstantCommand(() -> elevator.ChangeSetpoint(
+                                                                Elevator.kL2Setpoint)),
+                                                Commands.waitUntil(() -> elevator
+                                                                .atSetpoint(Elevator.kL2Setpoint)),
+                                                new InstantCommand(() -> pivot.changeSetpoint(
+                                                                PivotConstants.kL2Setpoint)),
+                                                Commands.waitUntil(() -> pivot.atSetpoint(
+                                                                PivotConstants.kL2Setpoint)),
+                                                new RunCommand(() -> roller.setRollerOutput(
+                                                                Roller.kEjectSpeed - 0.1),
+                                                                roller).withTimeout(.15))
+                                                                                .withTimeout(4),
                                 Commands.waitUntil(
-                                                () -> pivot.atSetpoint(PivotConstants.kL2Setpoint)),
-                                new RunCommand(() -> roller
-                                                .setRollerOutput(Roller.kEjectSpeed - 0.1), roller)
-                                                                .withTimeout(.15)));
+                                                () -> !autoGenerator.getintakecomplete())));
 
                 NamedCommands.registerCommand("scoreL4(conditional)", new ParallelRaceGroup(
                                 new SequentialCommandGroup(Commands
@@ -581,10 +587,10 @@ public class RobotContainer {
                 SmartDashboard.putNumber("Reef Side Angle", reefAngleDegrees);
                 SmartDashboard.putNumber("Reef Align Target ID", targetTagSet[listIndex]);
 
+                targetId = targetTagSet[listIndex];
                 Pose2d pose = photonVision.at_field.getTagPose(targetId).orElse(new Pose3d())
                                 .toPose2d();
                 drivetrain.publisher1.set(pose);
-                targetId = targetTagSet[listIndex];
 
         }
 
@@ -975,24 +981,27 @@ public class RobotContainer {
                                         // && odometryDifference > 2
                                         ) {
 
-                                Pose2d closestTag = photonVision.at_field.getTagPose(
-                                                photonVision.getCam1BestTarget().getFiducialId())
-                                                .get().toPose2d();
-                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                                                .getTranslation();
+                                Optional<Pose3d> tagPoseOpt = photonVision.at_field.getTagPose(
+                                        photonVision.getCam1BestTarget().getFiducialId());
+                                if (tagPoseOpt.isPresent()) {
+                                        Pose2d closestTag = tagPoseOpt.get()
+                                                        .toPose2d();
+                                        Translation2d translate = closestTag.minus(photonPose.toPose2d())
+                                                        .getTranslation();
 
-                                double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 2) / (8.0088 * 0.5);
-                                double yStddev = xStddev;
-                                double rotStddev = Units.degreesToRadians(120.0);
-                                drivetrain.publisher3.set(photonPose.toPose2d());
-                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
-                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                                                photonPoseOptional.get().timestampSeconds);
-                                drivetrain.publisher3.set(photonPose.toPose2d());
-                                SmartDashboard.putNumber("Cam 1 Closest Tag",
-                                                photonVision.getCam1BestTarget().getFiducialId());
+                                        double distance = translate.getNorm();
+                                        double xStddev = Math.pow(distance, 2) / (8.0088 * 0.5);
+                                        double yStddev = xStddev;
+                                        double rotStddev = Units.degreesToRadians(120.0);
+                                        drivetrain.publisher3.set(photonPose.toPose2d());
+                                        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
+                                                        VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                        drivetrain.addVisionMeasurement(photonPose.toPose2d(),
+                                                        photonPoseOptional.get().timestampSeconds);
+                                        drivetrain.publisher3.set(photonPose.toPose2d());
+                                        SmartDashboard.putNumber("Cam 1 Closest Tag",
+                                                        photonVision.getCam1BestTarget().getFiducialId());
+                                }
                         }
                 }
 
@@ -1008,25 +1017,28 @@ public class RobotContainer {
                                         // && odometryDifference > 2
                                         ) {
 
-                                Pose2d closestTag = photonVision.at_field.getTagPose(
-                                                photonVision.getCam2BestTarget().getFiducialId())
-                                                .get().toPose2d();
-                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                                                .getTranslation();
+                                Optional<Pose3d> tagPoseOpt = photonVision.at_field.getTagPose(
+                                        photonVision.getCam2BestTarget().getFiducialId());
+                                if (tagPoseOpt.isPresent()) {
+                                        Pose2d closestTag = tagPoseOpt.get()
+                                                        .toPose2d();
+                                        Translation2d translate = closestTag.minus(photonPose.toPose2d())
+                                                        .getTranslation();
 
-                                double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 2) / 8.0088;
-                                double yStddev = xStddev;
-                                double rotStddev = Units.degreesToRadians(120.0);
-                                drivetrain.publisher4.set(photonPose.toPose2d());
-                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
-                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                                                photonPoseOptional.get().timestampSeconds);
+                                        double distance = translate.getNorm();
+                                        double xStddev = Math.pow(distance, 2) / 8.0088;
+                                        double yStddev = xStddev;
+                                        double rotStddev = Units.degreesToRadians(120.0);
+                                        drivetrain.publisher4.set(photonPose.toPose2d());
+                                        drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
+                                                        VecBuilder.fill(xStddev, yStddev, rotStddev));
+                                        drivetrain.addVisionMeasurement(photonPose.toPose2d(),
+                                                        photonPoseOptional.get().timestampSeconds);
 
-                                drivetrain.publisher4.set(photonPose.toPose2d());
-                                SmartDashboard.putNumber("Cam 2 Closest Tag",
-                                                photonVision.getCam2BestTarget().getFiducialId());
+                                        drivetrain.publisher4.set(photonPose.toPose2d());
+                                        SmartDashboard.putNumber("Cam 2 Closest Tag",
+                                                        photonVision.getCam2BestTarget().getFiducialId());
+                                }
                         }
                 }
         }

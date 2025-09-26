@@ -117,6 +117,10 @@ public class CMD_PathfindReefAlign extends Command {
     3.0, 2.1,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
     Translation2d translate = selectedMap.get(target);
+    if (translate == null) {
+      DriverStation.reportError("CMD_PathfindReefAlign: Invalid targetId " + target + ", cannot find translation.", false);
+      return;
+    }
     Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
     drivetrain.selectPosePublisher.set(pose);
     
