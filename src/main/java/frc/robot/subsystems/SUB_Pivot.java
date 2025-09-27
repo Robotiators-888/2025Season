@@ -29,7 +29,7 @@ public class SUB_Pivot extends SubsystemBase {
   // public double outputvoltage2 = 0;
 
   private double setpoint = PivotConstants.kIntakeSetpoint;// TODO: Change
-  private PIDController voltagePID = new PIDController(2.0 * 0.035, 0, 0); // TODO: Change
+  private PIDController voltagePID = new PIDController(2.0 * 0.05, 0, 0); // Was P of .035 TODO: Change
 
   private InterpolatingDoubleTreeMap constantApplicationMap = new InterpolatingDoubleTreeMap();
   private InterpolatingDoubleTreeMap coralConstantApplicationMap = new InterpolatingDoubleTreeMap();

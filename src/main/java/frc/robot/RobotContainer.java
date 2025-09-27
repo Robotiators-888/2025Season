@@ -961,34 +961,34 @@ public class RobotContainer {
                         }
                 }
 
-                photonPoseOptional = photonVision.getCam2Pose();
+                // photonPoseOptional = photonVision.getCam2Pose();
 
-                if (photonPoseOptional.isPresent()) {
-                        Pose3d photonPose = photonPoseOptional.get().estimatedPose;
+                // if (photonPoseOptional.isPresent()) {
+                //         Pose3d photonPose = photonPoseOptional.get().estimatedPose;
 
-                        if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
-                                        && photonPose.getY() >= 0
-                                        && photonPose.getY() <= Field.fieldWidth
-                                        && photonVision.getCam2BestTarget() != null) {
+                //         if (photonPose.getX() >= 0 && photonPose.getX() <= Field.fieldLength
+                //                         && photonPose.getY() >= 0
+                //                         && photonPose.getY() <= Field.fieldWidth
+                //                         && photonVision.getCam2BestTarget() != null) {
 
-                                Pose2d closestTag = photonVision.at_field.getTagPose(
-                                                photonVision.getCam2BestTarget().getFiducialId())
-                                                .get().toPose2d();
-                                Translation2d translate = closestTag.minus(photonPose.toPose2d())
-                                                .getTranslation();
+                //                 Pose2d closestTag = photonVision.at_field.getTagPose(
+                //                                 photonVision.getCam2BestTarget().getFiducialId())
+                //                                 .get().toPose2d();
+                //                 Translation2d translate = closestTag.minus(photonPose.toPose2d())
+                //                                 .getTranslation();
 
-                                double distance = translate.getNorm();
-                                double xStddev = Math.pow(distance, 1.75) * (3 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
-                                double yStddev = xStddev;
-                                double rotStddev = Units.degreesToRadians(120.0);
-                                drivetrain.publisher4.set(photonPose.toPose2d());
-                                drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
-                                                VecBuilder.fill(xStddev, yStddev, rotStddev));
-                                drivetrain.addVisionMeasurement(photonPose.toPose2d(),
-                                                photonPoseOptional.get().timestampSeconds);
+                //                 double distance = translate.getNorm();
+                //                 double xStddev = Math.pow(distance, 1.75) * (3 * (Math.sqrt(Math.pow(drivetrain.getChassisSpeeds().vxMetersPerSecond,2)+Math.pow(drivetrain.getChassisSpeeds().vyMetersPerSecond,2)))/ 4.92) / 3.6;
+                //                 double yStddev = xStddev;
+                //                 double rotStddev = Units.degreesToRadians(120.0);
+                //                 drivetrain.publisher4.set(photonPose.toPose2d());
+                //                 drivetrain.m_poseEstimator.setVisionMeasurementStdDevs(
+                //                                 VecBuilder.fill(xStddev, yStddev, rotStddev));
+                //                 drivetrain.addVisionMeasurement(photonPose.toPose2d(),
+                //                                 photonPoseOptional.get().timestampSeconds);
 
-                                drivetrain.publisher4.set(photonPose.toPose2d());
-                        }
-                }
+                //                 drivetrain.publisher4.set(photonPose.toPose2d());
+                //         }
+                // }
         }
 }
