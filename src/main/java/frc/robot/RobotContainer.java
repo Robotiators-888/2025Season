@@ -519,7 +519,20 @@ public class RobotContainer {
         public void getSelectedReefSide() {
                 double x = Driver1.getRawAxis(4);
                 double y = -Driver1.getRawAxis(5);
+                // int[] targetTagSet = new int[]{10,11,6,7,8,9};
                 int[] targetTagSet = DriverStation.getAlliance().equals(Optional.of(Alliance.Red)) ? new int[]{10,11,6,7,8,9} : new int[]{21, 20, 19,18, 17, 22};
+                if (DriverStation.getAlliance() == Optional.of(Alliance.Red)) {
+                        // targetTagSet = new int[]{10,11,6,7,8,9};
+                        System.out.println("Red Alliance Selected");
+                }
+                else if (DriverStation.getAlliance() == Optional.of(Alliance.Blue)) {
+                        // targetTagSet = new int[]{21,20,19,18,17,22};
+                        System.out.println("Blue Alliance Selected");
+                }
+                else {
+                        System.out.println("Reef Select Alliance Error");
+                }
+
                 double angleRadians;
                 if (x==0 && y==0) {
                         angleRadians = 0.0;

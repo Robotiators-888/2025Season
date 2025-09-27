@@ -143,7 +143,8 @@ public class CMD_PathfindReefAlign extends Command {
     }
     else {
       pathfindingCommand = Commands.none();
-      DriverStation.reportWarning("Reef Align Null",true);
+      // DriverStation.reportWarning("Reef Align Null",true);
+      System.out.println("Reef Align Null");
     }
   }
 
