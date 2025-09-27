@@ -354,27 +354,27 @@ public class RobotContainer {
                 Driver1.x().whileTrue(new CMD_PathfindCloseReefAlign(drivetrain, photonVision, true));
                 Driver1.b().whileTrue(new CMD_PathfindCloseReefAlign(drivetrain, photonVision, false));
 
-                Driver1.leftBumper().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, true)); // Right
-                Driver1.leftTrigger().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, false)); // Left
+                // Driver1.leftBumper().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, true)); // Right
+                // Driver1.leftTrigger().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, false)); // Left
 
-                Driver1.rightStick().onTrue(Commands.none())
-                                .onFalse(new InstantCommand(() -> getSelectedReefSide())); 
+                // Driver1.rightStick().onTrue(Commands.none())
+                //                 .onFalse(new InstantCommand(() -> getSelectedReefSide())); 
 
-                Driver1.povLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
-                                MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-                                MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-                                0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
-                                true, true), drivetrain));
-                Driver1.povUpLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
-                        MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-                        MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-                        0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
-                        true, true), drivetrain));
-                Driver1.povDownLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
-                        MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
-                        MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
-                        0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
-                        true, true), drivetrain));
+                // Driver1.povLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
+                //                 MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                //                 MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                //                 0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
+                //                 true, true), drivetrain));
+                // Driver1.povUpLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
+                //         MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                //         MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                //         0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
+                //         true, true), drivetrain));
+                // Driver1.povDownLeft().whileTrue(new RunCommand(() -> drivetrain.drive(
+                //         MathUtil.applyDeadband(Driver1.getRawAxis(1), Operator.kDriveDeadband),
+                //         MathUtil.applyDeadband(Driver1.getRawAxis(0), Operator.kDriveDeadband),
+                //         0*-MathUtil.applyDeadband(Driver1.getRawAxis(4), Operator.kDriveDeadband),
+                //         true, true), drivetrain));
 
                 // Driver1.rightStick();
                 // Driver 2
