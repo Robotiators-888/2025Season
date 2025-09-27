@@ -22,6 +22,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.IntegerArrayPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_PhotonVision;
@@ -117,27 +118,33 @@ public class CMD_PathfindReefAlign extends Command {
     3.0, 2.1,
     Units.degreesToRadians(540), Units.degreesToRadians(720));
     Translation2d translate = selectedMap.get(target);
-    Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
-    drivetrain.selectPosePublisher.set(pose);
+    if (translate != null) {
+      Pose2d pose = new Pose2d(translate.getX(), translate.getY(), tagPose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
+      drivetrain.selectPosePublisher.set(pose);
     
-    List<List<String>> characterLists = Arrays.asList(
-      Arrays.asList("G", "H"),
-      Arrays.asList("I", "J"),
-      Arrays.asList("K", "L"),
-      Arrays.asList("A", "B"),
-      Arrays.asList("C", "D"),
-      Arrays.asList("E", "F")
-    );
+      List<List<String>> characterLists = Arrays.asList(
+        Arrays.asList("G", "H"),
+        Arrays.asList("I", "J"),
+        Arrays.asList("K", "L"),
+        Arrays.asList("A", "B"),
+        Arrays.asList("C", "D"),
+        Arrays.asList("E", "F")
+      );
 
-    String selectedCharacter = characterLists.get(path).get(isLeftAlign ? 0 : 1);
-    try {
-      PathPlannerPath paths = PathPlannerPath.fromPathFile(selectedCharacter + " Score Pathfind");
-      pathfindingCommand = AutoBuilder.pathfindThenFollowPath(paths, constraints);
-    } catch (Exception e) {
+      String selectedCharacter = characterLists.get(path).get(isLeftAlign ? 0 : 1);
+      try {
+        PathPlannerPath paths = PathPlannerPath.fromPathFile(selectedCharacter + " Score Pathfind");
+        pathfindingCommand = AutoBuilder.pathfindThenFollowPath(paths, constraints);
+      } catch (Exception e) {
       //System.out.println("Path not found, switching to pathfindToPose. Error: " + e);
       pathfindingCommand = AutoBuilder.pathfindToPose(pose, constraints);
+      }
+      pathfindingCommand.initialize();
     }
-    pathfindingCommand.initialize();
+    else {
+      pathfindingCommand = Commands.none();
+      DriverStation.reportWarning("Reef Align Null",true);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
