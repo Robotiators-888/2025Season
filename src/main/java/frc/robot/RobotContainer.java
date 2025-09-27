@@ -50,6 +50,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Climber;
 import frc.robot.Constants.Elevator;
 import frc.robot.Constants.Field;
+import frc.robot.Constants.GroundIntake;
+import frc.robot.Constants.GroundPivot;
 import frc.robot.Constants.LEDs;
 import frc.robot.Constants.Operator;
 import frc.robot.Constants.PivotConstants;
@@ -60,6 +62,8 @@ import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_Elevator;
+import frc.robot.subsystems.SUB_GroundIntake;
+import frc.robot.subsystems.SUB_GroundPivot;
 import frc.robot.subsystems.SUB_LEDs;
 import frc.robot.subsystems.SUB_PhotonVision;
 import frc.robot.subsystems.SUB_Pivot;
@@ -85,6 +89,8 @@ public class RobotContainer {
         public static SUB_Pivot pivot = SUB_Pivot.getInstance(roller.getAbsoluteEncoder());
         public static SUB_Climber climber = SUB_Climber.getInstance();
         public static SUB_LEDs leds = SUB_LEDs.getInstance();
+        public static SUB_GroundIntake groundIntake = SUB_GroundIntake.getInstance();
+        public static SUB_GroundPivot groundPivot = SUB_GroundPivot.getInstance();
         public static PowerDistribution powerDistribution = new PowerDistribution();
         private static String autoName, newAutoName;
         Optional<Alliance> lastAlliance;
@@ -140,6 +146,14 @@ public class RobotContainer {
                                                                 Operator.kDriveDeadband),
                                                 false, true),
                                 drivetrain));
+                groundIntake.setDefaultCommand(new RunCommand(() -> groundIntake
+                                .groundIntakeDetection(() -> groundPivot.nearIntakeSetpoint(),
+                                                () -> groundPivot.shouldHold()),
+                                groundIntake));
+
+                groundPivot.setDefaultCommand(new RunCommand(
+                                () -> groundPivot.drivePivotConditionally(Driver2.getRawAxis(1)),
+                                groundPivot));
 
                 // File pathFolder = new File(Filesystem.getDeployDirectory() +
                 // "/pathplanner/paths/");
@@ -383,7 +397,15 @@ public class RobotContainer {
                 Driver2.povRight().onTrue(getBargeScoringCommand());
                 Driver2.leftBumper().whileTrue(new RunCommand(()->roller.setRollerOutput(-Roller.kIntakeSpeed, -Roller.kRollerHelperSpeed))).onFalse(new InstantCommand(()->roller.setRollerOutput(0.0, 0.0)));
 
-                
+                Driver2.start().onTrue(new InstantCommand(
+                                () -> groundPivot.changeSetpoint(GroundPivot.kIntakePos)));
+                Driver2.leftStick().onTrue(new InstantCommand(
+                                () -> groundPivot.changeSetpoint(GroundPivot.kStowPos)));
+                Driver2.back().onTrue(new InstantCommand(
+                                () -> groundPivot.changeSetpoint(GroundPivot.kScorePos)));
+                Driver2.rightStick().whileTrue(new RunCommand(() -> groundIntake
+                                .setGroundIntake(GroundIntake.kGroundEjectSpeed)));
+
                 // Driver2.povDown().onTrue(new InstantCommand(() ->
                 // pivot.changeVoltage(-0.02)));
                 // Driver2.povUp().onTrue(new InstantCommand(() -> pivot.changeVoltage(0.02)));

@@ -241,6 +241,24 @@ public final class Constants {
                 public static final double kLowerBoundStuckPoint = 327.0;
         }
 
+        public static class GroundIntake {
+                public static final int kGroundIntakeCanID = 51;
+                public static final double kGroundIntakeSpeed = -0.45;
+                public static final double kGroundEjectSpeed = 1;
+        }
+        public static class GroundPivot {
+                public static final int kGroundPivotCanID = 52;
+                public static final double kIntakePos = 181;
+                public static final double kIntakeThreshold = 30; 
+
+
+                public static final double kStowPos = 0;
+                public static final double kScorePos = 45;
+                public static final double kPivotDeadband = 0.05;
+                public static final int kPivotSpeed = 1; 
+
+        }
+
         public static final class Elevator {
                 public static final double kHomingEncoderLocation = 0;
                 public static final double kResetHomingThreshold = 0.05;
