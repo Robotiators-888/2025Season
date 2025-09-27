@@ -51,7 +51,8 @@ public final class Constants {
                 // Calculations required for driving motor conversion factors and feed forward
                 public static final double kDrivingMotorFreeSpeedRps =
                                 Motor.kVortexFreeSpeedRpm / 60;
-                public static final double kWheelDiameterMeters = Units.inchesToMeters(2 * 1.6243455433105947);
+                public static final double kWheelDiameterMeters =
+                                Units.inchesToMeters(2 * 1.6243455433105947);
                 // Thrifty tread 2.95in
                 // Orange Tread 2.70
                 // Black Rev 2.95
@@ -164,10 +165,11 @@ public final class Constants {
                 public static final double kGyroRotation = 0;
 
                 // Constants for CMD_ReefAlign
-                public static final double kXShiftMagnitude =
-                                Units.inchesToMeters(5+(30.5 / 2)); // Distance away from
-                                                                 
-                                // the April Tag
+                public static final double kXShiftMagnitude = Units.inchesToMeters(5 + (30.5 / 2)); // Distance
+                                                                                                    // away
+                                                                                                    // from
+
+                // the April Tag
                 public static final double kYShiftMagnitude = Units.inchesToMeters(6.5); // Distance
                                                                                          // shifted
                                                                                          // to the
@@ -192,28 +194,55 @@ public final class Constants {
         public static final class PhotonVision {
 
                 public static final String kCam1Name = "AprilTagCam1";
-                public static final Rotation3d cameraRotation = new Rotation3d(
-                                Units.degreesToRadians(0), Units.degreesToRadians(0),
-                                Units.degreesToRadians(-25));
-                public static final Transform3d kRobotToCamera1 = new Transform3d(
-                                Units.inchesToMeters(15.25 - 7.625), Units.inchesToMeters(13.5 - 2.75),
-                                Units.inchesToMeters(11), cameraRotation);
+                public static final Rotation3d cameraRotation =
+                                new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0),
+                                                Units.degreesToRadians(-25));
+                public static final Transform3d kRobotToCamera1 =
+                                new Transform3d(Units.inchesToMeters(15.25 - 7.625),
+                                                Units.inchesToMeters(13.5 - 2.75),
+                                                Units.inchesToMeters(11), cameraRotation);
 
-                public static final String kCam2Name = "AprilTagCam2"; // TODO: Change to the correct name(AprilTagCam) and Transform3d and Rotation3d (Make sure to use this Transform3d and Rotation3d for the other camera)
-                public static final Rotation3d cameraRotation2 = new Rotation3d(
-                                Units.degreesToRadians(0), Units.degreesToRadians(0),
-                                Units.degreesToRadians(25)); // CCW positive yaw with it circling around the z axis, zero is straight forward
-                public static final Transform3d kRobotToCamera2 = new Transform3d(
-                                Units.inchesToMeters(15.25-7.625), Units.inchesToMeters(-13.5+2.75), // X is forward and the camera is in front of the center of the robot, Y positive is left and the camera is on the right of the robot, Z is up from the ground and it is above the ground
-                                Units.inchesToMeters(11), cameraRotation2);
+                public static final String kCam2Name = "AprilTagCam2"; // TODO: Change to the
+                                                                       // correct name(AprilTagCam)
+                                                                       // and Transform3d and
+                                                                       // Rotation3d (Make sure to
+                                                                       // use this Transform3d and
+                                                                       // Rotation3d for the other
+                                                                       // camera)
+                public static final Rotation3d cameraRotation2 =
+                                new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(0),
+                                                Units.degreesToRadians(25)); // CCW positive yaw
+                                                                             // with it circling
+                                                                             // around the z axis,
+                                                                             // zero is straight
+                                                                             // forward
+                public static final Transform3d kRobotToCamera2 =
+                                new Transform3d(Units.inchesToMeters(15.25 - 7.625),
+                                                Units.inchesToMeters(-13.5 + 2.75), // X is forward
+                                                                                    // and the
+                                                                                    // camera is in
+                                                                                    // front of the
+                                                                                    // center of the
+                                                                                    // robot, Y
+                                                                                    // positive is
+                                                                                    // left and the
+                                                                                    // camera is on
+                                                                                    // the right of
+                                                                                    // the robot, Z
+                                                                                    // is up from
+                                                                                    // the ground
+                                                                                    // and it is
+                                                                                    // above the
+                                                                                    // ground
+                                                Units.inchesToMeters(11), cameraRotation2);
 
 
                 public static final String kCam3Name = "AprilTagHighCam";
                 public static final Rotation3d cameraRotation3 = new Rotation3d(0,
-                                 Units.degreesToRadians(0), Units.degreesToRadians(8));
+                                Units.degreesToRadians(0), Units.degreesToRadians(8));
                 public static final Transform3d kRobotToCamera3 = new Transform3d(
-                                 Units.inchesToMeters(-7+3.25), Units.inchesToMeters(-10),
-                                 Units.inchesToMeters(23.5), cameraRotation);
+                                Units.inchesToMeters(-7 + 3.25), Units.inchesToMeters(-10),
+                                Units.inchesToMeters(23.5), cameraRotation);
         }
 
         public static final class PivotConstants {
@@ -249,13 +278,13 @@ public final class Constants {
         public static class GroundPivot {
                 public static final int kGroundPivotCanID = 52;
                 public static final double kIntakePos = 181;
-                public static final double kIntakeThreshold = 30; 
+                public static final double kIntakeThreshold = 30;
 
 
                 public static final double kStowPos = 0;
                 public static final double kScorePos = 45;
                 public static final double kPivotDeadband = 0.05;
-                public static final int kPivotSpeed = 1; 
+                public static final int kPivotSpeed = 1;
 
         }
 
@@ -293,7 +322,7 @@ public final class Constants {
                 public static final double kStartingSetpoint = 0;
                 public static final double kL1Setpoint = 0.1;
                 public static final double kL2Setpoint = 0.162;
-                public static final double kL3Setpoint = 0.375;
+                public static final double kL3Setpoint = 0.365;
                 public static final double kL4Setpoint = 0.705;
                 public static final double kAlgaeSetpoint = 0.508;
                 public static final double kProcessorSetpoint = 0.104;
