@@ -58,6 +58,7 @@ import frc.robot.Constants.PivotConstants;
 import frc.robot.Constants.Roller;
 import frc.robot.commands.CMD_OldPathfindReefAlign;
 import frc.robot.commands.CMD_PathfindAlgaeAlign;
+import frc.robot.commands.CMD_PathfindCloseReefAlign;
 import frc.robot.commands.CMD_PathfindReefAlign;
 import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
@@ -350,8 +351,8 @@ public class RobotContainer {
                 Driver1.a().onTrue(
                                 new InstantCommand(() -> pivot.changeSetpoint(PivotConstants.kL2Setpoint)));
 
-                Driver1.x().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, true, ()->targetId,()->listIndex));
-                Driver1.b().whileTrue(new CMD_PathfindReefAlign(drivetrain, photonVision, false, ()->targetId,()->listIndex));
+                Driver1.x().whileTrue(new CMD_PathfindCloseReefAlign(drivetrain, photonVision, true));
+                Driver1.b().whileTrue(new CMD_PathfindCloseReefAlign(drivetrain, photonVision, false));
 
                 Driver1.leftBumper().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, true)); // Right
                 Driver1.leftTrigger().whileTrue(new CMD_OldPathfindReefAlign(drivetrain, photonVision, false)); // Left
@@ -752,7 +753,7 @@ public class RobotContainer {
                 // PathPlannerAuto auto = new PathPlannerAuto("Cage 4 - E (L4) - C (L4)");
                 // return auto;
                 //drivetrain.resetPose(new Pose2d(2.0, 3.0, new Rotation2d(Math.toRadians(90))));
-                //return new CMD_PathfindReefAlign(drivetrain, photonVision, false, 6, 2);
+                // return new CMD_PathfindCloseReefAlign(drivetrain, photonVision, false);
 
                 // RobotConfig robotConfig = RobotConfig.fromGUISettings();
                 // PathPlannerTrajectory traj = path.getIdealTrajectory(robotConfig).get();
