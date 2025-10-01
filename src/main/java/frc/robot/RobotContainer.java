@@ -115,11 +115,11 @@ public class RobotContainer {
 
         //@avacado-a Please review this section for accuracy and clarity
 
-        // For new coders: You will se a lot of () -> in the code below. This is called a lambda expression.
+        // For new coders: You will see a lot of () -> in the code below. This is called a lambda expression.
         // Labmdas are used to pass functions as parameters to other functions (especially wpilib functions). They are similar to function pointers in C/C++ (dont worry about c++ yet).
         // Lamdas are technically "one time use" functions that have no name and are anonymous as they are declared and used once.
         // Instant commands are commands that do one thing once and then end
-        // Runcommands are commands that run a function repeatedly until interrupted or ended
+        // Run commands are commands that run a function repeatedly until interrupted or ended
         // Sequential command groups run a list of commands in order, one after the other
         // Parallel command groups run a list of commands at the same time until they are all finished
         // Race command groups run a list of commands at the same time until one of them finishes, then they end all the other commands

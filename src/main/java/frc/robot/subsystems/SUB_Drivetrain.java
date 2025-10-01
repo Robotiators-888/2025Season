@@ -356,8 +356,10 @@ public class SUB_Drivetrain extends SubsystemBase {
     // Notice the use of the var keyword, this allows the compiler to infer the type of the variable based on what it is being set to
     // This is useful to reduce redundancy and make the code cleaner with complex types but does not mean that the type can change during runtime
     // This is unlike languages like python where types can be changed at runtime instead of being determined at compile time
-    // Dont use the var keyword for evrything though as it can make it hard to determine the type of a variable
+    // Dont use the var keyword for everything though as it can make it hard to determine the type of a variable
     // var also cant be used for the type of a function parameter or return type
+    // The var keyword can not be declared like so: var x; new line x = 5; because x = 5; could be in an if statement and it could get set to a different type meaning it wouldnt be determined at compile time makingit invalid.
+    // This means the var keyword has to be used like so var x = 5;
     var swerveModuleStates =
         Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
@@ -461,6 +463,7 @@ public class SUB_Drivetrain extends SubsystemBase {
    */
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[modules.length];
+    // Notice the use of for loops to iterate through arrays
     for (int i = 0; i < modules.length; i++) {
       states[i] = modules[i].getState();
     }
@@ -476,6 +479,7 @@ public class SUB_Drivetrain extends SubsystemBase {
     SwerveModulePosition[] positions = new SwerveModulePosition[modules.length];
 
     for (int i = 0; i < moduleStates.length; i++) {
+      // Notice the use of for loops to iterate through arrays
       positions[i] = modules[i].getPosition();
     }
     return positions;
