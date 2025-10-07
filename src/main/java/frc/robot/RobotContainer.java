@@ -57,6 +57,7 @@ import frc.robot.Constants.Roller;
 import frc.robot.commands.CMD_OldPathfindReefAlign;
 import frc.robot.commands.CMD_PathfindAlgaeAlign;
 import frc.robot.commands.CMD_PathfindReefAlign;
+import frc.robot.commands.CMD_Spin;
 import frc.robot.subsystems.SUB_Climber;
 import frc.robot.subsystems.SUB_Drivetrain;
 import frc.robot.subsystems.SUB_Elevator;
@@ -323,6 +324,7 @@ public class RobotContainer {
          */
         private void configureBindings() {
 
+                Driver1.povRight().onTrue(new CMD_Spin(drivetrain));
                 Driver1.leftStick().onTrue(new InstantCommand(() -> drivetrain.zeroHeading())); // TODO:
                                                                                                 // Change
                 Driver1.povUp()
