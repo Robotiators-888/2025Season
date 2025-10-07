@@ -10,6 +10,8 @@ public class CMD_Spin extends Command {
         addRequirements(drivetrain);
     }
     public void execute () {
-        drivetrain.drive(0,0,360,true,true);
+        for (double i=0;i<1;i+=.1) {
+            drivetrain.drive(0,0,i,true,true);
+        }
     }
 }
