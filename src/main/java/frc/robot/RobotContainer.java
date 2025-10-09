@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import frc.robot.commands.CMD_Spin;
 import org.json.simple.parser.ParseException;
 import org.photonvision.EstimatedRobotPose;
 
@@ -696,7 +696,8 @@ public class RobotContainer {
          * @return the command to run in autonomous
          */
         public Command getAutonomousCommand() {
-                return autoChooser.getSelected();
+                // return autoChooser.getSelected();
+                return new CMD_Spin(drivetrain);
                 // Pathfinding.setPathfinder(new LocalADStar());
 
                 // try{
